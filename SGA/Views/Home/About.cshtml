@@ -1,0 +1,30 @@
+﻿@model IEnumerable<SGA.ViewModels.GrupoMatriculaDia>
+
+@{
+    ViewBag.Title = "Estadísticas de los estudiantes";
+}
+
+<h2>Estadísticas de los estudiantes</h2>
+
+<table>
+    <tr>
+        <th>
+            Fecha Matricula
+        </th>
+        <th>
+            Estudiantes
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.diaMatricula)
+            </td>
+            <td>
+                @item.contadorEstudiantes
+            </td>
+        </tr>
+    }
+</table>

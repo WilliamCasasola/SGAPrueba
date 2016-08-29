@@ -1,0 +1,51 @@
+﻿@model IEnumerable<SGA.Models.Matricula>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Curso.TituloID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Estudiante.nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.nota)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.diaMatricula)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Curso.TituloID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Estudiante.nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.nota)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.diaMatricula)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

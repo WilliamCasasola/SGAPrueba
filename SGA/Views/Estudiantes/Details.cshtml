@@ -1,0 +1,67 @@
+﻿@model SGA.Models.Estudiante
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Estudiante</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.apellidos)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.apellidos)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.diaMatricula)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.diaMatricula)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.matriculas)
+        </dt>
+        <dd>
+            <table class="table">
+                <tr>
+                    <th>Código</th>
+                    <th>Titulo</th>
+                    <th>Nota</th>
+                </tr>
+                @foreach (var item in Model.matriculas)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Curso.CursoID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Curso.Titulo.nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.nota)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,147 @@
+﻿@model SGA.ViewModels.DatosIndexTutor
+
+@{
+    ViewBag.Title = "Tutores";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Crear Nuevo", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+           Nombre
+        </th>
+        <th>
+            Apellidos
+        </th>
+        <th>
+            Fechacontratacion
+        </th>
+        <th>Cursos</th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model.Tutores) {
+    string selectedRow = "";
+    if (item.TutorID == ViewBag.TutorID)
+    {
+        selectedRow = "success";
+    }
+    <tr class="@selectedRow" valign="top">
+        <td>
+            @Html.DisplayFor(modelItem => item.nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.apellidos)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Fechacontratacion)
+        </td>
+        <td>
+            @{ 
+                foreach(var curso in item.Cursos)
+                {
+                    @curso.CursoID @: @curso.Titulo.nombre
+                }
+            }
+        </td>
+        @if (Model.Matriculas != null)
+        {
+            <h3>
+                Estudiantes Matriculados en el curso seleccionado
+            </h3>
+            <table class="table">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Nota</th>
+                </tr>
+                @foreach (var item2 in Model.Matriculas)
+                {
+                    <tr>
+                        <td>
+                            @item2.Estudiante.nombre
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item2.nota)
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        <td>
+            @Html.ActionLink("Select","Index", new { id=item.TutorID})
+            @Html.ActionLink("Edit", "Edit", new { id=item.TutorID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.TutorID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.TutorID })
+        </td>
+    </tr>
+}
+
+</table>
+@if (Model.Cursos != null)
+{
+    <h3>Cursos impartidos por el instructor seleccionado</h3>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Código</th>
+            <th>Titulo</th>
+        </tr>
+
+        @foreach (var item in Model.Cursos)
+        {
+            string selectedRow = "";
+            if (item.CursoID == ViewBag.CursoID)
+            {
+                selectedRow = "success";
+            }
+            <tr class="@selectedRow">
+                <td>
+                    @Html.ActionLink("Select", "Index", new { cursoID = item.CursoID })
+                </td>
+                <td>
+                    @item.CursoID
+                </td>
+                <td>
+                    @item.TituloID
+                </td>
+                
+            </tr>
+        }
+
+    </table>
+}
+@if (Model.Matriculas != null)
+{
+    <h3>
+        Estudiantes Matriculados en Curso Seleccionado
+    </h3>
+    <table class="table">
+        <tr>
+            <th>Carnet<</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Nota</th>
+        </tr>
+        @foreach (var item in Model.Matriculas)
+        {
+            <tr>
+                <td>
+                    @item.Estudiante.ID
+                </td>
+                <td>
+                    @item.Estudiante.nombre
+                </td>
+                <td>
+                    @item.Estudiante.apellidos
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nota)
+                </td>
+            </tr>
+        }
+    </table>
+}
