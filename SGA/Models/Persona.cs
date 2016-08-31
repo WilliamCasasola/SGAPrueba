@@ -33,7 +33,7 @@ namespace SGA.Models
         [Display(Name = "Ruta de Foto")]
         public HttpPostedFile Fotografia { set; get; }
 
-        public bool Estado { set; get;
+        public bool Estado { set; get; }
 
 
     }
