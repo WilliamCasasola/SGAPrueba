@@ -16,9 +16,41 @@ namespace SGA.Controllers
         private SGAContext db = new SGAContext();
 
         // GET: Estudiante
-        public ActionResult Index()
+        public ActionResult Index(string ordenarPor, string buscado)
         {
-            return View(db.Estudiantes.ToList());
+            ViewBag.NombreParametroOrdenamiento = String.IsNullOrEmpty(ordenarPor) ? "nombre_desc" : "Nombre";
+            ViewBag.FechaParametroOrdenamiento = ordenarPor == "Fecha" ? "fecha_desc" : "Fecha";
+            ViewBag.ApellidosParametroOrdenamiento = ordenarPor == "Apellidos" ? "apellidos_desc" : "Apellidos";
+            var estudiantes = from e in db.Estudiantes
+                              select e;
+            if (!String.IsNullOrEmpty(buscado))
+            {
+                estudiantes = estudiantes.Where(s => s.Apellidos.Contains(buscado) || s.Nombre.Contains(buscado));
+            }
+            switch (ordenarPor)
+            {
+                case "Nombre":
+                    estudiantes = estudiantes.OrderBy(s => s.Nombre);
+                    break;
+                case "nombre_desc":
+                    estudiantes = estudiantes.OrderByDescending(s => s.Nombre);
+                    break;
+                case "Fecha":
+                    estudiantes = estudiantes.OrderBy(s => s.Fechacontratacion);
+                    break;
+                case "fecha_desc":
+                    estudiantes = estudiantes.OrderByDescending(s => s.Fechacontratacion);
+                    break;
+                case "Apellidos":
+                    estudiantes = estudiantes.OrderBy(s => s.Apellidos);
+                    break;
+                case "apellidos_desc":
+                    estudiantes = estudiantes.OrderByDescending(s => s.Apellidos);
+                    break;
+
+            }
+
+            return View(estudiantes.ToList());
         }
 
         // GET: Estudiante/Details/5
