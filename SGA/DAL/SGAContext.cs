@@ -32,6 +32,8 @@ namespace SGA.DAL
         {
             return new SGAContext();
         }
+
+        public System.Data.Entity.DbSet<SGA.Models.Administrador> Administradors { get; set; }
     }
    
 
