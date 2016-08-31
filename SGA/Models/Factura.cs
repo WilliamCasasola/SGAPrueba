@@ -34,6 +34,11 @@ namespace SGA.Models
         [Display(Name ="Estado de Factura")]
         public EstadoFactura estado { set; get; }
 
+        [Required(ErrorMessage = "Valor de monto cancelado requerido")]
+        [Display(Name = "Monto cancelado")]
+        public double TotalCancelado { set; get; }
+
+
         public virtual ICollection<EstudianteParaFactura> Detalles { set; get; }
     }
 }

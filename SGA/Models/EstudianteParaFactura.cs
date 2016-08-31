@@ -14,6 +14,7 @@ namespace SGA.Models
         public String EstudianteId { set; get; }
         public virtual Estudiante Estudiante { set; get; }
 
-        public virtual ICollection<Curso> Cursos { set; get; }
+        public virtual ICollection<Titulo> Titulos { set; get; }
+
     }
 }
