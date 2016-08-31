@@ -25,10 +25,6 @@ namespace SGA.Models
         [Display(Name = "Precio")]
         public double Precio { set; get; }
 
-        [Required(ErrorMessage = "Generación requerida")]
-        public string GeneracionId { set; get; }
-        public virtual Generacion Generacion { set; get; }
-
         public virtual ICollection<Curso> cursos { set; get; }
     }
 }

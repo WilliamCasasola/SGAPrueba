@@ -6,24 +6,9 @@ using System.Web;
 
 namespace SGA.Models
 {
-    public class Estudiante
+    public class Estudiante:Persona
     {
-        [Required]
-        [Display(Name ="Carnet")]
-        public String ID { set; get; }
-
-      
-        [Required]
-        [Display(Name = "Apellidos")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$",ErrorMessage = "Los apellidos solo pueden tener letras y la primera en mayúsucula.")]
-        [StringLength(40, ErrorMessage = "Los apellidos no pueden tener más de 40 caracteres.")]
-        public String apellidos { set; get; }
-
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString ="{0:dd-MM-yyyy}", ApplyFormatInEditMode =true)]
-        [Display(Name = "Fecha Matricula")]
-        public DateTime diaMatricula { set; get; }
-
         public virtual  ICollection<Matricula> matriculas { set; get; }
+
     }
 }

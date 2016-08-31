@@ -20,7 +20,7 @@ namespace SGA.Models
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { set; get; }
 
-        public virtual ICollection<Titulo> Titulos { set; get; }
+        public virtual ICollection<Curso> Cursos { set; get; }
 
     }
 }

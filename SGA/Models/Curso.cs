@@ -48,7 +48,9 @@ namespace SGA.Models
         public virtual ICollection<Matricula> Matriculas { set; get; }
 
         public virtual ICollection<Tutor> Tutores { set; get; }
-        public int CantidadEvaluaciones { set; get; }
-        
+
+        [Required(ErrorMessage = "Generación requerida")]
+        public string GeneracionId { set; get; }
+        public virtual Generacion Generacion { set; get; }
     }
 }

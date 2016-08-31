@@ -20,6 +20,10 @@ namespace SGA.Models
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { set; get; }
 
+        [Required(ErrorMessage = "Cliente requerido")]
+        [Display(Name = "Cliente")]
+        public string ClienteId { set; get; }
+        public virtual Cliente Cliente { set; get; }
 
         [Required(ErrorMessage = "Descripción requerida")]
         [Display(Name = "Descripción")]
