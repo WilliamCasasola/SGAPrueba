@@ -1,4 +1,132 @@
-﻿/*using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Mvc;
+using SGA.DAL;
+using SGA.Models;
+
+namespace SGA.Controllers
+{
+    public class EstudianteController : Controller
+    {
+        private SGAContext db = new SGAContext();
+
+        // GET: Estudiante
+        public ActionResult Index()
+        {
+            return View(db.Estudiantes.ToList());
+        }
+
+        // GET: Estudiante/Details/5
+        public ActionResult Details(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Estudiante estudiante = db.Estudiantes.Find(id);
+            if (estudiante == null)
+            {
+                return HttpNotFound();
+            }
+            return View(estudiante);
+        }
+
+        // GET: Estudiante/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: Estudiante/Create
+        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
+        // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Estudiante estudiante)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Estudiantes.Add(estudiante);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View(estudiante);
+        }
+
+        // GET: Estudiante/Edit/5
+        public ActionResult Edit(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Estudiante estudiante = db.Estudiantes.Find(id);
+            if (estudiante == null)
+            {
+                return HttpNotFound();
+            }
+            return View(estudiante);
+        }
+
+        // POST: Estudiante/Edit/5
+        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
+        // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Estudiante estudiante)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(estudiante).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(estudiante);
+        }
+
+        // GET: Estudiante/Delete/5
+        public ActionResult Delete(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Estudiante estudiante = db.Estudiantes.Find(id);
+            if (estudiante == null)
+            {
+                return HttpNotFound();
+            }
+            return View(estudiante);
+        }
+
+        // POST: Estudiante/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(string id)
+        {
+            Estudiante estudiante = db.Estudiantes.Find(id);
+            db.Estudiantes.Remove(estudiante);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+    }
+}
+/*using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -50,7 +178,7 @@ namespace SGA.Controllers
 
             }
 
-            return View(estudiantes.ToList());*/
+            return View(estudiantes.ToList());
         }
 
         // GET: Estudiantes/Details/5
@@ -166,7 +294,7 @@ namespace SGA.Controllers
             }
 
             return RedirectToAction("Index");
-        }*/
+        }
 
         protected override void Dispose(bool disposing)
         {
