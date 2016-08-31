@@ -310,7 +310,7 @@ namespace SGA.Controllers
             return View(estudiante);
         }
 
-       /* // POST: Estudiantes/Delete/5
+        // POST: Estudiantes/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(string id)

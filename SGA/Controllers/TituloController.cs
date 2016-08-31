@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -43,11 +43,11 @@ namespace SGA.Controllers
         }
 
         // POST: Titulo/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
+        // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "TituloID,nombre,foto,precio")] Titulo titulo)
+        public ActionResult Create([Bind(Include = "Id,Nombre,Foto,Precio")] Titulo titulo)
         {
             if (ModelState.IsValid)
             {
@@ -75,11 +75,11 @@ namespace SGA.Controllers
         }
 
         // POST: Titulo/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
+        // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "TituloID,nombre,foto,precio")] Titulo titulo)
+        public ActionResult Edit([Bind(Include = "Id,Nombre,Foto,Precio")] Titulo titulo)
         {
             if (ModelState.IsValid)
             {
@@ -126,4 +126,3 @@ namespace SGA.Controllers
         }
     }
 }
-*/
