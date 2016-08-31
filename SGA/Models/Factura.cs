@@ -20,6 +20,10 @@ namespace SGA.Models
         [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { set; get; }
 
+        [Required(ErrorMessage = "Cliente requerido")]
+        [Display(Name = "Cliente")]
+        public string ClienteId { set; get; }
+        public virtual Cliente Cliente { set; get; }
 
         [Required(ErrorMessage = "Descripción requerida")]
         [Display(Name = "Descripción")]
@@ -29,6 +33,11 @@ namespace SGA.Models
         [Required(ErrorMessage ="Estado Requerido")]
         [Display(Name ="Estado de Factura")]
         public EstadoFactura estado { set; get; }
+
+        [Required(ErrorMessage = "Valor de monto cancelado requerido")]
+        [Display(Name = "Monto cancelado")]
+        public double TotalCancelado { set; get; }
+
 
         public virtual ICollection<EstudianteParaFactura> Detalles { set; get; }
     }

@@ -43,6 +43,10 @@ namespace SGA.Models
         [StringLength(10000, ErrorMessage = "Las direcciones no pueden tener más de 10000 carácteres..")]
         public string Direccion { set; get; }
 
-      
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Fecha Contratación")]
+        public DateTime Fechacontratacion { get; set; }
+
     }
 }

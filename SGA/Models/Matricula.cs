@@ -6,8 +6,9 @@ using System.Web;
 
 namespace SGA.Models
 {
-    public enum Nota {
-    A,B,C,D,F
+    public class Nota {
+        public int Id { set; get; }
+        public double valor { set; get; }
     }
     
     public class Matricula
@@ -16,8 +17,8 @@ namespace SGA.Models
         public String CursoID { set; get; }
         public String EstudianteID { set; get; }
 
-        [DisplayFormat(NullDisplayText="Sin calificar")]
-        public Nota? nota { set; get; }
+//[DisplayFormat(NullDisplayText="Sin calificar")]
+        public ICollection<Nota> calificaciones { set; get; }
 
 
         [DataType(DataType.Date)]
