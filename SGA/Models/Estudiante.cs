@@ -12,12 +12,7 @@ namespace SGA.Models
         [Display(Name ="Carnet")]
         public String ID { set; get; }
 
-        [Required]
-        [Display(Name ="Nombre")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$", ErrorMessage = "Los nombres solo pueden tener letras y la primera en mayúsucula.")]
-        [StringLength(20, ErrorMessage = "Los nombres no pueden tener más de 20 caracteres..")]
-        public String nombre { set; get; }
-
+      
         [Required]
         [Display(Name = "Apellidos")]
         [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$",ErrorMessage = "Los apellidos solo pueden tener letras y la primera en mayúsucula.")]

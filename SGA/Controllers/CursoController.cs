@@ -67,7 +67,7 @@ namespace SGA.Controllers
                 ModelState.AddModelError("", "No se pudo realizar la acción. Iintente de nuevo, si el problema persiste comuniquese con el administrador del sistema ");
             }
             PopulateTitulosDropDownList(curso.TituloID);
-         
+
             return View(curso);
         }
 
@@ -94,25 +94,29 @@ namespace SGA.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditPost(string id)
         {
-            if (id == null) {
+            if (id == null)
+            {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var cursoActualizar = db.Cursos.Find(id);
-            if(TryUpdateModel(cursoActualizar,"",new string[] { "Codigo", "TituloID" }))
+            if (TryUpdateModel(cursoActualizar, "", new string[] { "Codigo", "TituloID" }))
             {
-                try {
+                try
+                {
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                catch (RetryLimitExceededException dex) {
+                catch (RetryLimitExceededException dex)
+                {
                     ModelState.AddModelError("", "No se pudo realizar la acción. Iintente de nuevo, si el problema persiste comuniquese con el administrador del sistema ");
-            }
+                }
             }
             PopulateTitulosDropDownList(cursoActualizar.TituloID);
             return View(cursoActualizar);
         }
 
-        private void PopulateTitulosDropDownList(object tituloSeleccionado=null) {
+        private void PopulateTitulosDropDownList(object tituloSeleccionado = null)
+        {
             var tituloQuery = from d in db.Titulos
                               orderby d.TituloID
                               select d;

@@ -189,11 +189,16 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Cliente.cs" />
     <Compile Include="Models\Curso.cs" />
     <Compile Include="Models\Estudiante.cs" />
+    <Compile Include="Models\EstudianteParaFactura.cs" />
+    <Compile Include="Models\Factura.cs" />
+    <Compile Include="Models\Generacion.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Matricula.cs" />
+    <Compile Include="Models\Persona.cs" />
     <Compile Include="Models\Titulo.cs" />
     <Compile Include="Models\Tutor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
