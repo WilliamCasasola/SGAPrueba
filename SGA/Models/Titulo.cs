@@ -19,7 +19,7 @@ namespace SGA.Models
         public string Nombre { set; get; }
 
         [Display(Name = "Ruta de Foto")]
-        public HttpPostedFile Foto { set; get; }
+        public string Foto { set; get; }
 
         [Required(ErrorMessage = "Precio requerido")]
         [Display(Name = "Precio")]

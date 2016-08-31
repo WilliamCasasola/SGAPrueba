@@ -47,7 +47,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Fecha")] Generacion generacion)
+        public ActionResult Create([Bind(Include = "Id,Fecha,Foto")] Generacion generacion)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Fecha")] Generacion generacion)
+        public ActionResult Edit([Bind(Include = "Id,Fecha,Foto")] Generacion generacion)
         {
             if (ModelState.IsValid)
             {

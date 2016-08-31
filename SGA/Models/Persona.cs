@@ -21,8 +21,8 @@ namespace SGA.Models
 
         public bool Sexo { set; get; }
 
-        [Display(Name = "Ruta de Foto")]
-        public HttpPostedFile Identificacion { set; get; }
+        [Display(Name = "Ruta de Identifiación")]
+        public string Identificacion { set; get; }
 
         [StringLength(60, ErrorMessage = "El texto no puede tener más de 60 caracteres..")]
         public string Profecion { set; get; }
@@ -31,7 +31,7 @@ namespace SGA.Models
         public string Institucion { set; get; }
 
         [Display(Name = "Ruta de Foto")]
-        public HttpPostedFile Fotografia { set; get; }
+        public string Fotografia { set; get; }
 
         public bool Estado { set; get; }
 
