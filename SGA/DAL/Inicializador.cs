@@ -1,4 +1,4 @@
-﻿using SGA.Models;
+﻿/*using SGA.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace SGA.DAL
             new Curso{CursoID="2042",titulo="Literature",}
             };
             Cursos.ForEach(s => context.Cursos.Add(s));
-            context.SaveChanges();*/
+            context.SaveChanges();
             var Matriculas = new List<Matricula>
             {
             new Matricula{EstudianteID="1",CursoID="1050",nota=Nota.A},
@@ -56,4 +56,4 @@ namespace SGA.DAL
             context.SaveChanges();
         }
     }
-}
+}*/
