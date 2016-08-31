@@ -50,7 +50,7 @@ namespace SGA.Controllers
 
             }
 
-            return View(estudiantes.ToList());*/
+            return View(estudiantes.ToList());
         }
 
         // GET: Estudiantes/Details/5
@@ -150,7 +150,7 @@ namespace SGA.Controllers
             return View(estudiante);
         }
 
-       /* // POST: Estudiantes/Delete/5
+        // POST: Estudiantes/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(string id)
@@ -166,7 +166,7 @@ namespace SGA.Controllers
             }
 
             return RedirectToAction("Index");
-        }*/
+        }
 
         protected override void Dispose(bool disposing)
         {

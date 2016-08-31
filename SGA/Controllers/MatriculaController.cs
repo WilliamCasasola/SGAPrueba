@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -40,8 +40,8 @@ namespace SGA.Controllers
         // GET: Matricula/Create
         public ActionResult Create()
         {
-            ViewBag.CursoID = new SelectList(db.Cursos, "CursoID", "TituloID");
-            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "ID", "nombre");
+            ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId");
+            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "Id", "Apellidos");
             return View();
         }
 
@@ -50,7 +50,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,CursoID,EstudianteID,nota,diaMatricula")] Matricula matricula)
+        public ActionResult Create([Bind(Include = "ID,CursoID,EstudianteID,diaMatricula")] Matricula matricula)
         {
             if (ModelState.IsValid)
             {
@@ -59,8 +59,8 @@ namespace SGA.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CursoID = new SelectList(db.Cursos, "CursoID", "TituloID", matricula.CursoID);
-            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "ID", "nombre", matricula.EstudianteID);
+            ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);
+            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "Id", "Apellidos", matricula.EstudianteID);
             return View(matricula);
         }
 
@@ -76,8 +76,8 @@ namespace SGA.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CursoID = new SelectList(db.Cursos, "CursoID", "TituloID", matricula.CursoID);
-            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "ID", "nombre", matricula.EstudianteID);
+            ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);
+            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "Id", "Apellidos", matricula.EstudianteID);
             return View(matricula);
         }
 
@@ -86,7 +86,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,CursoID,EstudianteID,nota,diaMatricula")] Matricula matricula)
+        public ActionResult Edit([Bind(Include = "ID,CursoID,EstudianteID,diaMatricula")] Matricula matricula)
         {
             if (ModelState.IsValid)
             {
@@ -94,8 +94,8 @@ namespace SGA.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.CursoID = new SelectList(db.Cursos, "CursoID", "TituloID", matricula.CursoID);
-            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "ID", "nombre", matricula.EstudianteID);
+            ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);
+            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "Id", "Apellidos", matricula.EstudianteID);
             return View(matricula);
         }
 
@@ -135,4 +135,3 @@ namespace SGA.Controllers
         }
     }
 }
-*/

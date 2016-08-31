@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -9,7 +9,6 @@ using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
 using SGA.ViewModels;
-using System.Data.Entity.Infrastructure;
 
 namespace SGA.Controllers
 {
@@ -18,25 +17,27 @@ namespace SGA.Controllers
         private SGAContext db = new SGAContext();
 
         // GET: Tutor
-        public ActionResult Index(string id, string cursoID)
+        public ActionResult Index()
         {
             var viewModel = new DatosIndexTutor();
 
             viewModel.Tutores = db.Tutores
                 .Include(t => t.Cursos.Select(c => c.Titulo))
                 .Include(t => t.Cursos.Select(c => c.Matriculas))
-                .Include(t => t.Cursos.Select(c => c.Matriculas.Select(m=>m.Estudiante)))
-                .OrderBy(t => t.nombre);
+                .Include(t => t.Cursos.Select(c => c.Matriculas.Select(m => m.Estudiante)))
+                .OrderBy(t => t.Nombre);
             if (id != null)
             {
                 ViewBag.TutorID = id;
                 viewModel.Cursos = viewModel.Tutores.Where(i => i.TutorID == id).Single().Cursos;
             }
-            if (cursoID != null) {
+            if (cursoID != null)
+            {
                 ViewBag.CursoID = cursoID;//Otra forma
                 viewModel.Matriculas = viewModel.Cursos.Where(c => c.CursoID == cursoID).Single().Matriculas;
             }
             return View(viewModel);
+            return View(db.Tutores.ToList());
         }
 
         // GET: Tutor/Details/5
@@ -68,11 +69,13 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "TutorID,nombre,apellidos,Fechacontratacion")] Tutor tutor, string[] cursosSeleccionados)
+        public ActionResult Create([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Tutor tutor)
         {
-            if (cursosSeleccionados != null) {
+            if (cursosSeleccionados != null)
+            {
                 tutor.Cursos = new List<Curso>();
-                foreach (var curso in cursosSeleccionados) {
+                foreach (var curso in cursosSeleccionados)
+                {
                     var incluircurso = db.Cursos.Find(curso);
                     tutor.Cursos.Add(incluircurso);
                 }
@@ -95,8 +98,8 @@ namespace SGA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-        
-            Tutor tutor = db.Tutores.Include(t=>t.Cursos).Single(t=>t.TutorID==id);
+
+            Tutor tutor = db.Tutores.Include(t => t.Cursos).Single(t => t.Id == id);
             populateCursoAsignadoTutor(tutor);
             if (tutor == null)
             {
@@ -104,16 +107,18 @@ namespace SGA.Controllers
             }
             return View(tutor);
         }
-        private void populateCursoAsignadoTutor(Tutor tutor) {
-            var todosLosCursos = db.Cursos.Include(c=>c.Titulo);
-            var cursosTutor= new HashSet<string>(tutor.Cursos.Select(c => c.CursoID));
+        private void populateCursoAsignadoTutor(Tutor tutor)
+        {
+            var todosLosCursos = db.Cursos.Include(c => c.Titulo);
+            var cursosTutor = new HashSet<string>(tutor.Cursos.Select(c => c.Id));
             var viewModel = new List<AsignarCursoTutor>();
-            foreach (var curso in todosLosCursos) {
+            foreach (var curso in todosLosCursos)
+            {
                 AsignarCursoTutor act = new AsignarCursoTutor
                 {
-                    CursoID = curso.CursoID,
-                    Titulo = curso.Titulo.nombre,
-                    Asignado = cursosTutor.Contains(curso.CursoID)
+                    CursoID = curso.Id,
+                    Titulo = curso.Titulo.Nombre,
+                    Asignado = cursosTutor.Contains(curso.Id)
 
                 };
                 viewModel.Add(act);
@@ -125,7 +130,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id, string[] cursosSeleccionados)
+        public ActionResult Edit([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Tutor tutor)
         {
             if (id == null)
             {
@@ -147,15 +152,16 @@ namespace SGA.Controllers
 
                     return RedirectToAction("Index");
                 }
-                catch (RetryLimitExceededException /* dex)
+                catch (RetryLimitExceededException dex)
                 {
                     //Log the error (uncomment dex variable name and add a line here to write a log.
-                  /*    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
               }
             }
             populateCursoAsignadoTutor(tutorActualizar);
             return View(tutorActualizar);
         }
+
         private void ActualizarCursosInstructor(string[] cursosSeleccionados, Tutor tutorActualizar)
         {
             if (cursosSeleccionados == null)
@@ -223,4 +229,3 @@ namespace SGA.Controllers
         }
     }
 }
-*/
