@@ -34,6 +34,14 @@ namespace SGA.DAL
         }
 
         public System.Data.Entity.DbSet<SGA.Models.Administrador> Administradors { get; set; }
+
+        public System.Data.Entity.DbSet<SGA.Models.Cliente> Clientes { get; set; }
+
+        public System.Data.Entity.DbSet<SGA.Models.Generacion> Generacions { get; set; }
+
+        public System.Data.Entity.DbSet<SGA.Models.EstudianteParaFactura> EstudianteParaFacturas { get; set; }
+
+        public System.Data.Entity.DbSet<SGA.Models.Factura> Facturas { get; set; }
     }
    
 

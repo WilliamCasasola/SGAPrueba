@@ -177,8 +177,12 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdministradorController.cs" />
+    <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\CursoController.cs" />
-    <Compile Include="Controllers\EstudiantesController.cs" />
+    <Compile Include="Controllers\EstudianteController.cs" />
+    <Compile Include="Controllers\EstudianteParaFacturaController.cs" />
+    <Compile Include="Controllers\FacturaController.cs" />
+    <Compile Include="Controllers\GeneracionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MatriculaController.cs" />
@@ -294,6 +298,31 @@
     <Content Include="Views\Administrador\Details.cshtml" />
     <Content Include="Views\Administrador\Edit.cshtml" />
     <Content Include="Views\Administrador\Index.cshtml" />
+    <Content Include="Views\Cliente\Create.cshtml" />
+    <Content Include="Views\Cliente\Delete.cshtml" />
+    <Content Include="Views\Cliente\Details.cshtml" />
+    <Content Include="Views\Cliente\Edit.cshtml" />
+    <Content Include="Views\Cliente\Index.cshtml" />
+    <Content Include="Views\Estudiante\Create.cshtml" />
+    <Content Include="Views\Estudiante\Delete.cshtml" />
+    <Content Include="Views\Estudiante\Details.cshtml" />
+    <Content Include="Views\Estudiante\Edit.cshtml" />
+    <Content Include="Views\Estudiante\Index.cshtml" />
+    <Content Include="Views\EstudianteParaFactura\Create.cshtml" />
+    <Content Include="Views\EstudianteParaFactura\Delete.cshtml" />
+    <Content Include="Views\EstudianteParaFactura\Details.cshtml" />
+    <Content Include="Views\EstudianteParaFactura\Edit.cshtml" />
+    <Content Include="Views\EstudianteParaFactura\Index.cshtml" />
+    <Content Include="Views\Factura\Create.cshtml" />
+    <Content Include="Views\Factura\Delete.cshtml" />
+    <Content Include="Views\Factura\Details.cshtml" />
+    <Content Include="Views\Factura\Edit.cshtml" />
+    <Content Include="Views\Factura\Index.cshtml" />
+    <Content Include="Views\Generacion\Create.cshtml" />
+    <Content Include="Views\Generacion\Delete.cshtml" />
+    <Content Include="Views\Generacion\Details.cshtml" />
+    <Content Include="Views\Generacion\Edit.cshtml" />
+    <Content Include="Views\Generacion\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
