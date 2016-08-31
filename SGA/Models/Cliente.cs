@@ -43,10 +43,6 @@ namespace SGA.Models
         [StringLength(10000, ErrorMessage = "Las direcciones no pueden tener más de 10000 carácteres..")]
         public string Direccion { set; get; }
 
-        [Required(ErrorMessage = "Clave Requerida")]
-        [Display(Name = "Clave")]
-        [StringLength(30, MinimumLength = 6, ErrorMessage = "Las claves no pueden tener menos de 6 carácteres..")]
-        public string Clave { set; get; }
-
+      
     }
 }

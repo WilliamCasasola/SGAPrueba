@@ -14,5 +14,7 @@ namespace SGA.Models
         [StringLength(60, ErrorMessage = "Los apellidos no pueden tener más de 60 caracteres..")]
         public string Apellidos { set; get; }
 
+
+
     }
 }
