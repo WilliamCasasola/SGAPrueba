@@ -5,7 +5,7 @@ using System.Web;
 
 namespace SGA.Models
 {
-    public class Administrador
+    public class Administrador : Persona
     {
     }
 }
