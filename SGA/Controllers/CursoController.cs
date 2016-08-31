@@ -66,7 +66,7 @@ namespace SGA.Controllers
             {
                 ModelState.AddModelError("", "No se pudo realizar la acción. Iintente de nuevo, si el problema persiste comuniquese con el administrador del sistema ");
             }
-            PopulateTitulosDropDownList(curso.TituloID);
+            PopulateTitulosDropDownList(curso.Id);
 
             return View(curso);
         }
@@ -83,7 +83,7 @@ namespace SGA.Controllers
             {
                 return HttpNotFound();
             }
-            PopulateTitulosDropDownList(curso.TituloID);
+            PopulateTitulosDropDownList(curso.Id);
             return View(curso);
         }
 
@@ -111,14 +111,14 @@ namespace SGA.Controllers
                     ModelState.AddModelError("", "No se pudo realizar la acción. Iintente de nuevo, si el problema persiste comuniquese con el administrador del sistema ");
                 }
             }
-            PopulateTitulosDropDownList(cursoActualizar.TituloID);
+            PopulateTitulosDropDownList(cursoActualizar.Id);
             return View(cursoActualizar);
         }
 
         private void PopulateTitulosDropDownList(object tituloSeleccionado = null)
         {
             var tituloQuery = from d in db.Titulos
-                              orderby d.TituloID
+                              orderby d.Id
                               select d;
             ViewBag.TituloID = new SelectList(tituloQuery, "TituloID", "nombre", tituloSeleccionado);
         }

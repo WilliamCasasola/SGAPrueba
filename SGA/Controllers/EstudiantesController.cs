@@ -18,7 +18,7 @@ namespace SGA.Controllers
         // GET: Estudiantes
         public ActionResult Index(string ordenarPor, string buscado)
         {
-            ViewBag.NombreParametroOrdenamiento = String.IsNullOrEmpty(ordenarPor) ? "nombre_desc" : "Nombre";
+           /* ViewBag.NombreParametroOrdenamiento = String.IsNullOrEmpty(ordenarPor) ? "nombre_desc" : "Nombre";
             ViewBag.FechaParametroOrdenamiento = ordenarPor == "Fecha" ? "fecha_desc" : "Fecha";
             ViewBag.ApellidosParametroOrdenamiento =ordenarPor== "Apellidos" ? "apellidos_desc" : "Apellidos";
             var estudiantes = from e in db.Estudiantes
@@ -50,7 +50,7 @@ namespace SGA.Controllers
 
             }
 
-            return View(estudiantes.ToList());
+            return View(estudiantes.ToList());*/
         }
 
         // GET: Estudiantes/Details/5
@@ -150,7 +150,7 @@ namespace SGA.Controllers
             return View(estudiante);
         }
 
-        // POST: Estudiantes/Delete/5
+       /* // POST: Estudiantes/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(string id)
@@ -166,7 +166,7 @@ namespace SGA.Controllers
             }
 
             return RedirectToAction("Index");
-        }
+        }*/
 
         protected override void Dispose(bool disposing)
         {
