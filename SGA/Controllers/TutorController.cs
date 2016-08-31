@@ -17,7 +17,7 @@ namespace SGA.Controllers
         private SGAContext db = new SGAContext();
 
         // GET: Tutor
-        public ActionResult Index()
+        public ActionResult Index(string id)
         {
             var viewModel = new DatosIndexTutor();
 
