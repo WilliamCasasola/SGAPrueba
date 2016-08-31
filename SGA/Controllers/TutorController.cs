@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
 using SGA.ViewModels;
+using System.Data.Entity.Infrastructure;
 
 namespace SGA.Controllers
 {
@@ -17,7 +18,7 @@ namespace SGA.Controllers
         private SGAContext db = new SGAContext();
 
         // GET: Tutor
-        public ActionResult Index(string id)
+        public ActionResult Index(string Id, string cursoID)
         {
             var viewModel = new DatosIndexTutor();
 
@@ -26,18 +27,17 @@ namespace SGA.Controllers
                 .Include(t => t.Cursos.Select(c => c.Matriculas))
                 .Include(t => t.Cursos.Select(c => c.Matriculas.Select(m => m.Estudiante)))
                 .OrderBy(t => t.Nombre);
-            if (id != null)
+            if (Id != null)
             {
-                ViewBag.TutorID = id;
-                viewModel.Cursos = viewModel.Tutores.Where(i => i.TutorID == id).Single().Cursos;
+                ViewBag.TutorID = Id;
+                viewModel.Cursos = viewModel.Tutores.Where(i => i.Id == Id).Single().Cursos;
             }
             if (cursoID != null)
             {
                 ViewBag.CursoID = cursoID;//Otra forma
-                viewModel.Matriculas = viewModel.Cursos.Where(c => c.CursoID == cursoID).Single().Matriculas;
+                viewModel.Matriculas = viewModel.Cursos.Where(c => c.Id == cursoID).Single().Matriculas;
             }
             return View(viewModel);
-            return View(db.Tutores.ToList());
         }
 
         // GET: Tutor/Details/5
@@ -69,7 +69,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Tutor tutor)
+        public ActionResult Create(string[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Tutor tutor)
         {
             if (cursosSeleccionados != null)
             {
@@ -130,7 +130,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Tutor tutor)
+        public ActionResult Edit(string id,string[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Tutor tutor)
         {
             if (id == null)
             {
@@ -138,7 +138,7 @@ namespace SGA.Controllers
             }
             var tutorActualizar = db.Tutores
                .Include(i => i.Cursos)
-               .Where(i => i.TutorID == id)
+               .Where(i => i.Id == id)
                .Single();
 
             if (TryUpdateModel(tutorActualizar, "",
@@ -172,19 +172,19 @@ namespace SGA.Controllers
 
             var cursoSeleccionadosHS = new HashSet<string>(cursosSeleccionados);
             var cursosInstructor = new HashSet<string>
-                (tutorActualizar.Cursos.Select(c => c.CursoID));
+                (tutorActualizar.Cursos.Select(c => c.Id));
             foreach (var course in db.Cursos)
             {
-                if (cursoSeleccionadosHS.Contains(course.CursoID))
+                if (cursoSeleccionadosHS.Contains(course.Id))
                 {
-                    if (!cursosInstructor.Contains(course.CursoID))
+                    if (!cursosInstructor.Contains(course.Id))
                     {
                         tutorActualizar.Cursos.Add(course);
                     }
                 }
                 else
                 {
-                    if (cursosInstructor.Contains(course.CursoID))
+                    if (cursosInstructor.Contains(course.Id))
                     {
                         tutorActualizar.Cursos.Remove(course);
                     }
