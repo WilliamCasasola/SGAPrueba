@@ -17,7 +17,8 @@ namespace SGA.Models
     }
     public class Curso
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Display(Name ="Número de Curso")]
         public String Id { set; get; }
 
         [Required(ErrorMessage = "Fecha requerida")]
@@ -38,7 +39,7 @@ namespace SGA.Models
 
         [Required(ErrorMessage = "Estado requerido")]
         [Display(Name = "Estado")]
-        public bool Estado { set; get; }
+        public Estado Estado { set; get; }
 
         [Required(ErrorMessage = "Título requerido")]
         [Display(Name = "Título")]

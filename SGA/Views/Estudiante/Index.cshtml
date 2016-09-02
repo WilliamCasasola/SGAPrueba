@@ -12,34 +12,13 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Apellidos)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Clave)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Sexo)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Identificacion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Profecion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Institucion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Fotografia)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Estado)
+            @Html.DisplayNameFor(model => model.Id)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Nombre)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Pais)
+            @Html.DisplayNameFor(model => model.Apellidos)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Telefono)
@@ -48,13 +27,13 @@
             @Html.DisplayNameFor(model => model.Correo)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.CorreoAlternativo)
+            @Html.DisplayNameFor(model => model.FechaRegistro)
+        </th>
+   <th>
+            @Html.DisplayNameFor(model => model.Estado)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Direccion)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Fechacontratacion)
+            @Html.DisplayNameFor(model => model.GeneracionId)
         </th>
         <th></th>
     </tr>
@@ -62,34 +41,13 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Apellidos)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Clave)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Sexo)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Identificacion)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Profecion)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Institucion)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Fotografia)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Estado)
+            @Html.DisplayFor(modelItem => item.Id)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Nombre)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Pais)
+            @Html.DisplayFor(modelItem => item.Apellidos)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Telefono)
@@ -98,13 +56,13 @@
             @Html.DisplayFor(modelItem => item.Correo)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.CorreoAlternativo)
+            @Html.DisplayFor(modelItem => item.FechaRegistro)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Direccion)
+            @Html.DisplayFor(modelItem => item.Estado)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Fechacontratacion)
+            @Html.DisplayFor(modelItem => item.GeneracionId)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |

@@ -9,7 +9,7 @@ namespace SGA.ViewModels
     public class GrupoMatriculaDia
     {
         [DataType(DataType.Date)]
-        public DateTime? diaMatricula { set; get; }
-        public int contadorEstudiantes { set; get; }
+        public DateTime? DiaMatricula { set; get; }
+        public int ContadorEstudiantes { set; get; }
     }
 }

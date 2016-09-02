@@ -8,8 +8,7 @@ namespace SGA.Models
 {
     public class Titulo
     {
-        
-        [Display(Name ="Título")]
+        [Display(Name="Código")]
         public string Id { set; get; }
 
         [Required(ErrorMessage = "Nombre requerido")]

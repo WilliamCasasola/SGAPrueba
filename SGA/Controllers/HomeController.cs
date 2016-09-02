@@ -19,11 +19,11 @@ namespace SGA.Controllers
         public ActionResult About()
         {
              IQueryable<GrupoMatriculaDia> datos = from estudiante in db.Estudiantes
-                                                   group estudiante by estudiante.Fechacontratacion into grupoFecha
+                                                   group estudiante by estudiante.FechaRegistro into grupoFecha
                                                    select new GrupoMatriculaDia()
                                                    {
-                                                       diaMatricula = grupoFecha.Key,
-                                                       contadorEstudiantes = grupoFecha.Count()
+                                                       DiaMatricula = grupoFecha.Key,
+                                                       ContadorEstudiantes = grupoFecha.Count()
                                                    };
 
             return View(datos.ToList());

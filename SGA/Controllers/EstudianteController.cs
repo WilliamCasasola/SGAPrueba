@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
+using SGA.ViewModels;
+using System.IO;
 
 namespace SGA.Controllers
 {
@@ -16,40 +18,9 @@ namespace SGA.Controllers
         private SGAContext db = new SGAContext();
 
         // GET: Estudiante
-        public ActionResult Index(string ordenarPor, string buscado)
+        public ActionResult Index()
         {
-            ViewBag.NombreParametroOrdenamiento = String.IsNullOrEmpty(ordenarPor) ? "nombre_desc" : "Nombre";
-            ViewBag.FechaParametroOrdenamiento = ordenarPor == "Fecha" ? "fecha_desc" : "Fecha";
-            ViewBag.ApellidosParametroOrdenamiento = ordenarPor == "Apellidos" ? "apellidos_desc" : "Apellidos";
-            var estudiantes = from e in db.Estudiantes
-                              select e;
-            if (!String.IsNullOrEmpty(buscado))
-            {
-                estudiantes = estudiantes.Where(s => s.Apellidos.Contains(buscado) || s.Nombre.Contains(buscado));
-            }
-            switch (ordenarPor)
-            {
-                case "Nombre":
-                    estudiantes = estudiantes.OrderBy(s => s.Nombre);
-                    break;
-                case "nombre_desc":
-                    estudiantes = estudiantes.OrderByDescending(s => s.Nombre);
-                    break;
-                case "Fecha":
-                    estudiantes = estudiantes.OrderBy(s => s.Fechacontratacion);
-                    break;
-                case "fecha_desc":
-                    estudiantes = estudiantes.OrderByDescending(s => s.Fechacontratacion);
-                    break;
-                case "Apellidos":
-                    estudiantes = estudiantes.OrderBy(s => s.Apellidos);
-                    break;
-                case "apellidos_desc":
-                    estudiantes = estudiantes.OrderByDescending(s => s.Apellidos);
-                    break;
-
-            }
-
+            var estudiantes = db.Estudiantes.Include(e => e.Generacion);
             return View(estudiantes.ToList());
         }
 
@@ -68,9 +39,23 @@ namespace SGA.Controllers
             return View(estudiante);
         }
 
+
+        public List<SelectListItem> sexoLista
+        {
+            get
+            {
+                List<SelectListItem> sexoLista = new List<SelectListItem>();
+                sexoLista.Add(new SelectListItem { Text = "Masculino", Value = "1" });
+                sexoLista.Add(new SelectListItem { Text = "Femenino", Value = "0" });
+                return sexoLista;
+            }
+            private set { }
+        }
         // GET: Estudiante/Create
         public ActionResult Create()
         {
+            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id");
+            ViewBag.Sexo = new SelectList(sexoLista,"Value","Text");
             return View();
         }
 
@@ -79,16 +64,38 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Estudiante estudiante)
+        public ActionResult Create([Bind(Include = "Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,GeneracionId")] Estudiante estudiante)
         {
             if (ModelState.IsValid)
             {
-                db.Estudiantes.Add(estudiante);
+               
+                db.Estudiantes.Add(inicializarCodigo(estudiante));
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
+            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", estudiante.GeneracionId);
             return View(estudiante);
+        }
+
+        private Estudiante inicializarCodigo(Estudiante estudiante) {
+            string letra = "A";
+            string a = DateTime.Now.Year.ToString().Substring(2);//En el 2100 se debe de cambiar a 3 para que coja los últimos 3 dígitos
+            int cantidadEst = 0;
+            if (DateTime.Now.Month < 7)
+                cantidadEst = db.Estudiantes.Where(e => e.FechaRegistro.Year == DateTime.Now.Year && e.FechaRegistro.Month < 7).Count();
+            else
+            {
+                cantidadEst = db.Estudiantes.Where(e => e.FechaRegistro.Year == DateTime.Now.Year && e.FechaRegistro.Month >= 7).Count();
+                letra = "B";
+            }
+            int cantidaNum = cantidadEst==0? 0 : (int)Math.Floor(Math.Log10(cantidadEst) + 1);//Por que logarítmo de 0 es infinito
+
+            string ceros = cantidaNum==0 ? new String('0', 3) : new String('0',4-cantidaNum);//Aquí crea la cantidad de ceros a la izquierda, con log de 10 saca la cantidad de números a la derecha
+            
+            estudiante.Id = String.Concat(a, String.Concat(letra, String.Concat(ceros, cantidadEst)));
+            estudiante.FechaRegistro = DateTime.Now;
+            return estudiante;
         }
 
         // GET: Estudiante/Edit/5
@@ -103,6 +110,7 @@ namespace SGA.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Foto", estudiante.GeneracionId);
             return View(estudiante);
         }
 
@@ -111,7 +119,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Estudiante estudiante)
+        public ActionResult Edit([Bind(Include = "Id,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,GeneracionId")] Estudiante estudiante)
         {
             if (ModelState.IsValid)
             {
@@ -119,6 +127,7 @@ namespace SGA.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Foto", estudiante.GeneracionId);
             return View(estudiante);
         }
 
@@ -158,184 +167,3 @@ namespace SGA.Controllers
         }
     }
 }
-/*using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Mvc;
-using SGA.DAL;
-using SGA.Models;
-
-namespace SGA.Controllers
-{
-    public class EstudiantesController : Controller
-    {
-        private SGAContext db = new SGAContext();
-
-        // GET: Estudiantes
-        public ActionResult Index(string ordenarPor, string buscado)
-        {
-           /* ViewBag.NombreParametroOrdenamiento = String.IsNullOrEmpty(ordenarPor) ? "nombre_desc" : "Nombre";
-            ViewBag.FechaParametroOrdenamiento = ordenarPor == "Fecha" ? "fecha_desc" : "Fecha";
-            ViewBag.ApellidosParametroOrdenamiento =ordenarPor== "Apellidos" ? "apellidos_desc" : "Apellidos";
-            var estudiantes = from e in db.Estudiantes
-                              select e;
-            if (!String.IsNullOrEmpty(buscado))
-            {
-                estudiantes = estudiantes.Where(s => s.apellidos.Contains(buscado) || s.nombre.Contains(buscado));
-            }
-            switch (ordenarPor)
-            {
-                case "Nombre":
-                    estudiantes = estudiantes.OrderBy(s => s.nombre);
-                    break;
-                case "nombre_desc":
-                    estudiantes = estudiantes.OrderByDescending(s => s.nombre);
-                    break;
-                case "Fecha":
-                    estudiantes = estudiantes.OrderBy(s => s.diaMatricula);
-                    break;
-                case "fecha_desc":
-                    estudiantes = estudiantes.OrderByDescending(s => s.diaMatricula);
-                    break;
-                case "Apellidos":
-                    estudiantes = estudiantes.OrderBy(s => s.apellidos);
-                    break;
-                case "apellidos_desc":
-                    estudiantes = estudiantes.OrderByDescending(s => s.apellidos);
-                    break;
-
-            }
-
-            return View(estudiantes.ToList());
-        }
-
-        // GET: Estudiantes/Details/5
-        public ActionResult Details(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Estudiante estudiante = db.Estudiantes.Include(e=>e.matriculas.Select(m=>m.Curso.Titulo)).Single(e=>e.ID==id);
-            if (estudiante == null)
-            {
-                return HttpNotFound();
-            }
-            return View(estudiante);
-        }
-
-        // GET: Estudiantes/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Estudiantes/Create
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
-        // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,nombre,apellidos,diaMatricula")] Estudiante estudiante)
-        {
-            try {
-                if (ModelState.IsValid)
-                {
-                    db.Estudiantes.Add(estudiante);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-            }
-            catch (DataException dex) {
-                ModelState.AddModelError("", "No se pudo guardar, vuelva a insertar si el problema persiste consulte al administrador del sistema");
-            }
-            return View(estudiante);
-            }
-
-        // GET: Estudiantes/Edit/5
-        public ActionResult Edit(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Estudiante estudiante = db.Estudiantes.Find(id);
-            if (estudiante == null)
-            {
-                return HttpNotFound();
-            }
-            return View(estudiante);
-        }
-
-        // POST: Estudiantes/Edit/5
-        // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
-        // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost, ActionName("Edit")]
-        [ValidateAntiForgeryToken]
-        public ActionResult EditPost(string id)
-        {
-            if (id == null) {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var estudianteActualizar = db.Estudiantes.Find(id);
-            if(TryUpdateModel(estudianteActualizar,"",new string[] {"nombre", "apellidos", "diaMatricula" }))
-            if (ModelState.IsValid)
-            {
-                db.Entry(estudianteActualizar).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(estudianteActualizar);
-        }
-
-        // GET: Estudiantes/Delete/5
-        public ActionResult Delete(string id, bool? guardarCambioErrores=false)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            if (guardarCambioErrores.GetValueOrDefault())
-            {
-                ViewBag.ErrorMessage = "No se pudo borrar, vuelva a insertar si el problema persiste consulte al administrador del sistema";
-            }
-            Estudiante estudiante = db.Estudiantes.Find(id);
-            if (estudiante == null)
-            {
-                return HttpNotFound();
-            }
-            return View(estudiante);
-        }
-
-        // POST: Estudiantes/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(string id)
-        {
-            try {
-                Estudiante estudianteABorrar = new Estudiante() { ID = id };
-                db.Entry(estudianteABorrar).State = EntityState.Deleted;
-                db.SaveChanges();
-
-            } catch (DataException dex) {
-                return RedirectToAction("Delete", new { id = id, saveChangesError = true });
-
-            }
-
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-    }
-}
-*/

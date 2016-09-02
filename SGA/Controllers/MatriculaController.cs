@@ -23,7 +23,7 @@ namespace SGA.Controllers
         }
 
         // GET: Matricula/Details/5
-        public ActionResult Details(string id)
+        public ActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -41,7 +41,7 @@ namespace SGA.Controllers
         public ActionResult Create()
         {
             ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId");
-            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "Id", "Apellidos");
+            ViewBag.EstudianteID = new SelectList(db.Clientes, "Id", "Nombre");
             return View();
         }
 
@@ -50,22 +50,22 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,CursoID,EstudianteID,diaMatricula")] Matricula matricula)
+        public ActionResult Create([Bind(Include = "ID,CursoID,EstudianteID")] Matricula matricula)
         {
             if (ModelState.IsValid)
             {
-                db.Matriculas.Add(matricula);
+                db.Matriculas.Add(inicializar(matricula));
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
             ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);
-            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "Id", "Apellidos", matricula.EstudianteID);
+            ViewBag.EstudianteID = new SelectList(db.Clientes, "Id", "Nombre", matricula.EstudianteID);
             return View(matricula);
         }
 
         // GET: Matricula/Edit/5
-        public ActionResult Edit(string id)
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -77,16 +77,36 @@ namespace SGA.Controllers
                 return HttpNotFound();
             }
             ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);
-            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "Id", "Apellidos", matricula.EstudianteID);
+            ViewBag.EstudianteID = new SelectList(db.Clientes, "Id", "Nombre", matricula.EstudianteID);
             return View(matricula);
         }
+
+        private Matricula inicializar(Matricula matricula) {
+            int c = db.Cursos.Find(matricula.CursoID).CantidadEvaluaciones;
+            matricula.Calificaciones = new List<Nota>();
+            if (c == 1)
+            {
+                matricula.Calificaciones.Add(new Nota { Valor = 0, Tipo = "Trabajo Final" });
+            }
+            else
+            {
+                for (int i = 0; i < c; i++)
+                {
+                    matricula.Calificaciones.Add(new Nota { Valor = 0, Tipo = "Tarea" });
+                }
+                matricula.Calificaciones.Add(new Nota { Valor = 0, Tipo = "Nota Final" });
+            }
+            matricula.DiaMatricula = DateTime.Now;
+            return matricula;
+        }
+
 
         // POST: Matricula/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,CursoID,EstudianteID,diaMatricula")] Matricula matricula)
+        public ActionResult Edit([Bind(Include = "ID,CursoID,EstudianteID,DiaMatricula")] Matricula matricula)
         {
             if (ModelState.IsValid)
             {
@@ -95,12 +115,12 @@ namespace SGA.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);
-            ViewBag.EstudianteID = new SelectList(db.Estudiantes, "Id", "Apellidos", matricula.EstudianteID);
+            ViewBag.EstudianteID = new SelectList(db.Clientes, "Id", "Nombre", matricula.EstudianteID);
             return View(matricula);
         }
 
         // GET: Matricula/Delete/5
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int? id)
         {
             if (id == null)
             {
@@ -117,7 +137,7 @@ namespace SGA.Controllers
         // POST: Matricula/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
+        public ActionResult DeleteConfirmed(int id)
         {
             Matricula matricula = db.Matriculas.Find(id);
             db.Matriculas.Remove(matricula);

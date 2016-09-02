@@ -47,10 +47,11 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Cliente cliente)
+        public ActionResult Create([Bind(Include = "Id,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Cliente cliente)
         {
             if (ModelState.IsValid)
             {
+                cliente.FechaRegistro = DateTime.Now;
                 db.Clientes.Add(cliente);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -79,7 +80,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Cliente cliente)
+        public ActionResult Edit([Bind(Include = "Id,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Cliente cliente)
         {
             if (ModelState.IsValid)
             {

@@ -69,7 +69,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Tutor tutor)
+        public ActionResult Create(string[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Tutor tutor)
         {
             if (cursosSeleccionados != null)
             {
@@ -83,6 +83,7 @@ namespace SGA.Controllers
             }
             if (ModelState.IsValid)
             {
+                tutor.FechaRegistro = DateTime.Now;
                 db.Tutores.Add(tutor);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -130,7 +131,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id,string[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profecion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Fechacontratacion")] Tutor tutor)
+        public ActionResult Edit(string id,string[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Tutor tutor)
         {
             if (id == null)
             {
@@ -142,7 +143,7 @@ namespace SGA.Controllers
                .Single();
 
             if (TryUpdateModel(tutorActualizar, "",
-               new string[] { "nombre", "apellidos", "Fechacontratacion" }))
+               new string[] { "nombre", "apellidos" }))
             {
                 try
                 {

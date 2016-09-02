@@ -45,8 +45,8 @@ namespace SGA.Models
 
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        [Display(Name = "Fecha Contratación")]
-        public DateTime Fechacontratacion { get; set; }
+        [Display(Name = "Fecha Registro")]
+        public DateTime FechaRegistro { get; set; }
 
     }
 }

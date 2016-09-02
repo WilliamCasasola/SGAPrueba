@@ -212,6 +212,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AsignarCursoTutor.cs" />
     <Compile Include="ViewModels\DatosIndexTutor.cs" />
+    <Compile Include="ViewModels\Foto.cs" />
     <Compile Include="ViewModels\GrupoMatriculaDia.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -269,11 +270,6 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\Estudiantes\Create.cshtml" />
-    <Content Include="Views\Estudiantes\Delete.cshtml" />
-    <Content Include="Views\Estudiantes\Details.cshtml" />
-    <Content Include="Views\Estudiantes\Edit.cshtml" />
-    <Content Include="Views\Estudiantes\Index.cshtml" />
     <Content Include="Views\Curso\Create.cshtml" />
     <Content Include="Views\Curso\Delete.cshtml" />
     <Content Include="Views\Curso\Details.cshtml" />
@@ -304,11 +300,6 @@
     <Content Include="Views\Cliente\Details.cshtml" />
     <Content Include="Views\Cliente\Edit.cshtml" />
     <Content Include="Views\Cliente\Index.cshtml" />
-    <Content Include="Views\Estudiante\Create.cshtml" />
-    <Content Include="Views\Estudiante\Delete.cshtml" />
-    <Content Include="Views\Estudiante\Details.cshtml" />
-    <Content Include="Views\Estudiante\Edit.cshtml" />
-    <Content Include="Views\Estudiante\Index.cshtml" />
     <Content Include="Views\EstudianteParaFactura\Create.cshtml" />
     <Content Include="Views\EstudianteParaFactura\Delete.cshtml" />
     <Content Include="Views\EstudianteParaFactura\Details.cshtml" />
@@ -324,6 +315,11 @@
     <Content Include="Views\Generacion\Details.cshtml" />
     <Content Include="Views\Generacion\Edit.cshtml" />
     <Content Include="Views\Generacion\Index.cshtml" />
+    <Content Include="Views\Estudiante\Create.cshtml" />
+    <Content Include="Views\Estudiante\Delete.cshtml" />
+    <Content Include="Views\Estudiante\Details.cshtml" />
+    <Content Include="Views\Estudiante\Edit.cshtml" />
+    <Content Include="Views\Estudiante\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
