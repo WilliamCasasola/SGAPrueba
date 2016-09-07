@@ -18,8 +18,7 @@ namespace SGA.Models
     public class Curso
     {
         //[DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Display(Name ="Número de Curso")]
-        public String Id { set; get; }
+        public int Id { set; get; }
 
         [Required(ErrorMessage = "Fecha requerida")]
         [Display(Name = "Fecha de Inicio")]

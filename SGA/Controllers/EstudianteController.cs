@@ -40,22 +40,10 @@ namespace SGA.Controllers
         }
 
 
-        public List<SelectListItem> sexoLista
-        {
-            get
-            {
-                List<SelectListItem> sexoLista = new List<SelectListItem>();
-                sexoLista.Add(new SelectListItem { Text = "Masculino", Value = "1" });
-                sexoLista.Add(new SelectListItem { Text = "Femenino", Value = "0" });
-                return sexoLista;
-            }
-            private set { }
-        }
         // GET: Estudiante/Create
         public ActionResult Create()
         {
             ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id");
-            ViewBag.Sexo = new SelectList(sexoLista,"Value","Text");
             return View();
         }
 

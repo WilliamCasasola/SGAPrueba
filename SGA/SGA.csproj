@@ -211,6 +211,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AsignarCursoTutor.cs" />
+    <Compile Include="ViewModels\CursoNota.cs" />
     <Compile Include="ViewModels\DatosIndexTutor.cs" />
     <Compile Include="ViewModels\Foto.cs" />
     <Compile Include="ViewModels\GrupoMatriculaDia.cs" />

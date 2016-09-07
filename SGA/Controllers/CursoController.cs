@@ -23,13 +23,14 @@ namespace SGA.Controllers
         }
 
         // GET: Curso/Details/5
-        public ActionResult Details(string id)
+        public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Curso curso = db.Cursos.Find(id);
+            Curso curso = db.Cursos.Include(c => c.Generacion)
+                 .Include(c => c.Titulo).Single(c => id == c.Id);
             if (curso == null)
             {
                 return HttpNotFound();
@@ -50,7 +51,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,FechaInicio,FechaFinal,CantidadEvaluaciones,Estado,TituloId,GeneracionId")] Curso curso)
+        public ActionResult Create([Bind(Include = "FechaInicio,FechaFinal,CantidadEvaluaciones,Estado,TituloId,GeneracionId")] Curso curso)
         {
             if (ModelState.IsValid)
             {
@@ -59,13 +60,13 @@ namespace SGA.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Foto", curso.GeneracionId);
+            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", curso.GeneracionId);
             ViewBag.TituloId = new SelectList(db.Titulos, "Id", "Nombre", curso.TituloId);
             return View(curso);
         }
 
         // GET: Curso/Edit/5
-        public ActionResult Edit(string id)
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -76,7 +77,7 @@ namespace SGA.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Foto", curso.GeneracionId);
+            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", curso.GeneracionId);
             ViewBag.TituloId = new SelectList(db.Titulos, "Id", "Nombre", curso.TituloId);
             return View(curso);
         }
@@ -100,13 +101,14 @@ namespace SGA.Controllers
         }
 
         // GET: Curso/Delete/5
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Curso curso = db.Cursos.Find(id);
+            Curso curso = db.Cursos.Include(c =>  c.Generacion)
+                .Include(c=>c.Titulo).Single(c => id == c.Id);
             if (curso == null)
             {
                 return HttpNotFound();
@@ -117,7 +119,7 @@ namespace SGA.Controllers
         // POST: Curso/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
+        public ActionResult DeleteConfirmed(int id)
         {
             Curso curso = db.Cursos.Find(id);
             db.Cursos.Remove(curso);

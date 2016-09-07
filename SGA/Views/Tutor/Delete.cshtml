@@ -12,11 +12,27 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.Apellidos)
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.Apellidos)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Identificacion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Identificacion)
         </dd>
 
         <dt>
@@ -36,19 +52,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Identificacion)
+            @Html.DisplayNameFor(model => model.Profesion)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Identificacion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Profecion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Profecion)
+            @Html.DisplayFor(model => model.Profesion)
         </dd>
 
         <dt>
@@ -65,22 +73,6 @@
 
         <dd>
             @Html.DisplayFor(model => model.Fotografia)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Nombre)
         </dd>
 
         <dt>
@@ -124,11 +116,18 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Fechacontratacion)
+            @Html.DisplayNameFor(model => model.FechaRegistro)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Fechacontratacion)
+            @Html.DisplayFor(model => model.FechaRegistro)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Estado)
         </dd>
 
     </dl>

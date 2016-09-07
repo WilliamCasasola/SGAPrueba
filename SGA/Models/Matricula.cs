@@ -10,16 +10,18 @@ namespace SGA.Models
         public int Id { set; get; }
         public double Valor { set; get; }
         public string Tipo { set; get; }
+        public int MatriculaId { set; get; }
+        public virtual Matricula Matricula { set; get; }
     }
     
     public class Matricula
     {
         public int ID { set; get; }
-        public String CursoID { set; get; }
+        public int CursoID { set; get; }
         public String EstudianteID { set; get; }
 
 //[DisplayFormat(NullDisplayText="Sin calificar")]
-        public ICollection<Nota> Calificaciones { set; get; }
+        public virtual ICollection<Nota> Calificaciones { set; get; }
 
 
         [DataType(DataType.Date)]

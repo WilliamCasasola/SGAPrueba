@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
+using SGA.ViewModels;
 
 namespace SGA.Controllers
 {
@@ -18,8 +19,12 @@ namespace SGA.Controllers
         // GET: Matricula
         public ActionResult Index()
         {
-            var matriculas = db.Matriculas.Include(m => m.Curso).Include(m => m.Estudiante);
-            return View(matriculas.ToList());
+            CursoNota curosNota = new CursoNota();
+            curosNota.Matriculas=  db.Matriculas
+                .Include(m => m.Curso.Titulo)
+                .Include(m => m.Estudiante).ToList();
+            curosNota.Notas=db.Matriculas.Select(m => m.Calificaciones.Select(c => c.Valor).Sum() / m.Curso.CantidadEvaluaciones).ToList();
+            return View(curosNota);
         }
 
         // GET: Matricula/Details/5
@@ -71,7 +76,7 @@ namespace SGA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Matricula matricula = db.Matriculas.Find(id);
+            Matricula matricula = db.Matriculas.Include(m=>m.Calificaciones).Where(m=>m.ID==id).Single();
             if (matricula == null)
             {
                 return HttpNotFound();
@@ -94,7 +99,6 @@ namespace SGA.Controllers
                 {
                     matricula.Calificaciones.Add(new Nota { Valor = 0, Tipo = "Tarea" });
                 }
-                matricula.Calificaciones.Add(new Nota { Valor = 0, Tipo = "Nota Final" });
             }
             matricula.DiaMatricula = DateTime.Now;
             return matricula;
@@ -106,10 +110,11 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,CursoID,EstudianteID,DiaMatricula")] Matricula matricula)
+        public ActionResult Edit([Bind(Include = "ID,CursoID,EstudianteID,DiaMatricula")] Matricula matricula, List<Nota> Calificaciones)
         {
             if (ModelState.IsValid)
             {
+                db.Entry(Calificaciones).State = EntityState.Modified;
                 db.Entry(matricula).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

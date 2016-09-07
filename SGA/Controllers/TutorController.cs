@@ -18,7 +18,7 @@ namespace SGA.Controllers
         private SGAContext db = new SGAContext();
 
         // GET: Tutor
-        public ActionResult Index(string Id, string cursoID)
+        public ActionResult Index(string Id, int? cursoID)
         {
             var viewModel = new DatosIndexTutor();
 
@@ -111,7 +111,7 @@ namespace SGA.Controllers
         private void populateCursoAsignadoTutor(Tutor tutor)
         {
             var todosLosCursos = db.Cursos.Include(c => c.Titulo);
-            var cursosTutor = new HashSet<string>(tutor.Cursos.Select(c => c.Id));
+            var cursosTutor = new HashSet<int>(tutor.Cursos.Select(c => c.Id));
             var viewModel = new List<AsignarCursoTutor>();
             foreach (var curso in todosLosCursos)
             {
@@ -131,7 +131,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id,string[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Tutor tutor)
+        public ActionResult Edit(string id,int[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Tutor tutor)
         {
             if (id == null)
             {
@@ -163,7 +163,7 @@ namespace SGA.Controllers
             return View(tutorActualizar);
         }
 
-        private void ActualizarCursosInstructor(string[] cursosSeleccionados, Tutor tutorActualizar)
+        private void ActualizarCursosInstructor(int[] cursosSeleccionados, Tutor tutorActualizar)
         {
             if (cursosSeleccionados == null)
             {
@@ -171,8 +171,8 @@ namespace SGA.Controllers
                 return;
             }
 
-            var cursoSeleccionadosHS = new HashSet<string>(cursosSeleccionados);
-            var cursosInstructor = new HashSet<string>
+            var cursoSeleccionadosHS = new HashSet<int>(cursosSeleccionados);
+            var cursosInstructor = new HashSet<int>
                 (tutorActualizar.Cursos.Select(c => c.Id));
             foreach (var course in db.Cursos)
             {

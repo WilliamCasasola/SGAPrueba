@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SGA.Models.Matricula>
+﻿@model SGA.ViewModels.CursoNota
 
 @{
     ViewBag.Title = "Index";
@@ -12,34 +12,49 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Curso.TituloId)
+           Código
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Estudiante.Nombre)
+           Curso
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DiaMatricula)
+           Nombre
+        </th>
+        <th>
+           Fecha Matricula
+        </th>
+        <th>
+           Nota
+
         </th>
         <th></th>
     </tr>
-
-@foreach (var item in Model) {
-    <tr>
+   
+    @foreach (var item in Model.Matriculas.Zip(Model.Notas, (a,b) => new {matricula = a, nota = b}))
+    {
+        <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Curso.TituloId)
+            @Html.DisplayFor(modelItem => item.matricula.Curso.TituloId)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Estudiante.Nombre)
+            @Html.DisplayFor(modelItem => item.matricula.Curso.Titulo.Nombre)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.DiaMatricula)
+            @Html.DisplayFor(modelItem => item.matricula.Estudiante.Nombre)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+            @Html.DisplayFor(modelItem => item.matricula.DiaMatricula)
+        </td>
+        <td>
+           @Html.DisplayFor(modelItem => item.nota)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.matricula.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.matricula.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.matricula.ID })
         </td>
     </tr>
-}
+    }
+     
 
 </table>
