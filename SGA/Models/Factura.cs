@@ -17,7 +17,7 @@ namespace SGA.Models
         [Required(ErrorMessage = "Fecha requerida")]
         [Display(Name = "Fecha")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { set; get; }
 
         [Required(ErrorMessage = "Cliente requerido")]

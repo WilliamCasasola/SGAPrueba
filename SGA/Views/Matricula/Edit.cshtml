@@ -49,20 +49,24 @@
                     @foreach (var item in Model.Calificaciones)
                     {
                         <th>
-                            @Html.Label(item.Tipo)
-                        </th>
+                            @Html.TextBox("tipos", item.Tipo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(modelItem => item.Tipo, "", new { @class = "text-danger" })                        </th>
                     }
                 </tr>
                <tr>
                     @foreach (var item in Model.Calificaciones)
                     {
-                        <td>
-                            @Html.EditorFor(modelItem=>item.Valor,"Calificaciones", new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(modelItem => item.Valor, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => item.Id)
+
+                       <td>
+                           @Html.TextBox("valores",item.Valor, new { htmlAttributes = new { @class = "form-control" } })
+                           @Html.ValidationMessageFor(modelItem => item.Valor, "", new { @class = "text-danger" })
+                      
                         </td>
                     }
                 </tr>
             </table>
+            
 
         </div>
         

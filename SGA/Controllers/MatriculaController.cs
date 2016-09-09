@@ -15,6 +15,7 @@ namespace SGA.Controllers
     public class MatriculaController : Controller
     {
         private SGAContext db = new SGAContext();
+        private static ICollection<Nota> notas;
 
         // GET: Matricula
         public ActionResult Index()
@@ -76,7 +77,9 @@ namespace SGA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Matricula matricula = db.Matriculas.Include(m=>m.Calificaciones).Where(m=>m.ID==id).Single();
+            notas = matricula.Calificaciones;
             if (matricula == null)
             {
                 return HttpNotFound();
@@ -97,26 +100,34 @@ namespace SGA.Controllers
             {
                 for (int i = 0; i < c; i++)
                 {
-                    matricula.Calificaciones.Add(new Nota { Valor = 0, Tipo = "Tarea" });
+                    matricula.Calificaciones.Add(new Nota { Valor = 0, Tipo = "Tarea "+i+1 });
                 }
             }
             matricula.DiaMatricula = DateTime.Now;
             return matricula;
         }
 
-
         // POST: Matricula/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,CursoID,EstudianteID,DiaMatricula")] Matricula matricula, List<Nota> Calificaciones)
+        public ActionResult Edit([Bind(Include = "ID,CursoID,EstudianteID,DiaMatricula")] Matricula matricula,  string[] valores, string[] tipos)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(Calificaciones).State = EntityState.Modified;
                 db.Entry(matricula).State = EntityState.Modified;
                 db.SaveChanges();
+                Dispose(true);
+                db = new SGAContext();
+                foreach (var item in notas.Select((nota,i)=>new {Indice=i, Nota=nota })) {
+                    item.Nota.Tipo = tipos[item.Indice];
+                    item.Nota.Valor = Convert.ToDouble(valores[item.Indice]);
+                    db.Entry(item.Nota).State = EntityState.Modified;
+                    
+                }
+                db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
             ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);

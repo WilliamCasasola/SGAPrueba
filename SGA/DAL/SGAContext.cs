@@ -43,7 +43,9 @@ namespace SGA.DAL
         public System.Data.Entity.DbSet<SGA.Models.EstudianteParaFactura> EstudianteParaFacturas { get; set; }
 
         public System.Data.Entity.DbSet<SGA.Models.Factura> Facturas { get; set; }
+        public System.Data.Entity.DbSet<SGA.Models.Nota> Notas { get; set; }
+
     }
-   
+
 
 }
