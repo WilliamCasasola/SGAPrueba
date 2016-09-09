@@ -19,7 +19,8 @@ namespace SGA.Controllers
         public ActionResult Index()
         {
             var facturas = db.Facturas.Include(f => f.Cliente);
-            return View(facturas.ToList());
+            var fact = facturas.ToList();
+            return View(fact);
         }
 
         // GET: Factura/Details/5
