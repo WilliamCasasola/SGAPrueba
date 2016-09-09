@@ -18,7 +18,7 @@ namespace SGA.Controllers
         // GET: Cliente
         public ActionResult Index()
         {
-            return View(db.Clientes.ToList());
+            return View(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Cliente'").ToList());
         }
 
         // GET: Cliente/Details/5

@@ -10,6 +10,7 @@ using SGA.DAL;
 using SGA.Models;
 using SGA.ViewModels;
 using System.IO;
+using System.Globalization;
 
 namespace SGA.Controllers
 {
@@ -43,6 +44,7 @@ namespace SGA.Controllers
         // GET: Estudiante/Create
         public ActionResult Create()
         {
+            ViewBag.Paises = new SelectList(CultureInfo.GetCultures(CultureTypes.AllCultures));
             ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id");
             return View();
         }
