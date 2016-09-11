@@ -16,11 +16,17 @@
         <th>Correo</th>
         <th>Fecha Registro</th>
         <th>Activo</th>
+        <th>Cursos</th>
         <th></th>
     </tr>
 
-@foreach (var item in Model.Tutores) {
-    <tr>
+@foreach (var item in Model.Tutores)
+{
+    string filaSeleccionada = "";
+    if (item.Id == ViewBag.TutorID) {
+        filaSeleccionada = "success";
+    }
+    <tr class="@filaSeleccionada">
         <td>
             @Html.DisplayFor(modelItem => item.Id)
         </td>
@@ -42,8 +48,15 @@
         <td>
             @Html.DisplayFor(modelItem => item.Estado)
         </td>
-       
+       <td>
+           @{ 
+               foreach (var curso in item.Cursos) {
+                   @curso.GeneracionId @curso.Titulo.Nombre <br/>
+               }
+           }
+       </td>
         <td>
+            @Html.ActionLink("Seleccionar","Index",new {id=item.Id})
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |
             @Html.ActionLink("Delete", "Delete", new { id=item.Id })
@@ -52,3 +65,80 @@
 }
 
 </table>
+@if (Model.Cursos != null)
+{
+    <h3>Cursos impartidos por el instructor seleccionado</h3>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Generación</th>
+            <th>Title</th>
+            <th>Estado</th>
+        </tr>
+
+        @foreach (var item in Model.Cursos)
+        {
+            string selectedRow = "";
+            if (item.Id == ViewBag.CursoID)
+            {
+                selectedRow = "success";
+            }
+            <tr class="@selectedRow">
+                <td>
+                    @Html.ActionLink("Seleccionar", "Index", new { cursoID = item.Id })
+                </td>
+                <td>
+                    @item.GeneracionId
+                </td>
+                <td>
+                    @item.Titulo.Nombre
+                </td>
+                <td>
+                    @item.Estado
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+
+@if (Model.Matriculas != null)
+{
+    <h3>
+        Estudiantes matriculados en el curso seleccionado  </h3>
+    <table class="table">
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+           @for (var i = 0; i < Model.CantidadEvaluaciones; i++) {
+               <th>Tarea @(i+1)</th>
+           }
+            <th>Nota Final</th>
+        </tr>
+        @foreach (var item in Model.Matriculas)
+        {
+            <tr>
+                <td>
+                    @item.Estudiante.Id
+                </td>
+                <td>
+                    @item.Estudiante.Nombre
+                </td>
+                <td>
+                    @item.Estudiante.Apellidos
+                </td>
+                
+                    
+                    @foreach (var nota in item.Calificaciones)
+                    {
+                        <td>
+                    @Html.DisplayFor(modelNota => nota.Valor)
+                            </td>
+                    }
+               
+                <td>@(item.Calificaciones.Select(c => c.Valor).Sum() / Model.CantidadEvaluaciones) </td>
+            </tr>
+        }
+    </table>
+}

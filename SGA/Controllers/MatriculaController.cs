@@ -43,11 +43,16 @@ namespace SGA.Controllers
             return View(matricula);
         }
 
+        private void crearSelect(Matricula matricula) {
+            ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);
+            ViewBag.EstudianteID = new SelectList(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Estudiante'"), "Id", "Nombre", matricula.EstudianteID);
+        }
+
         // GET: Matricula/Create
         public ActionResult Create()
         {
             ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId");
-            ViewBag.EstudianteID = new SelectList(db.Clientes, "Id", "Nombre");
+            ViewBag.EstudianteID = new SelectList(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Estudiante'"), "Id", "Nombre");
             return View();
         }
 
@@ -65,8 +70,7 @@ namespace SGA.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);
-            ViewBag.EstudianteID = new SelectList(db.Clientes, "Id", "Nombre", matricula.EstudianteID);
+            crearSelect(matricula);
             return View(matricula);
         }
 
@@ -84,8 +88,7 @@ namespace SGA.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);
-            ViewBag.EstudianteID = new SelectList(db.Clientes, "Id", "Nombre", matricula.EstudianteID);
+            crearSelect(matricula);
             return View(matricula);
         }
 
@@ -100,7 +103,7 @@ namespace SGA.Controllers
             {
                 for (int i = 0; i < c; i++)
                 {
-                    matricula.Calificaciones.Add(new Nota { Valor = 0, Tipo = "Tarea "+i+1 });
+                    matricula.Calificaciones.Add(new Nota { Valor = 0, Tipo = "Tarea "+ (i+1) });
                 }
             }
             matricula.DiaMatricula = DateTime.Now;
@@ -130,8 +133,7 @@ namespace SGA.Controllers
 
                 return RedirectToAction("Index");
             }
-            ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId", matricula.CursoID);
-            ViewBag.EstudianteID = new SelectList(db.Clientes, "Id", "Nombre", matricula.EstudianteID);
+            crearSelect(matricula);
             return View(matricula);
         }
 

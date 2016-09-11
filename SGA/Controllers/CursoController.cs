@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
+using System.Data.Entity.Infrastructure;
 
 namespace SGA.Controllers
 {
@@ -41,8 +42,7 @@ namespace SGA.Controllers
         // GET: Curso/Create
         public ActionResult Create()
         {
-            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id");
-            ViewBag.TituloId = new SelectList(db.Titulos, "Id", "Nombre");
+            generarSelect();
             return View();
         }
 
@@ -77,29 +77,43 @@ namespace SGA.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", curso.GeneracionId);
-            ViewBag.TituloId = new SelectList(db.Titulos, "Id", "Nombre", curso.TituloId);
+            generarSelect(curso);
             return View(curso);
         }
 
+         
         // POST: Curso/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,FechaInicio,FechaFinal,CantidadEvaluaciones,Estado,TituloId,GeneracionId")] Curso curso)
+        public ActionResult EditPost(int? id)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(curso).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+            if (id == null) {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Foto", curso.GeneracionId);
-            ViewBag.TituloId = new SelectList(db.Titulos, "Id", "Nombre", curso.TituloId);
-            return View(curso);
+            var ActualizarCurso = db.Cursos.Find(id);
+            if (TryUpdateModel(ActualizarCurso, "", new String[] {
+                "FechaInicio,FechaFinal,CantidadEvaluaciones,Estado,TituloId,GeneracionId"}))
+            {
+                try
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (RetryLimitExceededException /*/dex*/)
+                {
+                    ModelState.AddModelError("", "No se pudo realizar la acción. Vulva a intentarlo, si el problema persiste contante al administrador del sistema");
+                }
+            }
+            generarSelect(ActualizarCurso);
+            return View(ActualizarCurso);
         }
 
+        private void generarSelect(Curso curso =null) {
+            ViewBag.GeneracionId = new SelectList(db.Generacions.OrderBy(g=>g.Id), "Id", "Id", curso.GeneracionId);
+            ViewBag.TituloId = new SelectList(db.Titulos.OrderBy(t=>t.Nombre), "Id", "Nombre", curso.TituloId);
+        }
         // GET: Curso/Delete/5
         public ActionResult Delete(int? id)
         {

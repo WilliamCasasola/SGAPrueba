@@ -24,8 +24,6 @@ namespace SGA.Controllers
 
             viewModel.Tutores = db.Tutores
                 .Include(t => t.Cursos.Select(c => c.Titulo))
-                .Include(t => t.Cursos.Select(c => c.Matriculas))
-                .Include(t => t.Cursos.Select(c => c.Matriculas.Select(m => m.Estudiante)))
                 .OrderBy(t => t.Nombre);
             if (Id != null)
             {
@@ -35,7 +33,8 @@ namespace SGA.Controllers
             if (cursoID != null)
             {
                 ViewBag.CursoID = cursoID;//Otra forma
-                viewModel.Matriculas = viewModel.Cursos.Where(c => c.Id == cursoID).Single().Matriculas;
+                viewModel.Matriculas = db.Matriculas.Include(m=>m.Estudiante).Include(m=>m.Calificaciones).Where(m => m.CursoID == cursoID);
+                viewModel.CantidadEvaluaciones = db.Cursos.Find(cursoID).CantidadEvaluaciones;
             }
             return View(viewModel);
         }
@@ -73,7 +72,7 @@ namespace SGA.Controllers
         {
             if (cursosSeleccionados != null)
             {
-                tutor.Cursos = new List<Curso>();
+                tutor.Cursos = new List<Curso>();//Para no inicializar aquí se puede inicializar en el modelo en el get y el set
                 foreach (var curso in cursosSeleccionados)
                 {
                     var incluircurso = db.Cursos.Find(curso);
@@ -131,7 +130,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id,int[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Tutor tutor)
+        public ActionResult Edit(string id,int[] cursosSeleccionados)
         {
             if (id == null)
             {
@@ -143,7 +142,7 @@ namespace SGA.Controllers
                .Single();
 
             if (TryUpdateModel(tutorActualizar, "",
-               new string[] { "nombre", "apellidos" }))
+               new string[] { "Id, Apellidos, Clave, Sexo, Identificacion, Profesion, Institucion, Fotografia, Estado, Nombre, Pais, Telefono, Correo, CorreoAlternativo, Direccion" }))
             {
                 try
                 {
@@ -174,20 +173,20 @@ namespace SGA.Controllers
             var cursoSeleccionadosHS = new HashSet<int>(cursosSeleccionados);
             var cursosInstructor = new HashSet<int>
                 (tutorActualizar.Cursos.Select(c => c.Id));
-            foreach (var course in db.Cursos)
+            foreach (var curso in db.Cursos)
             {
-                if (cursoSeleccionadosHS.Contains(course.Id))
+                if (cursoSeleccionadosHS.Contains(curso.Id))
                 {
-                    if (!cursosInstructor.Contains(course.Id))
+                    if (!cursosInstructor.Contains(curso.Id))
                     {
-                        tutorActualizar.Cursos.Add(course);
+                        tutorActualizar.Cursos.Add(curso);
                     }
                 }
                 else
                 {
-                    if (cursosInstructor.Contains(course.Id))
+                    if (cursosInstructor.Contains(curso.Id))
                     {
-                        tutorActualizar.Cursos.Remove(course);
+                        tutorActualizar.Cursos.Remove(curso);
                     }
                 }
             }

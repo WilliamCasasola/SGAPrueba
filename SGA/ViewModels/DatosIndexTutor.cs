@@ -11,5 +11,7 @@ namespace SGA.ViewModels
         public IEnumerable<Tutor> Tutores { get; set; }
         public IEnumerable<Curso> Cursos { get; set; }
         public IEnumerable<Matricula> Matriculas { get; set; }
+        public int CantidadEvaluaciones { get; set; }
     }
+
 }

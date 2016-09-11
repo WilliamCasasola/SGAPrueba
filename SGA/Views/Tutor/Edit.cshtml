@@ -135,6 +135,37 @@
             </div>
         </div>
 
+
+<div class="form-group">
+    Cursos
+    <div class="col-md-offset-2 col-md-10">
+        <table>
+            <tr>
+                @{
+                    int cnt = 0;
+                    List<SGA.ViewModels.AsignarCursoTutor> cursos = ViewBag.Cursos;
+
+                    foreach (var curso in cursos)
+                    {
+                        if (cnt++ % 3 == 0)
+                        {
+                            @:</tr><tr>
+                        }
+                        @:<td>
+                             <input type="checkbox"
+                                name="cursosSeleccionados"
+                                value="@curso.CursoID"
+                                @(Html.Raw(curso.Asignado ? "checked=\"checked\"" : "")) />
+                                @curso.CursoID @:  @curso.Titulo
+                        @:</td>
+                       }
+                       @:</tr>
+                        }
+            </table>
+        </div>
+    </div>
+
+
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Save" class="btn btn-default" />
