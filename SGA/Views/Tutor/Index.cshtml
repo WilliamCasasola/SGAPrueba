@@ -3,7 +3,7 @@
     ViewBag.Title = "Tutores";
 }
 
-<h2>Index</h2>
+<h2>Tutores</h2>
 
 <p>
     @Html.ActionLink("Crear Nuevo", "Create")
@@ -57,9 +57,9 @@
        </td>
         <td>
             @Html.ActionLink("Seleccionar","Index",new {id=item.Id})
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.ActionLink("Editar", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Detalles", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Deshabilitar", "Delete", new { id=item.Id })
         </td>
     </tr>
 }
@@ -70,10 +70,11 @@
     <h3>Cursos impartidos por el instructor seleccionado</h3>
     <table class="table">
         <tr>
-            <th></th>
             <th>Generación</th>
             <th>Title</th>
             <th>Estado</th>
+            <th></th>
+
         </tr>
 
         @foreach (var item in Model.Cursos)
@@ -85,9 +86,6 @@
             }
             <tr class="@selectedRow">
                 <td>
-                    @Html.ActionLink("Seleccionar", "Index", new { cursoID = item.Id })
-                </td>
-                <td>
                     @item.GeneracionId
                 </td>
                 <td>
@@ -95,6 +93,9 @@
                 </td>
                 <td>
                     @item.Estado
+                </td>
+                <td>
+                    @Html.ActionLink("Seleccionar", "Index", new { cursoID = item.Id })
                 </td>
             </tr>
         }
@@ -115,6 +116,8 @@
                <th>Tarea @(i+1)</th>
            }
             <th>Nota Final</th>
+            <th></th>
+
         </tr>
         @foreach (var item in Model.Matriculas)
         {
@@ -138,6 +141,9 @@
                     }
                
                 <td>@(item.Calificaciones.Select(c => c.Valor).Sum() / Model.CantidadEvaluaciones) </td>
+                <td>
+                    @Html.ActionLink("Editar", "Index", new { MatriculaId = item.ID })
+                </td>
             </tr>
         }
     </table>

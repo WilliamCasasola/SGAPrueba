@@ -1,13 +1,13 @@
 ﻿@model SGA.ViewModels.CursoNota
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Matriculas";
 }
 
-<h2>Index</h2>
+<h2>Matriculas</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Crear Nueva", "Create")
 </p>
 <table class="table">
     <tr>
@@ -49,9 +49,9 @@
            @Html.DisplayFor(modelItem => item.nota)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.matricula.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.matricula.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.matricula.ID })
+            @Html.ActionLink("Editar", "Edit", new { id = item.matricula.ID }) |
+            @Html.ActionLink("Detalles", "Details", new { id = item.matricula.ID }) |
+            @Html.ActionLink("Deshabilitar", "Delete", new { id = item.matricula.ID })
         </td>
     </tr>
     }

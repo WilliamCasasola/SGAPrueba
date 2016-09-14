@@ -18,7 +18,7 @@ namespace SGA.Controllers
         private SGAContext db = new SGAContext();
 
         // GET: Tutor
-        public ActionResult Index(string Id, int? cursoID)
+        public ActionResult Index(string Id, int? cursoID, int? MatriculaId)
         {
             var viewModel = new DatosIndexTutor();
 
@@ -36,6 +36,8 @@ namespace SGA.Controllers
                 viewModel.Matriculas = db.Matriculas.Include(m=>m.Estudiante).Include(m=>m.Calificaciones).Where(m => m.CursoID == cursoID);
                 viewModel.CantidadEvaluaciones = db.Cursos.Find(cursoID).CantidadEvaluaciones;
             }
+            if (MatriculaId != null)
+                return RedirectToAction("Edit", "Matricula",new { id = MatriculaId });
             return View(viewModel);
         }
 
@@ -124,6 +126,8 @@ namespace SGA.Controllers
                 viewModel.Add(act);
             }
             ViewBag.Cursos = viewModel;
+            ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
+
         }
         // POST: Tutor/Edit/5
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 

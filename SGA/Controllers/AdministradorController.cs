@@ -39,6 +39,7 @@ namespace SGA.Controllers
         // GET: Administrador/Create
         public ActionResult Create()
         {
+            ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
             return View();
         }
 
@@ -72,6 +73,8 @@ namespace SGA.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
+
             return View(administrador);
         }
 

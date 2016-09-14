@@ -177,6 +177,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdministradorController.cs" />
+    <Compile Include="Controllers\ClaseSelect.cs" />
     <Compile Include="Controllers\ClienteController.cs" />
     <Compile Include="Controllers\CursoController.cs" />
     <Compile Include="Controllers\EstudianteController.cs" />
