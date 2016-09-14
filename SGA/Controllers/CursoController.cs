@@ -42,7 +42,8 @@ namespace SGA.Controllers
         // GET: Curso/Create
         public ActionResult Create()
         {
-            generarSelect();
+            ViewBag.GeneracionId = new SelectList(db.Generacions.OrderBy(g => g.Id), "Id", "Id");
+            ViewBag.TituloId = new SelectList(db.Titulos.OrderBy(t => t.Nombre), "Id", "Nombre");
             return View();
         }
 
