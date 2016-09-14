@@ -38,8 +38,9 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Identificacion, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Identificacion, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Identificacion, "", new { @class = "text-danger" })
+                <input id="Identificacion" title="Seleccionar Identificación"
+                       type="file" name="Identificacion" />
+                @Html.ValidationMessageFor(m => m.Fotografia)
             </div>
         </div>
 
@@ -81,8 +82,9 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Fotografia, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Fotografia, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Fotografia, "", new { @class = "text-danger" })
+                <input id="Fotografia" title="Seleccionar Fotografía"
+                       type="file" name="Fotografia" />
+                @Html.ValidationMessageFor(m => m.Fotografia)
             </div>
         </div>
 

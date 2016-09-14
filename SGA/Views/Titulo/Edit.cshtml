@@ -28,8 +28,9 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Foto, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Foto, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Foto, "", new { @class = "text-danger" })
+                <input id="Fotografia" title="Seleccionar Fotografía"
+                       type="file" name="Fotografia" />
+                @Html.ValidationMessageFor(m => m.Foto)
             </div>
         </div>
 

@@ -44,7 +44,7 @@
             @Html.DisplayFor(modelItem => item.Apellidos)
         </td>
          <td>
-            @Html.DisplayFor(modelItem => item.Identificacion)
+             <img src="~/Imagenes/Documento/@Url.Content(item.Identificacion)" height="50" width="50" alt="No hay foto" />
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Telefono)
