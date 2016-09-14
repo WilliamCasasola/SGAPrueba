@@ -7,7 +7,7 @@
 <h2>Crear</h2>
 
 
-@using (Html.BeginForm(new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Create", "Estudiante", null, FormMethod.Post,new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     
@@ -119,10 +119,9 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Fotografia, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Fotografia, new { type = "file" })
-                @Html.ValidationMessageFor(m => m.Fotografia)
-                @Html.EditorFor(model => model.Fotografia, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Fotografia, "", new { @class = "text-danger" })
+                <input id="Fotografia" title="Seleccionar Fotografía"
+                       type="file" name="Fotografia" />
+                                @Html.ValidationMessageFor(m => m.Fotografia)
             </div>
         </div>
 

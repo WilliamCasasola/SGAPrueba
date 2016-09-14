@@ -119,6 +119,7 @@ namespace SGA.Controllers
                 AsignarCursoTutor act = new AsignarCursoTutor
                 {
                     CursoID = curso.Id,
+                    GeneracionId = curso.GeneracionId,
                     Titulo = curso.Titulo.Nombre,
                     Asignado = cursosTutor.Contains(curso.Id)
 

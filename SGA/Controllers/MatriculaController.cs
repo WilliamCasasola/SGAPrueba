@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
 using SGA.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace SGA.Controllers
 {
@@ -16,6 +17,8 @@ namespace SGA.Controllers
     {
         private SGAContext db = new SGAContext();
         private static ICollection<Nota> notas;
+        private static System.Uri antiguauri;
+        
 
         // GET: Matricula
         public ActionResult Index()
@@ -51,6 +54,7 @@ namespace SGA.Controllers
         // GET: Matricula/Create
         public ActionResult Create()
         {
+          
             ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId");
             ViewBag.EstudianteID = new SelectList(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Estudiante'"), "Id", "Nombre");
             return View();
@@ -81,6 +85,7 @@ namespace SGA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            antiguauri = System.Web.HttpContext.Current.Request.UrlReferrer;
 
             Matricula matricula = db.Matriculas.Include(m=>m.Calificaciones).Where(m=>m.ID==id).Single();
             notas = matricula.Calificaciones;
@@ -130,7 +135,8 @@ namespace SGA.Controllers
                     
                 }
                 db.SaveChanges();
-
+                if (new Regex("/Tutor/Index/.+$").IsMatch(antiguauri.AbsolutePath))
+                    return Redirect(antiguauri.AbsoluteUri);
                 return RedirectToAction("Index");
             }
             crearSelect(matricula);

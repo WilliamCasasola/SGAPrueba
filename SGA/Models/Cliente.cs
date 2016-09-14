@@ -12,14 +12,12 @@ namespace SGA.Models
 
         [Required(ErrorMessage = "Nombre Requerido")]
         [Display(Name = "Nombre")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$", ErrorMessage = "Los nombres solo pueden tener letras y la primera en mayúsucula.")]
         [StringLength(30, ErrorMessage = "Los nombres no pueden tener más de 30 carácteres..")]
         public string Nombre { set; get; }
 
 
         [Required(ErrorMessage = "País Requerido")]
         [Display(Name = "País")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$", ErrorMessage = "Los nombres de país solo pueden tener letras y la primera en mayúsucula.")]
         [StringLength(30, ErrorMessage = "Los nombres de país no pueden tener más de 30 carácteres..")]
         public string Pais { set; get; }
 

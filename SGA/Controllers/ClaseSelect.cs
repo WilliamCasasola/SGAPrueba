@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace SGA.Controllers
 {//En esta clase se crea el select de los paises
@@ -34,6 +36,17 @@ namespace SGA.Controllers
             //Assigning all Country names to IEnumerable
             IEnumerable<SelectListItem> nameAdded = countryNames.GroupBy(x => x.Text).Select(x => x.FirstOrDefault()).ToList<SelectListItem>().OrderBy(x => x.Text);
             return nameAdded;
+        }
+
+
+        public string guardarArchivo(string codigo ,HttpPostedFileBase archivo)
+        {
+            archivo.SaveAs(HttpContext.Current.Server.MapPath("~/Imagenes/Perfil/")
+                                                  + codigo + archivo.FileName);
+            return codigo + archivo.FileName;
+            //img.ImagePath = archivo.FileName;
+        
+       // db.Image.Add(img);
         }
     }
 }

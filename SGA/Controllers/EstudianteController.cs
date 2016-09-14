@@ -50,17 +50,21 @@ namespace SGA.Controllers
             return View();
         }
 
+        
+
         // POST: Estudiante/Create
         // Para protegerse de ataques de publicación excesiva, habilite las propiedades específicas a las que desea enlazarse. Para obtener 
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,GeneracionId")] Estudiante estudiante)
+        public ActionResult Create([Bind(Include = "Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Estado,GeneracionId")] Estudiante estudiante, HttpPostedFileBase Fotografia)
         {
+            estudiante = inicializarCodigo(estudiante);
+            estudiante.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Fotografia);
+
             if (ModelState.IsValid)
             {
-               
-                db.Estudiantes.Add(inicializarCodigo(estudiante));
+                db.Estudiantes.Add(estudiante);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
