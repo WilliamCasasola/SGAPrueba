@@ -47,8 +47,10 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Nombre,Foto,Precio")] Titulo titulo)
+        public ActionResult Create([Bind(Include = "Id,Nombre,Precio")] Titulo titulo, HttpPostedFileBase Foto)
         {
+            titulo.Foto = ClaseSelect.GetInstancia().guardarArchivo(titulo.Id, Foto, "~/Imagenes/Portada/");
+
             if (ModelState.IsValid)
             {
                 db.Titulos.Add(titulo);
@@ -79,8 +81,9 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Nombre,Foto,Precio")] Titulo titulo)
+        public ActionResult Edit([Bind(Include = "Id,Nombre,Precio")] Titulo titulo, HttpPostedFileBase Foto)
         {
+            titulo.Foto = ClaseSelect.GetInstancia().guardarArchivo(titulo.Id, Foto, "~/Imagenes/Portada/");
             if (ModelState.IsValid)
             {
                 db.Entry(titulo).State = EntityState.Modified;

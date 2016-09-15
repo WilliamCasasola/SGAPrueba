@@ -39,9 +39,13 @@ namespace SGA.Controllers
         }
 
 
-        public string guardarArchivo(string codigo ,HttpPostedFileBase archivo)
+        public string guardarArchivo(string codigo ,HttpPostedFileBase archivo, string ruta)
         {
-            archivo.SaveAs(HttpContext.Current.Server.MapPath("~/Imagenes/Perfil/")
+            if (archivo == null)
+            {
+                return "";
+            }
+            archivo.SaveAs(HttpContext.Current.Server.MapPath(ruta)
                                                   + codigo + archivo.FileName);
             return codigo + archivo.FileName;
             //img.ImagePath = archivo.FileName;

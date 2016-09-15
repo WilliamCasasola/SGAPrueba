@@ -57,10 +57,12 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Estado,GeneracionId")] Estudiante estudiante, HttpPostedFileBase Fotografia)
+        public ActionResult Create([Bind(Include = "Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Profesion,Institucion,Estado,GeneracionId")] Estudiante estudiante, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion )
         {
             estudiante = inicializarCodigo(estudiante);
-            estudiante.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Fotografia);
+            estudiante.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Fotografia, "~/Imagenes/Perfil/");
+            estudiante.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Identificacion, "~/Imagenes/Documento/");
+
 
             if (ModelState.IsValid)
             {
@@ -115,8 +117,10 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,GeneracionId")] Estudiante estudiante)
+        public ActionResult Edit([Bind(Include = "Id,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Profesion,Institucion,Estado,GeneracionId")] Estudiante estudiante, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion)
         {
+            estudiante.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Fotografia, "~/Imagenes/Perfil/");
+            estudiante.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Identificacion, "~/Imagenes/Documento/");
             if (ModelState.IsValid)
             {
                 db.Entry(estudiante).State = EntityState.Modified;

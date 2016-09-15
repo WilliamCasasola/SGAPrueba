@@ -47,8 +47,9 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Fecha,Foto")] Generacion generacion)
+        public ActionResult Create([Bind(Include = "Id,Fecha")] Generacion generacion,HttpPostedFileBase Foto)
         {
+            generacion.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacion.Id, Foto, "~/Imagenes/Portada/");
             if (ModelState.IsValid)
             {
                 db.Generacions.Add(generacion);
@@ -79,8 +80,9 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Fecha,Foto")] Generacion generacion)
+        public ActionResult Edit([Bind(Include = "Id,Fecha")] Generacion generacion, HttpPostedFileBase Foto)
         {
+            generacion.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacion.Id, Foto, "~/Imagenes/Portada/");
             if (ModelState.IsValid)
             {
                 db.Entry(generacion).State = EntityState.Modified;

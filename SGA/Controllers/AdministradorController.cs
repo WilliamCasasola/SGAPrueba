@@ -48,8 +48,10 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Administrador administrador)
+        public ActionResult Create([Bind(Include = "Id,Apellidos,Clave,Sexo,Profesion,Institucion,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Administrador administrador, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion)
         {
+            administrador.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Fotografia, "~/Imagenes/Perfil/");
+            administrador.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Identificacion, "~/Imagenes/Documento/");
             if (ModelState.IsValid)
             {
                 administrador.FechaRegistro = DateTime.Now;
@@ -83,8 +85,10 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Administrador administrador)
+        public ActionResult Edit([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Administrador administrador, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion)
         {
+            administrador.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Fotografia, "~/Imagenes/Perfil/");
+            administrador.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Identificacion, "~/Imagenes/Documento/");
             if (ModelState.IsValid)
             {
                 db.Entry(administrador).State = EntityState.Modified;

@@ -70,8 +70,10 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(int[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Tutor tutor)
+        public ActionResult Create(int[] cursosSeleccionados,[Bind(Include = "Id,Apellidos,Clave,Sexo,Profesion,Institucion,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Tutor tutor, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion)
         {
+            tutor.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(tutor.Id, Fotografia, "~/Imagenes/Perfil/");
+            tutor.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(tutor.Id, Identificacion, "~/Imagenes/Documento/");
             if (cursosSeleccionados != null)
             {
                 tutor.Cursos = new List<Curso>();//Para no inicializar aquí se puede inicializar en el modelo en el get y el set
@@ -135,7 +137,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id,int[] cursosSeleccionados)
+        public ActionResult Edit(string id,int[] cursosSeleccionados, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion)
         {
             if (id == null)
             {
@@ -145,7 +147,8 @@ namespace SGA.Controllers
                .Include(i => i.Cursos)
                .Where(i => i.Id == id)
                .Single();
-
+            tutorActualizar.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(tutorActualizar.Id, Fotografia, "~/Imagenes/Perfil/");
+            tutorActualizar.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(tutorActualizar.Id, Identificacion, "~/Imagenes/Documento/");
             if (TryUpdateModel(tutorActualizar, "",
                new string[] { "Id, Apellidos, Clave, Sexo, Identificacion, Profesion, Institucion, Fotografia, Estado, Nombre, Pais, Telefono, Correo, CorreoAlternativo, Direccion" }))
             {
