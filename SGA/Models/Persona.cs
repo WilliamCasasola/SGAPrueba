@@ -20,7 +20,7 @@ namespace SGA.Models
 
         public bool Sexo { set; get; }
 
-        [Display(Name = "Ruta de Identifiación")]
+        [Display(Name = "Documento Oficial(Pasaporte)")]
         public string Identificacion { set; get; }
 
         [Display(Name = "Profesión")]
@@ -30,7 +30,7 @@ namespace SGA.Models
         [StringLength(60, ErrorMessage = "El texto no puede tener más de 60 caracteres..")]
         public string Institucion { set; get; }
 
-        [Display(Name = "Ruta de Foto")]
+        [Display(Name = "Foto")]
         public string Fotografia { set; get; }
 
         [Display(Name ="Activo")]
