@@ -85,10 +85,18 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Administrador administrador, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion)
+        public ActionResult Edit([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Administrador administrador, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
         {
-            administrador.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Fotografia, "~/Imagenes/Perfil/");
-            administrador.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Identificacion, "~/Imagenes/Documento/");
+            if (!FotoActual.Equals("noperfil.jpg") && Fotografia == null)
+                administrador.Fotografia = FotoActual;
+            else
+                administrador.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Fotografia, "~/Imagenes/Perfil/");
+
+
+            if (!IdentificacionActual.Equals("nodocumento.png") && Identificacion == null)
+                administrador.Identificacion = IdentificacionActual;
+            else
+                administrador.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Identificacion, "~/Imagenes/Documento/");
             if (ModelState.IsValid)
             {
                 db.Entry(administrador).State = EntityState.Modified;

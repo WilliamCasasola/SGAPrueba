@@ -43,8 +43,13 @@ namespace SGA.Controllers
         {
             if (archivo == null)
             {
-                return "";
+                if (ruta.Equals("~/Imagenes/Perfil/"))
+                    return "noperfil.jpg";
+                else
+                    return "nodocumento.png";
             }
+            if (archivo.FileName.Equals("noperfil.jpg") || archivo.FileName.Equals("nodocumento.png"))
+                return archivo.FileName;
             archivo.SaveAs(HttpContext.Current.Server.MapPath(ruta)
                                                   + codigo + archivo.FileName);
             return codigo + archivo.FileName;
