@@ -151,6 +151,7 @@ namespace SGA.Controllers
                     }
                 }
             }
+            ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
             ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Foto", estudiante.GeneracionId);
             return View(estudiante);
         }
