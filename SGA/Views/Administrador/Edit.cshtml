@@ -84,8 +84,8 @@
                 @Html.ValidationMessageFor(model => model.Institucion, "", new { @class = "text-danger" })
             </div>
         </div>
-        @Html.Hidden("FotoActual", Model.Fotografia);
 
+        @Html.Hidden("FotoActual", Model.Fotografia);
         <div class="form-group">
             <div class="col-md-10">
                 <img src="~/Imagenes/Perfil/@Url.Content(Model.Fotografia)"  height="50" width="50" alt="No hay foto" />

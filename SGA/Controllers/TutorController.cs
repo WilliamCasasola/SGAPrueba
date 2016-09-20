@@ -137,8 +137,9 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id,int[] cursosSeleccionados, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion)
+        public ActionResult Edit(string id,int[] cursosSeleccionados, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
         {
+            
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -147,8 +148,17 @@ namespace SGA.Controllers
                .Include(i => i.Cursos)
                .Where(i => i.Id == id)
                .Single();
-            tutorActualizar.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(tutorActualizar.Id, Fotografia, "~/Imagenes/Perfil/");
-            tutorActualizar.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(tutorActualizar.Id, Identificacion, "~/Imagenes/Documento/");
+
+            if (!FotoActual.Equals("noperfil.jpg") && Fotografia == null)
+                tutorActualizar.Fotografia = FotoActual;
+            else
+                tutorActualizar.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(tutorActualizar.Id, Fotografia, "~/Imagenes/Perfil/");
+
+
+            if (!IdentificacionActual.Equals("nodocumento.png") && Identificacion == null)
+                tutorActualizar.Identificacion = IdentificacionActual;
+            else
+                tutorActualizar.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(tutorActualizar.Id, Identificacion, "~/Imagenes/Documento/");
             if (TryUpdateModel(tutorActualizar, "",
                new string[] { "Id, Apellidos, Clave, Sexo, Identificacion, Profesion, Institucion, Fotografia, Estado, Nombre, Pais, Telefono, Correo, CorreoAlternativo, Direccion" }))
             {

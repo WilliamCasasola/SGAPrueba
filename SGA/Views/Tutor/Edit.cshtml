@@ -7,7 +7,7 @@
 <h2>Editar</h2>
 
 
-@using (Html.BeginForm("Editar", "Tutor", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Edit", "Tutor", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     
@@ -30,6 +30,13 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Apellidos, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Apellidos, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @Html.Hidden("IdentificacionActual", Model.Identificacion);
+        <div class="form-group">
+            <div class="col-md-10">
+                <img src="~/Imagenes/Documento/@Url.Content(Model.Identificacion)" height="50" width="50" alt="No hay foto" />
             </div>
         </div>
 
@@ -75,6 +82,13 @@
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Institucion, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Institucion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @Html.Hidden("FotoActual", Model.Fotografia);
+        <div class="form-group">
+            <div class="col-md-10">
+                <img src="~/Imagenes/Perfil/@Url.Content(Model.Fotografia)" height="50" width="50" alt="No hay foto" />
             </div>
         </div>
 

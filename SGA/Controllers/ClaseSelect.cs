@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI.WebControls;
@@ -50,6 +51,12 @@ namespace SGA.Controllers
             }
             if (archivo.FileName.Equals("noperfil.jpg") || archivo.FileName.Equals("nodocumento.png"))
                 return archivo.FileName;
+
+            if (!Regex.IsMatch(archivo.FileName, @"(?i).*\.(gif|jpe?g|png|bmp)$") && archivo.ContentLength <= 5000000)
+                return "algo.doc";
+            if(archivo.ContentLength > 5000000)
+                return "algooooooooooooooooooooooooooooooooooooooooo";
+
             archivo.SaveAs(HttpContext.Current.Server.MapPath(ruta)
                                                   + codigo + archivo.FileName);
             return codigo + archivo.FileName;

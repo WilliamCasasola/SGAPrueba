@@ -22,7 +22,8 @@ namespace SGA.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { set; get; }
 
-        [Display(Name = "Ruta de Foto")]
+        [RegularExpression(@"(?i).*\.(gif|jpe?g|png|bmp)$", ErrorMessage = "Seleccione un archivo (png,jpg,jpeg).")]
+        [Display(Name = "Foto")]
         public string Foto { set; get; }
 
         public virtual ICollection<Curso> Cursos { set; get; }

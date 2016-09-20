@@ -11,6 +11,8 @@ using SGA.Models;
 using SGA.ViewModels;
 using System.IO;
 using System.Globalization;
+using System.Data.Entity.Validation;
+using System.Diagnostics;
 
 namespace SGA.Controllers
 {
@@ -108,7 +110,7 @@ namespace SGA.Controllers
                 return HttpNotFound();
             }
             ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
-            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Foto", estudiante.GeneracionId);
+            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", estudiante.GeneracionId);
             return View(estudiante);
         }
 
@@ -117,15 +119,37 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Profesion,Institucion,Estado,GeneracionId")] Estudiante estudiante, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion)
+        public ActionResult Edit([Bind(Include = "Id,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Profesion,Institucion,Estado,GeneracionId")] Estudiante estudiante, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
         {
-            estudiante.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Fotografia, "~/Imagenes/Perfil/");
-            estudiante.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Identificacion, "~/Imagenes/Documento/");
+            if (!FotoActual.Equals("noperfil.jpg") && Fotografia == null)
+                estudiante.Fotografia = FotoActual;
+            else
+                estudiante.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Fotografia, "~/Imagenes/Perfil/");
+
+
+            if (!IdentificacionActual.Equals("nodocumento.png") && Identificacion == null)
+                estudiante.Identificacion = IdentificacionActual;
+            else
+                estudiante.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Identificacion, "~/Imagenes/Documento/");
             if (ModelState.IsValid)
             {
-                db.Entry(estudiante).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Entry(estudiante).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+
+                }
+                catch (DbEntityValidationException dbEx)
+                {
+                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    {
+                        foreach (var validationError in validationErrors.ValidationErrors)
+                        {
+                            Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                        }
+                    }
+                }
             }
             ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Foto", estudiante.GeneracionId);
             return View(estudiante);
