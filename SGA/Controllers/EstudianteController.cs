@@ -13,6 +13,7 @@ using System.IO;
 using System.Globalization;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
+using System.Data.Entity.Infrastructure;
 
 namespace SGA.Controllers
 {
@@ -119,41 +120,42 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Clave,Sexo,Profesion,Institucion,Estado,GeneracionId")] Estudiante estudiante, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
+        public ActionResult Edit(string id, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
         {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var estudianteActualizar = db.Estudiantes.Single(a => a.Id == id);
+
             if (!FotoActual.Equals("noperfil.jpg") && Fotografia == null)
-                estudiante.Fotografia = FotoActual;
+                estudianteActualizar.Fotografia = FotoActual;
             else
-                estudiante.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Fotografia, "~/Imagenes/Perfil/");
+                estudianteActualizar.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(estudianteActualizar.Id, Fotografia, "~/Imagenes/Perfil/");
 
 
             if (!IdentificacionActual.Equals("nodocumento.png") && Identificacion == null)
-                estudiante.Identificacion = IdentificacionActual;
+                estudianteActualizar.Identificacion = IdentificacionActual;
             else
-                estudiante.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(estudiante.Id, Identificacion, "~/Imagenes/Documento/");
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    db.Entry(estudiante).State = EntityState.Modified;
+                estudianteActualizar.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(estudianteActualizar.Id, Identificacion, "~/Imagenes/Documento/");
+
+            if (TryUpdateModel(estudianteActualizar, "",
+                new string[] { "Nombre,Pais,Identificacion,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Fotografia,Clave,Sexo,Profesion,Institucion,Estado,GeneracionId" })){
+                        try
+                    {
                     db.SaveChanges();
                     return RedirectToAction("Index");
 
-                }
-                catch (DbEntityValidationException dbEx)
-                {
-                    foreach (var validationErrors in dbEx.EntityValidationErrors)
+                    }
+                    catch (RetryLimitExceededException dex)
                     {
-                        foreach (var validationError in validationErrors.ValidationErrors)
-                        {
-                            Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
-                        }
+                        //Log the error (uncomment dex variable name and add a line here to write a log.
+                        ModelState.AddModelError("", "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.");
                     }
                 }
-            }
-            ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
-            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Foto", estudiante.GeneracionId);
-            return View(estudiante);
+                ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
+            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", estudianteActualizar.GeneracionId);
+            return View(estudianteActualizar);
         }
 
         // GET: Estudiante/Delete/5

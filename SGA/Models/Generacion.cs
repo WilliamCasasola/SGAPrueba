@@ -22,8 +22,9 @@ namespace SGA.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Fecha { set; get; }
 
-        [RegularExpression(@"(?i).*\.(gif|jpe?g|png|bmp)$", ErrorMessage = "Seleccione un archivo (png,jpg,jpeg).")]
-        [Display(Name = "Foto")]
+        [Display(Name = "Imágen")]
+        [RegularExpression(@"(?i).*\.(jpe?g|png)$", ErrorMessage = "Seleccione un archivo (png,jpg,jpeg).")]
+        [StringLength(250, ErrorMessage = "El tamaño de la imágen es muy grande")]
         public string Foto { set; get; }
 
         public virtual ICollection<Curso> Cursos { set; get; }

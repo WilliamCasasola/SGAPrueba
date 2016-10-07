@@ -35,19 +35,15 @@
         </div>
 
         @Html.Hidden("IdentificacionActual", Model.Identificacion);
-        <div class="form-group">
-            <div class="col-md-10">
-                <img src="~/Imagenes/Documento/@Url.Content(Model.Identificacion)" height="50" width="50" alt="No hay foto" />
-            </div>
-        </div>
-
 
         <div class="form-group">
             @Html.LabelFor(model => model.Identificacion, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
+                <img src="~/Imagenes/Documento/@Url.Content(Model.Identificacion)" height="50" width="50" alt="No hay foto" />
                 <input id="Identificacion" title="Seleccionar Identificación"
                        type="file" name="Identificacion" />
-                @Html.ValidationMessageFor(m => m.Fotografia)
+                @Html.ValidationMessageFor(m => m.Identificacion, "", new { @class = "text-danger" })
+                @Html.Label(" 5MB Máximo", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -132,22 +128,22 @@
             </div>
         </div>
 
+
         @Html.Hidden("FotoActual", Model.Fotografia);
-        <div class="form-group">
-            <div class="col-md-10">
-                <img src="~/Imagenes/Perfil/@Url.Content(Model.Fotografia)" height="50" width="50" alt="No hay foto" />
-            </div>
-        </div>
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.Fotografia, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
+                <img src="~/Imagenes/Perfil/@Url.Content(Model.Fotografia)" height="50" width="50" alt="No hay foto" />
                 <input id="Fotografia" title="Seleccionar Fotografía"
                        type="file" name="Fotografia" />
-                @Html.ValidationMessageFor(m => m.Fotografia)
+                @Html.ValidationMessageFor(m => m.Fotografia, "", new { @class = "text-danger" })
+                @Html.Label(" 5MB Máximo", new { @class = "text-danger" })
             </div>
         </div>
 
+       
         <div class="form-group">
             @Html.LabelFor(model => model.GeneracionId, "GeneracionId", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">

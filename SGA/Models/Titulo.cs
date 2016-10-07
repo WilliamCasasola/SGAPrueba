@@ -17,8 +17,9 @@ namespace SGA.Models
         [StringLength(50, ErrorMessage = "Los nombres no pueden tener más de 50 carácteres..")]
         public string Nombre { set; get; }
 
-        [RegularExpression(@"(?i).*\.(gif|jpe?g|png|bmp)$", ErrorMessage = "Seleccione un archivo (png,jpg,jpeg).")]
-        [Display(Name = "Foto")]
+        [Display(Name = "Imágen")]
+        [RegularExpression(@"(?i).*\.(jpe?g|png)$", ErrorMessage = "Seleccione un archivo (png,jpg,jpeg).")]
+        [StringLength(250, ErrorMessage = "El tamaño de la imágen es muy grande")]
         public string Foto { set; get; }
 
         [Required(ErrorMessage = "Precio requerido")]

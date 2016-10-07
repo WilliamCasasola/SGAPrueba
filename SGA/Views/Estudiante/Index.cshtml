@@ -18,7 +18,7 @@
             @Html.DisplayNameFor(model => model.Nombre)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Apellidos)
+            @Html.DisplayNameFor(model => model.Identificacion)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Telefono)
@@ -47,7 +47,8 @@
             @Html.DisplayFor(modelItem => item.Nombre)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Apellidos)
+            <img src="~/Imagenes/Documento/@Url.Content(item.Identificacion)" height="50" width="50" alt="No hay foto" />
+
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Telefono)
@@ -67,6 +68,7 @@
         <td>
             @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
             @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
+            @Html.ActionLink("Matricular","Create" ,"Matricula",new { Estudianteid = item.Id },null) |
             @Html.ActionLink("Deshabilitar", "Delete", new { id = item.Id })
         </td>
     </tr>

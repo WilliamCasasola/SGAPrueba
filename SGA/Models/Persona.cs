@@ -22,7 +22,7 @@ namespace SGA.Models
 
         [Display(Name = "Documento Oficial(Pasaporte)")]
         [RegularExpression(@"(?i).*\.(gif|jpe?g|png|bmp)$", ErrorMessage = "Seleccione un archivo (png,jpg,jpeg).")]
-        [StringLength(20, ErrorMessage = "El tamaño de la imágen es muy grande")]
+        [StringLength(250, ErrorMessage = "El tamaño de la imágen es muy grande")]
         public string Identificacion { set; get; }
 
         [Display(Name = "Profesión")]
@@ -34,7 +34,7 @@ namespace SGA.Models
 
         [Display(Name = "Foto")]
         [RegularExpression(@"(?i).*\.(jpe?g|png)$", ErrorMessage = "Seleccione un archivo (png,jpg,jpeg).")]
-        [StringLength(20, ErrorMessage = "El tamaño de la imágen es muy grande")]
+        [StringLength(250, ErrorMessage = "El tamaño de la imágen es muy grande")]
         public string Fotografia { set; get; }
 
         [Display(Name ="Activo")]

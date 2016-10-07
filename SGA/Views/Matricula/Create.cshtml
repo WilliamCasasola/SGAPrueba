@@ -1,4 +1,4 @@
-﻿@model SGA.Models.Matricula
+﻿@model SGA.ViewModels.CursoNota
 
 @{
     ViewBag.Title = "Crear";
@@ -16,18 +16,16 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            @Html.LabelFor(model => model.CursoID, "CursoID", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label( "Curso: ", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("CursoID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.CursoID, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.EstudianteID, "EstudianteID", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.Label("Estudiante: ", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("EstudianteID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.EstudianteID, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -38,6 +36,58 @@
         </div>
     </div>
 }
+
+
+<h3>Matriculas Realizadas</h3>
+<table class="table">
+    <tr>
+        <th>
+            Código
+        </th>
+        <th>
+            Curso
+        </th>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Fecha Matricula
+        </th>
+        <th>
+            Nota
+
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Matriculas.Zip(Model.Notas, (a, b) => new { matricula = a, nota = b }))
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.matricula.Curso.TituloId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.matricula.Curso.Titulo.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.matricula.Estudiante.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.matricula.DiaMatricula)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nota)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id = item.matricula.ID }) |
+                @Html.ActionLink("Detalles", "Details", new { id = item.matricula.ID }) |
+                @Html.ActionLink("Deshabilitar", "Delete", new { id = item.matricula.ID })
+            </td>
+        </tr>
+    }
+
+
+</table>
 
 <div>
     @Html.ActionLink("Volver Atrás", null, null, null, new { href = Request.UrlReferrer })

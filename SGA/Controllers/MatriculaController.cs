@@ -52,12 +52,29 @@ namespace SGA.Controllers
         }
 
         // GET: Matricula/Create
-        public ActionResult Create()
+        public ActionResult Create(string Estudianteid)
         {
-          
-            ViewBag.CursoID = new SelectList(db.Cursos, "Id", "TituloId");
-            ViewBag.EstudianteID = new SelectList(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Estudiante'"), "Id", "Nombre");
-            return View();
+            DateTime d = DateTime.Today;
+            d = d.AddMonths(-2);
+            ViewBag.CursoID = new SelectList(db.Cursos.Where(c=>c.FechaFinal>d), "Id", "TituloId");
+
+            if (Estudianteid != null)
+            {
+                ViewBag.EstudianteID = new SelectList(db.Estudiantes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Estudiante'"), "Id", "Nombre", Estudianteid);
+                CursoNota curosNota = new CursoNota();
+                curosNota.Matriculas = db.Matriculas
+                    .Include(m => m.Curso.Titulo)
+                    .Include(m => m.Estudiante).Where(m => m.EstudianteID == Estudianteid).ToList();
+                curosNota.Notas = db.Matriculas.Where(m => m.EstudianteID == Estudianteid).Select(m => m.Calificaciones.Select(c => c.Valor).Sum() / m.Curso.CantidadEvaluaciones).ToList();
+                return View(curosNota);
+            }
+            else {
+                ViewBag.EstudianteID = new SelectList(db.Estudiantes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Estudiante'"), "Id", "Nombre");
+                return View();
+            }
+
+
+
         }
 
         // POST: Matricula/Create
@@ -66,7 +83,7 @@ namespace SGA.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,CursoID,EstudianteID")] Matricula matricula)
-        {
+        {//No dejar que se matricule en el mismo curso 2 veces
             if (ModelState.IsValid)
             {
                 db.Matriculas.Add(inicializar(matricula));

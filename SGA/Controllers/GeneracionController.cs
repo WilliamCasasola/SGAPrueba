@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
+using System.Data.Entity.Infrastructure;
 
 namespace SGA.Controllers
 {
@@ -80,16 +81,35 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Fecha")] Generacion generacion, HttpPostedFileBase Foto)
+        public ActionResult Edit(string id, HttpPostedFileBase Foto, string FotoActual)
         {
-            generacion.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacion.Id, Foto, "~/Imagenes/Portada/");
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                db.Entry(generacion).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return View(generacion);
+
+            var generacionActualizar = db.Generacions.Single(g => g.Id == id);
+
+            if (!FotoActual.Equals("noPortada.jpg.png") && Foto == null)
+                generacionActualizar.Foto = FotoActual;
+            else
+            generacionActualizar.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacionActualizar.Id, Foto, "~/Imagenes/Portada/");
+
+            if (TryUpdateModel(generacionActualizar,"",
+                new string[] { "Id,Fecha,Foto" }))
+            {
+                try
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (RetryLimitExceededException dex)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.
+                    ModelState.AddModelError("", "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.");
+                }
+            }
+            return View(generacionActualizar);
         }
 
         // GET: Generacion/Delete/5

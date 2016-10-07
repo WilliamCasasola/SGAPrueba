@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
+using System.Data.Entity.Infrastructure;
 
 namespace SGA.Controllers
 {
@@ -81,16 +82,35 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Nombre,Precio")] Titulo titulo, HttpPostedFileBase Foto)
+        public ActionResult Edit(string id, HttpPostedFileBase Foto, string FotoActual)
         {
-            titulo.Foto = ClaseSelect.GetInstancia().guardarArchivo(titulo.Id, Foto, "~/Imagenes/Portada/");
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                db.Entry(titulo).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return View(titulo);
+
+            var tituloActualizar = db.Titulos.Single(t => t.Id == id);
+
+            if (!FotoActual.Equals("noPortada.jpg") && Foto == null)
+                tituloActualizar.Foto = FotoActual;
+            else
+                tituloActualizar.Foto = ClaseSelect.GetInstancia().guardarArchivo(tituloActualizar.Id, Foto, "~/Imagenes/Portada/");
+
+            if (TryUpdateModel(tituloActualizar, "",
+                new string[] { "Nombre,Precio,Foto" }))
+            {
+                try
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (RetryLimitExceededException dex)
+                {
+                    //Log the error (uncomment dex variable name and add a line here to write a log.
+                    ModelState.AddModelError("", "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.");
+                }
+            }
+            return View(tituloActualizar);
         }
 
         // GET: Titulo/Delete/5

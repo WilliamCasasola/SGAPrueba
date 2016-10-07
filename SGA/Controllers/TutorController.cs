@@ -113,7 +113,9 @@ namespace SGA.Controllers
         }
         private void populateCursoAsignadoTutor(Tutor tutor)
         {
-            var todosLosCursos = db.Cursos.Include(c => c.Titulo);
+            DateTime d = DateTime.Today;
+            d = d.AddMonths(-2);
+            var todosLosCursos = db.Cursos.Include(c => c.Titulo).Where(c => c.FechaFinal > d);
             var cursosTutor = new HashSet<int>(tutor.Cursos.Select(c => c.Id));
             var viewModel = new List<AsignarCursoTutor>();
             foreach (var curso in todosLosCursos)
@@ -160,7 +162,7 @@ namespace SGA.Controllers
             else
                 tutorActualizar.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(tutorActualizar.Id, Identificacion, "~/Imagenes/Documento/");
             if (TryUpdateModel(tutorActualizar, "",
-               new string[] { "Id, Apellidos, Clave, Sexo, Identificacion, Profesion, Institucion, Fotografia, Estado, Nombre, Pais, Telefono, Correo, CorreoAlternativo, Direccion" }))
+               new string[] { "Apellidos, Clave, Sexo, Identificacion, Profesion, Institucion, Fotografia, Estado, Nombre, Pais, Telefono, Correo, CorreoAlternativo, Direccion" }))
             {
                 try
                 {

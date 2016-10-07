@@ -25,14 +25,20 @@
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Foto, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <input id="Foto" title="Seleccionar Fotografía"
-                       type="file" name="Foto" />
-                @Html.ValidationMessageFor(m => m.Foto)
-            </div>
+       @Html.Hidden("FotoActual", Model.Foto);
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Foto, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <img src="~/Imagenes/Portada/@Url.Content(Model.Foto)" height="50" width="50" alt="No hay imágen" />
+            <input id="Foto" title="Seleccionar Imágen"
+                   type="file" name="Foto" />
+            @Html.ValidationMessageFor(m => m.Foto, "", new { @class = "text-danger" })
+            @Html.Label(" 5MB Máximo", new { @class = "text-danger" })
         </div>
+    </div>
+
 
         <div class="form-group">
             @Html.LabelFor(model => model.Precio, htmlAttributes: new { @class = "control-label col-md-2" })

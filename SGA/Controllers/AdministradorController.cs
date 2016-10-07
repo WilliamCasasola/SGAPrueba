@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
+using System.Data.Entity.Infrastructure;
 
 namespace SGA.Controllers
 {
@@ -85,27 +86,43 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Administrador administrador, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
-        {
-            if (!FotoActual.Equals("noperfil.jpg") && Fotografia == null)
-                administrador.Fotografia = FotoActual;
-            else
-                administrador.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Fotografia, "~/Imagenes/Perfil/");
+        public ActionResult Edit(string id, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual) {
+
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                var administradorActualizar = db.Administradors.Single(a => a.Id == id);
+                if (!FotoActual.Equals("noperfil.jpg") && Fotografia == null)
+                    administradorActualizar.Fotografia = FotoActual;
+                else
+                    administradorActualizar.Fotografia = ClaseSelect.GetInstancia().guardarArchivo(administradorActualizar.Id, Fotografia, "~/Imagenes/Perfil/");
 
 
-            if (!IdentificacionActual.Equals("nodocumento.png") && Identificacion == null)
-                administrador.Identificacion = IdentificacionActual;
-            else
-                administrador.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Identificacion, "~/Imagenes/Documento/");
-            if (ModelState.IsValid)
-            {
-                db.Entry(administrador).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (!IdentificacionActual.Equals("nodocumento.png") && Identificacion == null)
+                    administradorActualizar.Identificacion = IdentificacionActual;
+                else
+                    administradorActualizar.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(administradorActualizar.Id, Identificacion, "~/Imagenes/Documento/");
+
+                if (TryUpdateModel(administradorActualizar, "",
+                    new string[] { "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion" }))
+                {
+                    try
+                    {
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
+                    }
+                    catch (RetryLimitExceededException dex)
+                    {
+                        //Log the error (uncomment dex variable name and add a line here to write a log.
+                        ModelState.AddModelError("", "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.");
+                    }
+                }
+            ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
+            return View(administradorActualizar);
             }
-
-            return View(administrador);
-        }
+            
+        
 
         // GET: Administrador/Delete/5
         public ActionResult Delete(string id)
