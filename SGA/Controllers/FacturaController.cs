@@ -39,9 +39,13 @@ namespace SGA.Controllers
         }
 
         // GET: Factura/Create
-        public ActionResult Create()
+        public ActionResult Create(string Clienteid)
         {
-            ViewBag.ClienteId = new SelectList(db.Clientes, "Id", "Nombre");
+            if (Clienteid != null) 
+                ViewBag.ClienteId = new SelectList(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Cliente'"), "Id", "Nombre", Clienteid);
+            else
+                ViewBag.ClienteId = new SelectList(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Cliente'"), "Id", "Nombre");
+
             return View();
         }
 

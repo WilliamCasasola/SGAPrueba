@@ -33,6 +33,7 @@ namespace SGA.Models
         public DateTime FechaFinal { set; get; }
 
         [Required(ErrorMessage = "Cantidad requerida")]
+        [Range(0, int.MaxValue, ErrorMessage = "Solo números positivos")]
         [Display(Name = "Cantidad de Evaluaciones")]
         public int CantidadEvaluaciones { set; get; }
 

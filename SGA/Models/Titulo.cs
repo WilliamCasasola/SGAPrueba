@@ -27,5 +27,6 @@ namespace SGA.Models
         public double Precio { set; get; }
 
         public virtual ICollection<Curso> cursos { set; get; }
+        public virtual ICollection<EstudianteParaFactura> estudiantesPagados { set; get; }
     }
 }

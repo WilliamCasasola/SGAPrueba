@@ -46,7 +46,10 @@
             @Html.DisplayFor(modelItem => item.FechaRegistro)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Estado)
+            
+                @if (item.Estado) { <p>Si</p> }
+                else { <p>No</p> }
+
         </td>
        <td>
            @{ 

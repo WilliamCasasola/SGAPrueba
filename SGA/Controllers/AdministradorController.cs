@@ -34,6 +34,8 @@ namespace SGA.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.sexo = administrador.Sexo ? "Masculino" : "Femenino";
+            ViewBag.activo = administrador.Estado ? "Si" : "No";
             return View(administrador);
         }
 

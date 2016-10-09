@@ -23,6 +23,7 @@ namespace SGA.Models
 
 
         [Required(ErrorMessage = "Teléfono Requerido")]
+        [StringLength(30, MinimumLength = 7, ErrorMessage = "Cantidad incorrecta de números")]
         [Display(Name = "Teléfono")]
         public string Telefono { set; get; }
 

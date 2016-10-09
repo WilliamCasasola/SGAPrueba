@@ -60,7 +60,10 @@
             @Html.DisplayFor(modelItem => item.FechaRegistro)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Estado)
+                    @if (item.Estado)
+                        { <p>Si</p> }
+                    else
+                    { <p>No</p> }        
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.GeneracionId)
@@ -68,7 +71,7 @@
         <td>
             @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
             @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
-            @Html.ActionLink("Matricular","Create" ,"Matricula",new { Estudianteid = item.Id },null) |
+            @Html.ActionLink("Matriculas","Create" ,"Matricula",new { Estudianteid = item.Id },null) |
             @Html.ActionLink("Deshabilitar", "Delete", new { id = item.Id })
         </td>
     </tr>

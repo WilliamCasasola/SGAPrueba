@@ -41,6 +41,8 @@ namespace SGA.Controllers
         public ActionResult Create()
         {
             ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Apellidos");
+            ViewBag.TituloId = new SelectList(db.Titulos, "Id", "Id"+" " +"Nombre");
+
             return View();
         }
 

@@ -53,6 +53,8 @@ namespace SGA.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.sexo = tutor.Sexo ? "Masculino" : "Femenino";
+            ViewBag.activo = tutor.Estado ? "Si" : "No";
             return View(tutor);
         }
 
@@ -126,7 +128,7 @@ namespace SGA.Controllers
                     GeneracionId = curso.GeneracionId,
                     Titulo = curso.Titulo.Nombre,
                     Asignado = cursosTutor.Contains(curso.Id)
-
+                
                 };
                 viewModel.Add(act);
             }
