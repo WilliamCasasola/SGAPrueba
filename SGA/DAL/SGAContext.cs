@@ -21,6 +21,8 @@ namespace SGA.DAL
         public DbSet<Curso> Cursos { set; get; }
         public DbSet<Titulo> Titulos { set; get; }
         public DbSet<Tutor> Tutores { set; get; }
+        //public DbSet<EstudianteParaFactura> etudiantesFactura { set; get; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

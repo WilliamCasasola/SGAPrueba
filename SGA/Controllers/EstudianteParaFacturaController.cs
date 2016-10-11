@@ -8,12 +8,16 @@ using System.Web;
 using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
+using SGA.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace SGA.Controllers
 {
     public class EstudianteParaFacturaController : Controller
     {
         private SGAContext db = new SGAContext();
+        private static System.Uri antiguauri;
+        private static Factura factura;
 
         // GET: EstudianteParaFactura
         public ActionResult Index()
@@ -38,11 +42,14 @@ namespace SGA.Controllers
         }
 
         // GET: EstudianteParaFactura/Create
-        public ActionResult Create()
+        public ActionResult Create(string Fecha)
         {
-            ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Apellidos");
-            ViewBag.TituloId = new SelectList(db.Titulos, "Id", "Id"+" " +"Nombre");
+            antiguauri = System.Web.HttpContext.Current.Request.UrlReferrer;
 
+            var estudianteFactura = new EstudianteParaFactura();
+            estudianteFactura.Titulos = new List<Titulo>();
+            ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Apellidos");
+            populateTituloAsignadoEstudiante(estudianteFactura);
             return View();
         }
 
@@ -51,15 +58,27 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,EstudianteId")] EstudianteParaFactura estudianteParaFactura)
+        public ActionResult Create([Bind(Include = "Id,EstudianteId")] EstudianteParaFactura estudianteParaFactura, string[] titulosSeleccionados)
         {
+
+            estudianteParaFactura.Titulos = new List<Titulo>();
+            foreach (var titulo in titulosSeleccionados) {
+                estudianteParaFactura.Titulos.Add(db.Titulos.Find(titulo));
+            }
             if (ModelState.IsValid)
             {
-                db.EstudianteParaFacturas.Add(estudianteParaFactura);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+                if (!new Regex("/Factura/Create.+$").IsMatch(antiguauri.AbsolutePath)) {
 
+                    db.EstudianteParaFacturas.Add(estudianteParaFactura);
+                    db.SaveChanges();
+                    db.Entry(estudianteParaFactura).GetDatabaseValues();
+                    //return RedirectToAction(,, estudianteParaFactura.Id);
+                    return Redirect(antiguauri.AbsoluteUri);
+                }
+                else
+                    RedirectToAction("Index", "Factura");
+            }
+            populateTituloAsignadoEstudiante(estudianteParaFactura);
             ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Apellidos", estudianteParaFactura.EstudianteId);
             return View(estudianteParaFactura);
         }
@@ -131,5 +150,28 @@ namespace SGA.Controllers
             }
             base.Dispose(disposing);
         }
+        private void populateTituloAsignadoEstudiante(EstudianteParaFactura estudiante)
+        {
+            var todosLosTitulos = db.Titulos;
+            var TitulosEstudiantes = new HashSet<string>(estudiante.Titulos.Select(c => c.Id));
+            var viewModel = new List<AsignarTituloEstudiante>();
+            foreach (var titulo in todosLosTitulos)
+            {
+                AsignarTituloEstudiante act = new AsignarTituloEstudiante
+                {
+
+                    TituloId = titulo.Id,
+                Precio = titulo.Precio,
+                    Nombre=titulo.Nombre,
+                    Asignado = TitulosEstudiantes.Contains(titulo.Id)
+            };
+
+                viewModel.Add(act);
+            }
+            ViewBag.Titulos = viewModel;
+        }
+
+
+
     }
 }
