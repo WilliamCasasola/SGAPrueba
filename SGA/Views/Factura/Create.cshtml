@@ -59,16 +59,11 @@
 
 
        <div>
-           @Html.ActionLink("Añadir Detalle", "Create", "EstudianteParaFactura",new { Fecha =ViewBag.Fecha } ,new {id="link" })
+           @Html.ActionLink("Añadir Detalle", "Create", "EstudianteParaFactura",new { date= "Fecha",total="TotalCancelado",
+          state ="Estado",description = "Descripcion",client= "ClienteId"} ,new {id="link" })
        </div>
 
-        <script>
-            alert("GJO");
-            $("#link").click(function () {
-                alert($("#Fecha").val());
-            })
-
-        </script>
+        
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -84,4 +79,5 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/jqueryFunciones.js")
 }

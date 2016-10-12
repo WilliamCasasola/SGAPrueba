@@ -42,10 +42,11 @@ namespace SGA.Controllers
         }
 
         // GET: EstudianteParaFactura/Create
-        public ActionResult Create(string Fecha)
+        public ActionResult Create(string date, string total,
+          string state, string description,string client)
         {
             antiguauri = System.Web.HttpContext.Current.Request.UrlReferrer;
-
+            
             var estudianteFactura = new EstudianteParaFactura();
             estudianteFactura.Titulos = new List<Titulo>();
             ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Apellidos");
