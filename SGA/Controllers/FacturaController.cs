@@ -16,7 +16,7 @@ namespace SGA.Controllers
     public class FacturaController : Controller
     {
         private SGAContext db = new SGAContext();
-        private static List<EstudianteParaFactura> estudiantesFactura=new List<EstudianteParaFactura>();
+        private static List<EstudianteParaFactura> estudiantesFactura;
 
         // GET: Factura
         public ActionResult Index()
@@ -44,21 +44,26 @@ namespace SGA.Controllers
         // GET: Factura/Create
         public ActionResult Create(string Clienteid,
             string Selectedtitles, string studentID, string date, string total,
-          string state, string description, string client)
+          string state, string description, string client, string nuevo)
         {
-            
-            if (studentID != null) {
-                string[] titulosSeleccionados = Regex.Split(Selectedtitles,",");
-                ViewBag.Detalles="Si";
-                var titulos = db.Titulos.Where(t => titulosSeleccionados.Contains(t.Id));
-                var estudiante = db.Estudiantes.Find(studentID);
-                estudiantesFactura.Add(new EstudianteParaFactura
+
+            if (studentID != null)
+            {
+                string[] titulosSeleccionados = Regex.Split(Selectedtitles, ",");
+                if (!titulosSeleccionados[0].Equals(""))
                 {
-                    EstudianteId = studentID,
-                    Titulos = titulos.ToList(),
-                    Estudiante=estudiante
+                    var titulos = db.Titulos.Where(t => titulosSeleccionados.Contains(t.Id));
+                    var estudiante = db.Estudiantes.Find(studentID);
+                    estudiantesFactura.Add(new EstudianteParaFactura
+                    {
+                        EstudianteId = studentID,
+                        Titulos = titulos.ToList(),
+                        Estudiante = estudiante,
+                        
+                    }
+                    );
                 }
-                );
+                ViewBag.Detalles = "Si";
             }
 
             if (Clienteid != null)
@@ -86,14 +91,24 @@ namespace SGA.Controllers
                     estado = state == null ? EstadoFactura.Cancelado : (EstadoFactura)Enum.Parse(typeof(EstadoFactura), state),//Es necesario parsearlo usando typeof y luego el cast
                     Descripcion = description == null ? "" : description,
                     ClienteId = client == null ? null : client,
-                    Detalles=estudiantesFactura
+                    Detalles = estudiantesFactura
                 };
-                ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Nombre");
-                ViewBag.Titulos = db.Titulos.ToList();
+                ViewBag.totalPagar = estudiantesFactura.Select(e => e.Titulos.Select(t => t.Precio).Sum()).Sum();
+                if (nuevo != null)
+                {
+                    ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Nombre");
+                    ViewBag.Titulos = db.Titulos.ToList();
+                    if (estudiantesFactura.Count() > 0)
+                        ViewBag.Detalles = "Si";
+                    ViewBag.mostrarTitulos = "Si";
+                }
                 return View(factura);
             }
             else
+            {
+                estudiantesFactura = new List<EstudianteParaFactura>();
                 return View();
+            }
         }
 
         // POST: Factura/Create
@@ -107,11 +122,28 @@ namespace SGA.Controllers
             {
                 db.Facturas.Add(factura);
                 db.SaveChanges();
+               db.Entry(factura).GetDatabaseValues();//Le asigna al objeto que insertó su id creada dinámicamente
+               estudiantesFactura.All(e => { e.FacturaID=factura.Id; e.Estudiante = null; return true; }); ;
+                db.Dispose();
+                crearEstudiantesFactura();
                 return RedirectToAction("Index");
             }
-
+            ViewBag.Detalles = "Si";
+            factura.Detalles = estudiantesFactura;
+            ViewBag.Facturas = new List<Factura>();
             ViewBag.ClienteId = new SelectList(db.Clientes, "Id", "Nombre", factura.ClienteId);
             return View(factura);
+        }
+
+        public void crearEstudiantesFactura(){
+            db = new SGAContext();
+            foreach (var estudianteFactura in estudiantesFactura)
+            {
+                db.EstudianteParaFacturas.Add(estudianteFactura);
+                foreach(var titulo in estudianteFactura.Titulos)
+                    
+                db.SaveChanges();
+            }
         }
 
         // GET: Factura/Edit/5

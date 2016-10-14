@@ -38,7 +38,7 @@
             <img src="~/Imagenes/Portada/@Url.Content(item.Foto)" height="50" width="50" alt="No hay foto" />
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Precio)
+           $ @Html.DisplayFor(modelItem => item.Precio)
         </td>
         <td>
             @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |

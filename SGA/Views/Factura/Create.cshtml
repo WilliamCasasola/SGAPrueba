@@ -70,6 +70,7 @@
                         <tr>
                             @{
                                 int cnt = 0;
+
                                 foreach (var estuianteFactura in Model.Detalles)
                                 {
                                     if (cnt++ % 3 == 0)
@@ -78,19 +79,23 @@
                                       }
                                     @:<td>
                                         <table>
-                                            <tr><td>@estuianteFactura.Estudiante.Nombre</td></tr>
+                                            <tr><td><b>@estuianteFactura.Estudiante.Nombre</b></td></tr>
                                             @foreach (var titulo in estuianteFactura.Titulos)
                                             {
                                                 <tr><td>@titulo.Id</td><td>@titulo.Nombre</td><td>$ @titulo.Precio</td></tr>
 
 
-                                            }
+                                            }                                            
+                                            <tr>
+                                              <td>Total @estuianteFactura.Estudiante.Nombre: @estuianteFactura.Titulos.Select(t => t.Precio).Sum() </td>
+                                            </tr>
                                         </table>
                                             @:</td>
 
 
                                         @:</tr>
                             }
+                                <tr><td>Total: @ViewBag.totalPagar</td></tr>
                             }
                         </table>
                     </div>
@@ -105,13 +110,14 @@
           total = "TotalCancelado",
           state = "Estado",
           description = "Descripcion",
-          client = "ClienteId"
+          client = "ClienteId",
+          nuevo="Si"
       }, new { id = "link" })@*Usa jquery en jquery funciones*@
        </div>
 
       @{
           List<SGA.Models.Titulo> titulos = ViewBag.Titulos;
-          if (titulos != null)
+          if (titulos != null && @ViewBag.mostrarTitulos != null)
           {
 
             <div class="form-group">

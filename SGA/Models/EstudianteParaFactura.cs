@@ -10,6 +10,10 @@ namespace SGA.Models
     {
         public int Id { set; get; }
 
+        [Display(Name = "Número de Factura")]
+        public int FacturaID { set; get; }
+        public virtual Factura Factura { set; get; }
+
         [Display(Name = "Nombre de Estudiante")]
         public String EstudianteId { set; get; }
         public virtual Estudiante Estudiante { set; get; }
