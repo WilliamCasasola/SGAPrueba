@@ -4,12 +4,12 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
 using SGA.ViewModels;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
 
 namespace SGA.Controllers
 {
@@ -33,12 +33,29 @@ namespace SGA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Factura factura = db.Facturas.Find(id);
+            Factura factura = db.Facturas.Include("Cliente").Single(f=>f.Id==id);
+            var estudiantes = db.EstudianteParaFacturas.Where(e => e.FacturaID == id).Include("Titulos").Include("Estudiante");
             if (factura == null)
             {
                 return HttpNotFound();
             }
+            
+            ViewBag.Detalles = "Si";
+            factura.Detalles = estudiantes.ToList();
+            double total=factura.Detalles.Select(e => e.Titulos.Select(t => t.Precio).Sum()).Sum();
+            ViewBag.totalPagar = total;
+            double deuda= total - factura.TotalCancelado;
+            ViewBag.Deuda = deuda;
+            if (deuda <= 0) {
+                actualizarEstado(factura);
+            }
             return View(factura);
+        }
+
+        public void actualizarEstado(Factura factura)
+        {
+            factura.estado = EstadoFactura.Cancelado;
+
         }
 
         // GET: Factura/Create
@@ -49,7 +66,7 @@ namespace SGA.Controllers
 
             if (studentID != null)
             {
-                string[] titulosSeleccionados = Regex.Split(Selectedtitles, ",");
+                string[] titulosSeleccionados = Regex.Split(Selectedtitles, ",");//Por que Selectedtitles viene en un solo string separado por comas
                 if (!titulosSeleccionados[0].Equals(""))
                 {
                     var titulos = db.Titulos.Where(t => titulosSeleccionados.Contains(t.Id));
@@ -85,7 +102,7 @@ namespace SGA.Controllers
                 bool esDouble = total == null ? false : Double.TryParse(total, out d);
 
                 Factura factura = new Factura//Se inicializa la factura para noperder los datos
-                {
+                {//Se valida la factura para que no se caiga
                     Fecha = date == "" ? DateTime.Now : DateTime.Parse(date),
                     TotalCancelado = esDouble == false ? 0 : Double.Parse(total),
                     estado = state == null ? EstadoFactura.Cancelado : (EstadoFactura)Enum.Parse(typeof(EstadoFactura), state),//Es necesario parsearlo usando typeof y luego el cast
@@ -139,10 +156,18 @@ namespace SGA.Controllers
             db = new SGAContext();
             foreach (var estudianteFactura in estudiantesFactura)
             {
+                var titulos = estudianteFactura.Titulos;
+                estudianteFactura.Titulos = null;
                 db.EstudianteParaFacturas.Add(estudianteFactura);
-                foreach(var titulo in estudianteFactura.Titulos)
-                    
                 db.SaveChanges();
+                db.Entry(estudianteFactura).GetDatabaseValues();//Le asigna al objeto que insertó su id creada dinámicamente
+                foreach (var titulo in titulos)
+                {
+                 db.Database.ExecuteSqlCommand("Insert INTO estudianteparafacturatitulo VALUES(@estudiante,@titulo)",
+                        new MySqlParameter("@estudiante", estudianteFactura.Id),
+                    new MySqlParameter("@titulo", titulo.Id));
+                    db.SaveChanges();
+                }
             }
         }
 

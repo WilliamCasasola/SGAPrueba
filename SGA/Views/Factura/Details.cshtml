@@ -47,11 +47,68 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.TotalCancelado)
+           $ @Html.DisplayFor(model => model.TotalCancelado)
         </dd>
-
-    </dl>
+        <dt>
+            Cuenta Total:
+        </dt>
+        <dd>
+          $ @ViewBag.totalPagar
+        </dd>
+        <dt>
+            Deuda:
+        </dt>
+        <dd>
+            $ @ViewBag.Deuda
+        <dd>
+</dl>
 </div>
+
+<div>
+    <h2>Detalles: </h2>
+    @if (@ViewBag.Detalles == null)
+            {
+        <p>No hay detalles</p>
+    }
+    else
+    {
+        <div class="col-md-offset-2 col-md-10">
+            <table>
+                <tr>
+                    @{
+                        int cnt = 0;
+
+                        foreach (var estuianteFactura in Model.Detalles)
+                        {
+                            if (cnt++ % 3 == 0)
+                            {
+                                @: </tr><tr>
+                                      }
+                            @:<td>
+                                <table>
+                                    <tr><td><b>@estuianteFactura.Estudiante.Nombre</b></td></tr>
+                                    @foreach (var titulo in estuianteFactura.Titulos)
+                                    {
+                                        <tr><td>@titulo.Id</td><td>@titulo.Nombre</td><td>$ @titulo.Precio</td></tr>
+
+
+                                    }
+                                    <tr>
+                                        <td>Total @estuianteFactura.Estudiante.Nombre:      $ @estuianteFactura.Titulos.Select(t => t.Precio).Sum() </td>
+                                    </tr>
+                                </table>
+                                        @:</td>
+                                         @:</tr>
+                            }
+                    }
+                </table>
+            </div>
+                        }
+
+</div>
+
+
+
 <p>
     @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Volver Atrás", null, null, null, new { href = Request.UrlReferrer })

@@ -1,26 +1,34 @@
 ﻿@model SGA.Models.EstudianteParaFactura
 
 @{
-    ViewBag.Title = "Detalles";
+    ViewBag.Title = "Details";
 }
 
-<h2>Detalles</h2>
+<h2>Details</h2>
 
 <div>
     <h4>EstudianteParaFactura</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Estudiante.Apellidos)
+            @Html.DisplayNameFor(model => model.Estudiante.Nombre)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Estudiante.Apellidos)
+            @Html.DisplayFor(model => model.Estudiante.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Factura.ClienteId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Factura.ClienteId)
         </dd>
 
     </dl>
 </div>
 <p>
-    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Volver Atrás", null, null, null, new { href = Request.UrlReferrer })
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
 </p>

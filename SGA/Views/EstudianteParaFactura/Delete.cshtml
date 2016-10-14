@@ -1,22 +1,30 @@
 ﻿@model SGA.Models.EstudianteParaFactura
 
 @{
-    ViewBag.Title = "Deshablitar";
+    ViewBag.Title = "Delete";
 }
 
-<h2>Deshabilitar</h2>
+<h2>Delete</h2>
 
-<h3>¿Está seguro de deshabilitarlo?</h3>
+<h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>EstudianteParaFactura</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Estudiante.Apellidos)
+            @Html.DisplayNameFor(model => model.Estudiante.Nombre)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Estudiante.Apellidos)
+            @Html.DisplayFor(model => model.Estudiante.Nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Factura.ClienteId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Factura.ClienteId)
         </dd>
 
     </dl>
@@ -25,8 +33,8 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Deshabilitar" class="btn btn-default" /> |
-            @Html.ActionLink("Volver Atrás", null, null, null, new { href = Request.UrlReferrer })
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
         </div>
     }
 </div>
