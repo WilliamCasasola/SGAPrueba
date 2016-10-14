@@ -8,12 +8,15 @@ using System.Web;
 using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
+using SGA.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace SGA.Controllers
 {
     public class FacturaController : Controller
     {
         private SGAContext db = new SGAContext();
+        private static List<EstudianteParaFactura> estudiantesFactura=new List<EstudianteParaFactura>();
 
         // GET: Factura
         public ActionResult Index()
@@ -39,14 +42,58 @@ namespace SGA.Controllers
         }
 
         // GET: Factura/Create
-        public ActionResult Create(string Clienteid)
+        public ActionResult Create(string Clienteid,
+            string Selectedtitles, string studentID, string date, string total,
+          string state, string description, string client)
         {
-            if (Clienteid != null) 
-                ViewBag.ClienteId = new SelectList(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Cliente'"), "Id", "Nombre", Clienteid);
-            else
-                ViewBag.ClienteId = new SelectList(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Cliente'"), "Id", "Nombre");
+            
+            if (studentID != null) {
+                string[] titulosSeleccionados = Regex.Split(Selectedtitles,",");
+                ViewBag.Detalles="Si";
+                var titulos = db.Titulos.Where(t => titulosSeleccionados.Contains(t.Id));
+                var estudiante = db.Estudiantes.Find(studentID);
+                estudiantesFactura.Add(new EstudianteParaFactura
+                {
+                    EstudianteId = studentID,
+                    Titulos = titulos.ToList(),
+                    Estudiante=estudiante
+                }
+                );
+            }
 
-            return View();
+            if (Clienteid != null)
+            {
+                ViewBag.Estudiantes = estudiantesFactura;
+                ViewBag.ClienteNombre = db.Clientes.Where(c => c.Id == Clienteid).Select(c => c.Nombre).Single();
+                var facturas = db.Facturas.Include(f => f.Cliente).Where(f => f.ClienteId == Clienteid);
+                ViewBag.Facturas = facturas.ToList();
+                ViewBag.ClienteId = new SelectList(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Cliente'"), "Id", "Nombre", Clienteid);
+            }
+            else
+            {
+                ViewBag.Facturas = new List<Factura>();
+                ViewBag.ClienteId = new SelectList(db.Clientes.SqlQuery("SELECT * FROM Cliente WHERE Discriminator = 'Cliente'"), "Id", "Nombre");
+            }
+            if (state != null)
+            {
+                Double d = 0;
+                bool esDouble = total == null ? false : Double.TryParse(total, out d);
+
+                Factura factura = new Factura//Se inicializa la factura para noperder los datos
+                {
+                    Fecha = date == "" ? DateTime.Now : DateTime.Parse(date),
+                    TotalCancelado = esDouble == false ? 0 : Double.Parse(total),
+                    estado = state == null ? EstadoFactura.Cancelado : (EstadoFactura)Enum.Parse(typeof(EstadoFactura), state),//Es necesario parsearlo usando typeof y luego el cast
+                    Descripcion = description == null ? "" : description,
+                    ClienteId = client == null ? null : client,
+                    Detalles=estudiantesFactura
+                };
+                ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Nombre");
+                ViewBag.Titulos = db.Titulos.ToList();
+                return View(factura);
+            }
+            else
+                return View();
         }
 
         // POST: Factura/Create
@@ -133,6 +180,27 @@ namespace SGA.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private void populateTituloAsignadoEstudiante(EstudianteParaFactura estudiante)
+        {
+            var todosLosTitulos = db.Titulos;
+            var TitulosEstudiantes = new HashSet<string>(estudiante.Titulos.Select(c => c.Id));
+            var viewModel = new List<AsignarTituloEstudiante>();
+            foreach (var titulo in todosLosTitulos)
+            {
+                AsignarTituloEstudiante act = new AsignarTituloEstudiante
+                {
+
+                    TituloId = titulo.Id,
+                    Precio = titulo.Precio,
+                    Nombre = titulo.Nombre,
+                    Asignado = TitulosEstudiantes.Contains(titulo.Id)
+                };
+
+                viewModel.Add(act);
+            }
+            ViewBag.Titulos = viewModel;
         }
     }
 }

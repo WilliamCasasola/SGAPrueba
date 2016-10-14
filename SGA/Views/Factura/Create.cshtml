@@ -7,10 +7,10 @@
 <h2>Crear</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Factura</h4>
         <hr />
@@ -57,21 +57,178 @@
             </div>
         </div>
 
+        <div>
+        <h2>Detalles: </h2>
+            @if (@ViewBag.Detalles == null)
+            {
+              <p>No hay detalles</p>
+            }
+            else
+            {
+                <div class="col-md-offset-2 col-md-10">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+                                foreach (var estuianteFactura in Model.Detalles)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                        @:</tr><tr>
+                                      }
+                                    @:<td>
+                                        <table>
+                                            <tr><td>@estuianteFactura.Estudiante.Nombre</td></tr>
+                                            @foreach (var titulo in estuianteFactura.Titulos)
+                                            {
+                                                <tr><td>@titulo.Id</td><td>@titulo.Nombre</td><td>$ @titulo.Precio</td></tr>
+
+
+                                            }
+                                        </table>
+                                            @:</td>
+
+
+                                        @:</tr>
+                            }
+                            }
+                        </table>
+                    </div>
+                                }
+
+        </div>
 
        <div>
-           @Html.ActionLink("Añadir Detalle", "Create", "EstudianteParaFactura",new { date= "Fecha",total="TotalCancelado",
-          state ="Estado",description = "Descripcion",client= "ClienteId"} ,new {id="link" })
+           @Html.ActionLink("Añadir Detalle", "Create", new
+      {
+          date = "Fecha",
+          total = "TotalCancelado",
+          state = "Estado",
+          description = "Descripcion",
+          client = "ClienteId"
+      }, new { id = "link" })@*Usa jquery en jquery funciones*@
        </div>
 
-        
+      @{
+          List<SGA.Models.Titulo> titulos = ViewBag.Titulos;
+          if (titulos != null)
+          {
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Crear" class="btn btn-default" />
+            <div class="form-group">
+                @Html.Label("Estudiante: ", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("EstudianteId", null, htmlAttributes: new { @class = "form-control" })
+                </div>
             </div>
-        </div>
-    </div>
+
+            <div class="form-group">
+                Productos
+                <div class="col-md-offset-2 col-md-10">
+                    <table>
+                        <tr>     @{                       
+                            int cnt = 0;
+                                foreach (var titulo in titulos)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                        @:</tr><tr>
+                                      }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="titulosSeleccionados"
+                                               value="@titulo.Id" />
+                                        @titulo.Id @:  @titulo.Nombre  $ @titulo.Precio
+                                        @:</td>
+                       
+                                @:</tr>
+                            }
+                            }</table>
+                    </div>
+                </div>
+                <div>
+                    @Html.ActionLink("Añadir Estudiante", "Create", new
+               {
+                   date = "Fecha",
+                   total = "TotalCancelado",
+                   state = "Estado",
+                   description = "Descripcion",
+                   client = "ClienteId",Selectedtitles= "titulosSeleccionados",studentID= "EstudianteId"
+               }, new { id = "link2" })@*Usa jquery en jquery funciones*@
+</div>
+                            }
+    }
+
+
+
+
+
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Crear" class="btn btn-default" />
+                    </div>
+                </div>
+</div>
 }
+
+@{
+    List<SGA.Models.Factura> facturas = ViewBag.Facturas;
+    if (facturas.Count() > 0)
+    {
+    <h3>Facturas de @ViewBag.ClienteNombre</h3>
+    <table class="table">
+        <tr>
+            <th>
+              # de Factura
+            </th>
+            <th>
+                Nombre
+            </th>
+            <th>
+                Fecha
+            </th>
+            <th>
+               Descripción
+            </th>
+            <th>
+                Estado
+            </th>
+            <th>
+                Total Cancelado
+            </th>
+            <th></th>
+        </tr>
+       
+        @foreach (var item in facturas)
+        {      <tr>
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    @item.Cliente.Nombre
+                </td>
+                <td>
+                    @item.Fecha
+                </td>
+                <td>
+                    @item.Descripcion
+                </td>
+                <td>
+                    @item.estado
+                </td>
+                <td>
+                    @item.TotalCancelado
+                </td>
+             <td>
+                 @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                 @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
+                 @Html.ActionLink("Deshabilitar", "Delete", new { id = item.Id })
+             </td>
+            </tr>
+        }
+        
+    </table>
+        } }
 
 <div>
     @Html.ActionLink("Volver Atrás", null, null, null, new { href = Request.UrlReferrer })

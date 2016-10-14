@@ -215,6 +215,7 @@
     <Compile Include="ViewModels\AsignarTituloEstudiante.cs" />
     <Compile Include="ViewModels\CursoNota.cs" />
     <Compile Include="ViewModels\DatosIndexTutor.cs" />
+    <Compile Include="ViewModels\FacturasCliente.cs" />
     <Compile Include="ViewModels\GrupoMatriculaDia.cs" />
   </ItemGroup>
   <ItemGroup>

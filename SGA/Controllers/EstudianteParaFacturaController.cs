@@ -10,6 +10,7 @@ using SGA.DAL;
 using SGA.Models;
 using SGA.ViewModels;
 using System.Text.RegularExpressions;
+using System.Web.Routing;
 
 namespace SGA.Controllers
 {
@@ -45,13 +46,29 @@ namespace SGA.Controllers
         public ActionResult Create(string date, string total,
           string state, string description,string client)
         {
-            antiguauri = System.Web.HttpContext.Current.Request.UrlReferrer;
-            
-            var estudianteFactura = new EstudianteParaFactura();
-            estudianteFactura.Titulos = new List<Titulo>();
-            ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Apellidos");
-            populateTituloAsignadoEstudiante(estudianteFactura);
-            return View();
+            Double d = 0;
+            bool esDouble = total ==null? false : Double.TryParse(total,out d);
+
+            factura = new Factura//Se inicializa la factura para noperder los datos
+            {
+                Fecha = date == "" ? DateTime.Now : DateTime.Parse(date),
+                TotalCancelado = esDouble == false ? 0 : Double.Parse(total),
+                estado = state == null ? EstadoFactura.Cancelado : (EstadoFactura)Enum.Parse(typeof(EstadoFactura), state),//Es necesario parsearlo usando typeof y luego el cast
+                Descripcion = description == null ? "" : description,
+                ClienteId = client == null ? null : client
+            };
+            antiguauri = System.Web.HttpContext.Current.Request.UrlReferrer;//Se guarda de donde viene la consulta
+            if (!new Regex("/Factura/Create.+$").IsMatch(antiguauri.AbsolutePath))//Si no viene de la página factura
+            {
+                var estudianteFactura = new EstudianteParaFactura();
+                estudianteFactura.Titulos = new List<Titulo>();
+                ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Apellidos");
+                populateTituloAsignadoEstudiante(estudianteFactura);
+                return View();
+            }
+            else return RedirectToAction("Index", "Factura");
+
+
         }
 
         // POST: EstudianteParaFactura/Create
@@ -68,24 +85,21 @@ namespace SGA.Controllers
             }
             if (ModelState.IsValid)
             {
-                if (!new Regex("/Factura/Create.+$").IsMatch(antiguauri.AbsolutePath)) {
 
-                    db.EstudianteParaFacturas.Add(estudianteParaFactura);
-                    db.SaveChanges();
-                    db.Entry(estudianteParaFactura).GetDatabaseValues();
-                    //return RedirectToAction(,, estudianteParaFactura.Id);
-                    return Redirect(antiguauri.AbsoluteUri);
-                }
-                else
-                    RedirectToAction("Index", "Factura");
+                db.EstudianteParaFacturas.Add(estudianteParaFactura);
+                db.SaveChanges();
+                db.Entry(estudianteParaFactura).GetDatabaseValues();
+             return RedirectToAction("Create", "Factura", new { Clienteid=factura.ClienteId, factura= new RouteValueDictionary(factura) });
+                
             }
             populateTituloAsignadoEstudiante(estudianteParaFactura);
             ViewBag.EstudianteId = new SelectList(db.Estudiantes, "Id", "Apellidos", estudianteParaFactura.EstudianteId);
             return View(estudianteParaFactura);
         }
 
-        // GET: EstudianteParaFactura/Edit/5
-        public ActionResult Edit(int? id)
+
+    // GET: EstudianteParaFactura/Edit/5
+    public ActionResult Edit(int? id)
         {
             if (id == null)
             {
