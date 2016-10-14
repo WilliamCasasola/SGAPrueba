@@ -10,6 +10,7 @@ using SGA.DAL;
 using SGA.Models;
 using SGA.ViewModels;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
 
 namespace SGA.Controllers
 {
@@ -66,6 +67,21 @@ namespace SGA.Controllers
                     .Include(m => m.Curso.Titulo)
                     .Include(m => m.Estudiante).Where(m => m.EstudianteID == Estudianteid).ToList();
                 curosNota.Notas = db.Matriculas.Where(m => m.EstudianteID == Estudianteid).Select(m => m.Calificaciones.Select(c => c.Valor).Sum() / m.Curso.CantidadEvaluaciones).ToList();
+                var generacionEstudiante = db.Estudiantes.Where(e => e.Id == Estudianteid).Select(e => e.GeneracionId).Single();
+                var requisitos = db.Database.SqlQuery<string>("SELECT Titulo_Id FROM titulogeneracion WHERE Generacion_Id = @gen ", new MySqlParameter("@gen", generacionEstudiante));
+                int contador = 0;
+                foreach(var item in curosNota.Matriculas.Zip(curosNota.Notas, (a, b) => new { matricula = a, nota = b }))
+                {
+
+                    if (requisitos.Contains(item.matricula.Curso.TituloId)) {
+                        if (item.nota >= 70)
+                            contador++;
+                    }
+                }
+                if (contador == requisitos.Count())
+                    ViewBag.Puede = "Si";
+                else
+                    ViewBag.Puede = "No";
                 return View(curosNota);
             }
             else {

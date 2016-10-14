@@ -40,6 +40,7 @@ namespace SGA.Controllers
         // GET: Generacion/Create
         public ActionResult Create()
         {
+            ViewBag.Titulos = db.Titulos.ToList();
             return View();
         }
 
@@ -48,17 +49,53 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Fecha")] Generacion generacion,HttpPostedFileBase Foto)
+        public ActionResult Create(string[] titulosSeleccionados, [Bind(Include = "Id,Fecha")] Generacion generacion,HttpPostedFileBase Foto)
         {
             generacion.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacion.Id, Foto, "~/Imagenes/Portada/");
             if (ModelState.IsValid)
             {
                 db.Generacions.Add(generacion);
+                generacion.TitulosRequisito = new List<Titulo>();//Para no inicializar aquí se puede inicializar en el modelo en el get y el set
+                foreach (var titulo in titulosSeleccionados)
+                {
+                    var incluirtitulo = db.Titulos.Find(titulo);
+                    generacion.TitulosRequisito.Add(incluirtitulo);
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
             return View(generacion);
+        }
+
+        private void ActualizarCursosInstructor(string[] titulosSeleccionados, Generacion generacionActualizar)
+        {
+            if (titulosSeleccionados == null)
+            {
+                generacionActualizar.TitulosRequisito = new List<Titulo>();
+                return;
+            }
+
+            var titulosSeleccionadosHS = new HashSet<string>(titulosSeleccionados);
+            var titulosGeneracion = new HashSet<string>
+                (generacionActualizar.TitulosRequisito.Select(c => c.Id));
+            foreach (var titulo in db.Titulos)
+            {
+                if (titulosSeleccionadosHS.Contains(titulo.Id))
+                {
+                    if (!titulosGeneracion.Contains(titulo.Id))
+                    {
+                        generacionActualizar.TitulosRequisito.Add(titulo);
+                    }
+                }
+                else
+                {
+                    if (titulosGeneracion.Contains(titulo.Id))
+                    {
+                        generacionActualizar.TitulosRequisito.Remove(titulo);
+                    }
+                }
+            }
         }
 
         // GET: Generacion/Edit/5

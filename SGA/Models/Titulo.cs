@@ -28,5 +28,6 @@ namespace SGA.Models
 
         public virtual ICollection<Curso> cursos { set; get; }
         public virtual ICollection<EstudianteParaFactura> estudiantesPagados { set; get; }
+        public virtual ICollection<Generacion> Generaciones { get; set; }
     }
 }

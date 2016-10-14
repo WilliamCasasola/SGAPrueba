@@ -40,12 +40,43 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Crear" class="btn btn-default" />
-            </div>
+       
+            <div class="form-group">
+                Productos
+                <div class="col-md-offset-2 col-md-10">
+                    <table>
+                        <tr>
+                            @{ List<SGA.Models.Titulo>titulos = ViewBag.Titulos;
+                                int cnt = 0;
+                                foreach (var titulo in titulos)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                        @:</tr><tr>
+                                        }
+                                        @:<td>
+                                            <input type="checkbox"
+                                                   name="titulosSeleccionados"
+                                                   value="@titulo.Id" />
+                                            @titulo.Id @:  @titulo.Nombre 
+                                            @:</td>
+
+
+                                        @:</tr>
+                                    }
+                                }
+            </table>
         </div>
     </div>
+
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Crear" class="btn btn-default" />
+                </div>
+            </div>
+</div>
 }
 
 <div>

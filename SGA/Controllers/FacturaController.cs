@@ -46,17 +46,11 @@ namespace SGA.Controllers
             ViewBag.totalPagar = total;
             double deuda= total - factura.TotalCancelado;
             ViewBag.Deuda = deuda;
-            if (deuda <= 0) {
-                actualizarEstado(factura);
-            }
+           
             return View(factura);
         }
 
-        public void actualizarEstado(Factura factura)
-        {
-            factura.estado = EstadoFactura.Cancelado;
-
-        }
+       
 
         // GET: Factura/Create
         public ActionResult Create(string Clienteid,
@@ -196,6 +190,9 @@ namespace SGA.Controllers
         {
             if (ModelState.IsValid)
             {
+                var estudiantes = db.EstudianteParaFacturas.Where(e => e.FacturaID == factura.Id).Include("Titulos").Include("Estudiante").ToList();
+                if(factura.TotalCancelado>=estudiantes.Select(e => e.Titulos.Select(t => t.Precio).Sum()).Sum())
+                factura.estado = EstadoFactura.Cancelado;
                 db.Entry(factura).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

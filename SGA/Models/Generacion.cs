@@ -29,5 +29,7 @@ namespace SGA.Models
 
         public virtual ICollection<Curso> Cursos { set; get; }
 
+        public virtual ICollection<Titulo> TitulosRequisito { get; set; }
+
     }
 }
