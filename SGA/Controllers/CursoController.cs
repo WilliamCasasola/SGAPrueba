@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
 using System.Data.Entity.Infrastructure;
+using System.IO;
+using LumenWorks.Framework.IO.Csv;
 
 namespace SGA.Controllers
 {
@@ -88,7 +90,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult EditPost(int? id)
+        public ActionResult EditPost(int? id, HttpPostedFileBase upload)
         {
             if (id == null) {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -99,6 +101,43 @@ namespace SGA.Controllers
             {
                 try
                 {
+
+                 
+
+
+                    if (upload != null && upload.ContentLength > 0)
+                    {
+                        
+                        if (upload.FileName.EndsWith(".csv"))
+                        {
+                            using (StreamReader CsvReader = new StreamReader(upload.InputStream))
+                            {
+                                string inputLine = "";
+                                string[] persona;
+                                inputLine = CsvReader.ReadLine();
+                                    string[] headers = inputLine.Split(new char[] { ';' });
+                                while ((inputLine = CsvReader.ReadLine()) != null)
+                                {
+                                    persona = inputLine.Split(new char[] { ';' });
+                                    for (int i = 6; i < 10; i++)
+                                    {
+                                        Nota n = new Nota { Tipo = headers[i],Valor=Double.Parse(persona[i]) };
+                                    }
+                                }
+                                CsvReader.Close();
+                                
+                            }
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("File", "This file format is not supported");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("File", "Please Upload Your file");
+                    }
+
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }

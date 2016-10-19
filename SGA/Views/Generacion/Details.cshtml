@@ -10,6 +10,14 @@
     <h4>Generacion</h4>
     <hr />
     <dl class="dl-horizontal">
+    <dt>
+        Nombre:
+    </dt>
+        
+        <dd>
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+      
         <dt>
             @Html.DisplayNameFor(model => model.Fecha)
         </dt>
@@ -28,6 +36,32 @@
 
     </dl>
 </div>
+
+
+<div class="form-group">
+    Requisitos para graduación
+    <div class="col-md-offset-2 col-md-10">
+        <table>
+            <tr>
+                @{ List<SGA.Models.Titulo> titulos = Model.TitulosRequisito.ToList();
+                    int cnt = 0;
+                    foreach (var titulo in titulos)
+                    {
+                        if (cnt++ % 3 == 0)
+                        {
+                            @:</tr><tr>
+                                        }
+                        <td>@titulo.Id</td>
+                        <td>@titulo.Nombre</td>
+                       @:</tr>
+                                    }
+                }
+            </table>
+        </div>
+    </div>
+
+
+
 <p>
     @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Volver Atrás", null, null, null, new { href = Request.UrlReferrer })

@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
 using System.Data.Entity.Infrastructure;
+using SGA.ViewModels;
 
 namespace SGA.Controllers
 {
@@ -29,7 +30,7 @@ namespace SGA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Generacion generacion = db.Generacions.Find(id);
+            Generacion generacion = db.Generacions.Include(g=>g.TitulosRequisito).Single(g=>g.Id==id);
             if (generacion == null)
             {
                 return HttpNotFound();
@@ -68,7 +69,7 @@ namespace SGA.Controllers
             return View(generacion);
         }
 
-        private void ActualizarCursosInstructor(string[] titulosSeleccionados, Generacion generacionActualizar)
+        private void ActualizarRequisitosGeneracion(string[] titulosSeleccionados, Generacion generacionActualizar)
         {
             if (titulosSeleccionados == null)
             {
@@ -78,7 +79,7 @@ namespace SGA.Controllers
 
             var titulosSeleccionadosHS = new HashSet<string>(titulosSeleccionados);
             var titulosGeneracion = new HashSet<string>
-                (generacionActualizar.TitulosRequisito.Select(c => c.Id));
+                (generacionActualizar.TitulosRequisito.Select(t => t.Id));
             foreach (var titulo in db.Titulos)
             {
                 if (titulosSeleccionadosHS.Contains(titulo.Id))
@@ -98,6 +99,25 @@ namespace SGA.Controllers
             }
         }
 
+        private void populateTituloRequeridoGeneracion(Generacion generacion)
+        {
+            var todosLosTitulos = db.Titulos.ToList();
+            var titulosgeneracion = new HashSet<string>(generacion.TitulosRequisito.Select(t => t.Id));
+            var viewModel = new List<AsignarRequistoGeneracion>();
+            foreach (var titulo in todosLosTitulos)
+            {
+                AsignarRequistoGeneracion act = new AsignarRequistoGeneracion
+                {
+                    TituloID = titulo.Id,
+                    TituloNombre = titulo.Nombre,
+                    Asignado = titulosgeneracion.Contains(titulo.Id)
+
+                };
+                viewModel.Add(act);
+            }
+            ViewBag.Titulos = viewModel;
+        }
+
         // GET: Generacion/Edit/5
         public ActionResult Edit(string id)
         {
@@ -105,11 +125,12 @@ namespace SGA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Generacion generacion = db.Generacions.Find(id);
+            Generacion generacion = db.Generacions.Include(g=>g.TitulosRequisito).Single(g=>g.Id==id);
             if (generacion == null)
             {
                 return HttpNotFound();
             }
+            populateTituloRequeridoGeneracion(generacion);
             return View(generacion);
         }
 
@@ -118,14 +139,14 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id, HttpPostedFileBase Foto, string FotoActual)
+        public ActionResult Edit(string[] titulosSeleccionados,string id, HttpPostedFileBase Foto, string FotoActual)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var generacionActualizar = db.Generacions.Single(g => g.Id == id);
+            var generacionActualizar = db.Generacions.Include(g=>g.TitulosRequisito).Where(g=>g.Id==id).Single();
 
             if (!FotoActual.Equals("noPortada.jpg.png") && Foto == null)
                 generacionActualizar.Foto = FotoActual;
@@ -137,6 +158,7 @@ namespace SGA.Controllers
             {
                 try
                 {
+                    ActualizarRequisitosGeneracion(titulosSeleccionados, generacionActualizar);
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }

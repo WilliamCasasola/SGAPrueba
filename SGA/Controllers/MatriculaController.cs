@@ -78,10 +78,17 @@ namespace SGA.Controllers
                             contador++;
                     }
                 }
-                if (contador == requisitos.Count())
-                    ViewBag.Puede = "Si";
+                int cantidadRequisitos = requisitos.Count();
+                if (contador == cantidadRequisitos)
+                    ViewBag.PuedeGraduarse = "Si";
                 else
-                    ViewBag.Puede = "No";
+                    ViewBag.PuedeGraduarse = "No puede, necesita pasar "+ (cantidadRequisitos-contador) + " curso(s) más";
+
+                if (contador >= (cantidadRequisitos - 2))
+                    ViewBag.PuedeProyecto = "Si";
+                else
+                    ViewBag.PuedeProyecto = "No puede, necesita pasar " + (cantidadRequisitos - contador - 2) + " curso(s) más";
+
                 return View(curosNota);
             }
             else {

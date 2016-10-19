@@ -48,6 +48,44 @@
         </div>
 
         <div class="form-group">
+            Requisitos para graduación
+            <div class="col-md-offset-2 col-md-10">
+                <table>
+                    <tr>
+                        @{ List<SGA.ViewModels.AsignarRequistoGeneracion> titulos = ViewBag.Titulos;
+                            int cnt = 0;
+                            foreach (var titulo in titulos)
+                            {
+                                if (cnt++ % 3 == 0)
+                                {
+                                    @:</tr><tr>
+                                        }
+                                @:<td>
+                                    <input type="checkbox"
+                                           name="titulosSeleccionados"
+                                           value="@titulo.TituloID"
+                                @(Html.Raw(titulo.Asignado ? "checked=\"checked\"" : "")) />
+                                                @titulo.TituloID @:  @titulo.TituloNombre
+                                                @:</td>
+
+
+
+
+                                            @:</tr>
+                                    }
+                        }
+                    </table>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Guardar" class="btn btn-default" />
             </div>
