@@ -14,6 +14,7 @@ using System.Globalization;
 using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Data.Entity.Infrastructure;
+using System.Text.RegularExpressions;
 
 namespace SGA.Controllers
 {
@@ -194,5 +195,61 @@ namespace SGA.Controllers
             }
             base.Dispose(disposing);
         }
+
+
+        public void insertarEstudiantescsv(HttpPostedFileBase upload)
+        {
+
+            if (upload != null && upload.ContentLength > 0)
+            {
+
+                if (upload.FileName.EndsWith(".csv"))
+                {
+                    using (StreamReader CsvReader = new StreamReader(upload.InputStream))
+                    {
+
+                        Regex patrontarea = new Regex(@"\d+$");
+                        Regex patronCorreo = new Regex(@"correo$");
+                        string inputLine = "";
+                        string[] persona;
+                        int correo = -1;
+                        inputLine = CsvReader.ReadLine();
+                        string[] headers = inputLine.Split(new char[] { ';' });
+                        foreach (var header in headers.Select((valor, i) => new { i, valor }))
+                        {
+                            if (patronCorreo.IsMatch(header.valor))
+                                correo = header.i;
+
+
+                            while ((inputLine = CsvReader.ReadLine()) != null)
+                            {
+                                persona = inputLine.Split(new char[] { ';' });
+                                string codigoestudiante = db.Estudiantes.Where(e => e.Correo == persona[correo]).Select(e => e.Id).Single();
+                            }
+                            CsvReader.Close();
+
+                        }
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("File", "This file format is not supported");
+                }
+                }
+                else
+                {
+                    ModelState.AddModelError("File", "Please Upload Your file");
+                }
+
+            }
+
+        }
+
+
+
+
+
+
     }
+
 }

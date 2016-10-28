@@ -11,6 +11,7 @@ using SGA.Models;
 using System.Data.Entity.Infrastructure;
 using System.IO;
 using LumenWorks.Framework.IO.Csv;
+using System.Text.RegularExpressions;
 
 namespace SGA.Controllers
 {
@@ -112,16 +113,37 @@ namespace SGA.Controllers
                         {
                             using (StreamReader CsvReader = new StreamReader(upload.InputStream))
                             {
+                                var numeroTarea = new Dictionary<int, int>(); ;
+                                Regex patrontarea = new Regex(@"\d+$");
+                                Regex patronCorreo = new Regex(@"correo$");
                                 string inputLine = "";
                                 string[] persona;
+                                int correo = -1;
                                 inputLine = CsvReader.ReadLine();
                                     string[] headers = inputLine.Split(new char[] { ';' });
+                                foreach (var header in headers.Select((valor, i) => new { i, valor })) {
+                                    if (patronCorreo.IsMatch(header.valor))
+                                        correo = header.i;
+                                    if (patrontarea.IsMatch(header.valor))
+                                    {
+                                        numeroTarea.Add(int.Parse(patrontarea.Match(header.valor).Value),header.i);
+                                    }
+                                }
+
+                                var indicesOrdenados= numeroTarea.OrderBy(n => n.Key).Select(n=>n.Value);
+
                                 while ((inputLine = CsvReader.ReadLine()) != null)
                                 {
                                     persona = inputLine.Split(new char[] { ';' });
-                                    for (int i = 6; i < 10; i++)
+                                    string codigoestudiante = db.Estudiantes.Where(e => e.Correo == persona[correo]).Select(e => e.Id).Single();
+                                    Matricula matricula = new Matricula {
+                                        Calificaciones = new List<Nota>(),
+                                        EstudianteID = codigoestudiante,
+                                        CursoID=id.Value  //id.Value por que lo que le llega a la función es un int?                             
+                                    };
+                                    foreach (var i in indicesOrdenados)
                                     {
-                                        Nota n = new Nota { Tipo = headers[i],Valor=Double.Parse(persona[i]) };
+                                        matricula.Calificaciones.Add(new Nota { Tipo = headers[i],Valor=Double.Parse(persona[i]) });
                                     }
                                 }
                                 CsvReader.Close();
