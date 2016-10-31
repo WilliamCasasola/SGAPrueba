@@ -10,6 +10,7 @@ using SGA.Models;
 using SGA.ViewModels;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
+using System.Web;
 
 namespace SGA.Controllers
 {
@@ -99,7 +100,7 @@ namespace SGA.Controllers
                 {//Se valida la factura para que no se caiga
                     Fecha = date == "" ? DateTime.Now : DateTime.Parse(date),
                     TotalCancelado = esDouble == false ? 0 : Double.Parse(total),
-                    estado = state == null ? EstadoFactura.Cancelado : (EstadoFactura)Enum.Parse(typeof(EstadoFactura), state),//Es necesario parsearlo usando typeof y luego el cast
+                    estado = Boolean.Parse(state), //== null ? EstadoFactura.Cancelado : (EstadoFactura)Enum.Parse(typeof(EstadoFactura), state),//Es necesario parsearlo usando typeof y luego el cast
                     Descripcion = description == null ? "" : description,
                     ClienteId = client == null ? null : client,
                     Detalles = estudiantesFactura
@@ -127,8 +128,9 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "FacturaId,Fecha,ClienteId,Descripcion,estado,TotalCancelado")] Factura factura)
+        public ActionResult Create([Bind(Include = "FacturaId,Fecha,ClienteId,Descripcion,estado,TotalCancelado")] Factura factura, HttpPostedFileBase Comprobante)
         {
+            factura.Comprobante= ClaseSelect.GetInstancia().guardarArchivo(factura.Id.ToString(), Comprobante, "~/Imagenes/Comprobante/");
             if (ModelState.IsValid)
             {
                 db.Facturas.Add(factura);
@@ -186,13 +188,17 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "FacturaId,Fecha,ClienteId,Descripcion,estado,TotalCancelado")] Factura factura)
+        public ActionResult Edit([Bind(Include = "FacturaId,Fecha,ClienteId,Descripcion,estado,TotalCancelado")] Factura factura, HttpPostedFileBase Comprobante, string ComprobanteActual)
         {
             if (ModelState.IsValid)
             {
                 var estudiantes = db.EstudianteParaFacturas.Where(e => e.FacturaID == factura.Id).Include("Titulos").Include("Estudiante").ToList();
-                if(factura.TotalCancelado>=estudiantes.Select(e => e.Titulos.Select(t => t.Precio).Sum()).Sum())
-                factura.estado = EstadoFactura.Cancelado;
+                if (factura.TotalCancelado >= estudiantes.Select(e => e.Titulos.Select(t => t.Precio).Sum()).Sum())
+                    factura.estado = true;// EstadoFactura.Cancelado;
+                if (!ComprobanteActual.Equals("noComprobante.jpg") && Comprobante == null)
+                    factura.Comprobante = ComprobanteActual;
+                else
+                    factura.Comprobante = ClaseSelect.GetInstancia().guardarArchivo(factura.Id.ToString(), Comprobante, "~/Imagenes/Comprobante/");
                 db.Entry(factura).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

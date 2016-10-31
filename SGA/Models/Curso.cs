@@ -7,14 +7,7 @@ using System.Web;
 
 namespace SGA.Models
 {
-    public enum Estado {
-        [Display(Name = "Concluido")]
-        Concluido,
-        [Display(Name = "En Progreso")]
-        Progreso,
-        [Display(Name = "Próximamente")]
-        Proximo
-    }
+   
     public class Curso
     {
         //[DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -35,11 +28,7 @@ namespace SGA.Models
         [Required(ErrorMessage = "Cantidad requerida")]
         [Range(0, int.MaxValue, ErrorMessage = "Solo números positivos")]
         [Display(Name = "Cantidad de Evaluaciones")]
-        public int CantidadEvaluaciones { set; get; }
-
-        [Required(ErrorMessage = "Estado requerido")]
-        [Display(Name = "Estado")]
-        public Estado Estado { set; get; }
+        public int CantidadEvaluaciones { set; get; }       
 
         [Required(ErrorMessage = "Título requerido")]
         [Display(Name = "Título")]

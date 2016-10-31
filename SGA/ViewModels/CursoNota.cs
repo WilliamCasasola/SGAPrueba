@@ -9,6 +9,6 @@ namespace SGA.ViewModels
     public class CursoNota
     {
         public IEnumerable<Matricula>  Matriculas { set; get; }
-        public IEnumerable<double> Notas { set; get; }
+        //public IEnumerable<double> Notas { set; get; } //Para guardar la nota si se calculaba y no se manejaba estáticamente en la base de datos
     }
 }

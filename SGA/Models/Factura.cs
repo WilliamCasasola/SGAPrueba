@@ -6,9 +6,7 @@ using System.Web;
 
 namespace SGA.Models
 {
-    public enum EstadoFactura {
-        Cancelado, Pendiente, Congelado
-    }
+   
     public class Factura
     {
         [Display (Name="Número Factura")]
@@ -32,12 +30,16 @@ namespace SGA.Models
 
         [Required(ErrorMessage ="Estado Requerido")]
         [Display(Name ="Estado de Factura")]
-        public EstadoFactura estado { set; get; }
+        public bool estado { set; get; }
 
         [Required(ErrorMessage = "Valor de monto cancelado requerido")]
         [Display(Name = "Monto cancelado")]
         public double TotalCancelado { set; get; }
 
+        [Display(Name = "Comprobante")]
+        [RegularExpression(@"(?i).*\.(gif|jpe?g|png|bmp)$", ErrorMessage = "Seleccione un archivo (png,jpg,jpeg).")]
+        [StringLength(250, ErrorMessage = "El tamaño de la imágen es muy grande")]
+        public string Comprobante { set; get; }
 
         public virtual ICollection<EstudianteParaFactura> Detalles { set; get; }
     }

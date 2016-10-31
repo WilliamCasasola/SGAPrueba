@@ -95,10 +95,16 @@
                     @item.Titulo.Nombre
                 </td>
                 <td>
-                    @item.Estado
-                </td>
+                    @{
+
+                        var Estado = DateTime.Now < item.FechaInicio ? "Por Iniciar" : item.FechaFinal < DateTime.Now ? "Concluido" : "En progreso";
+                    }
+                    @Estado                </td>
                 <td>
                     @Html.ActionLink("Seleccionar", "Index", new { cursoID = item.Id })
+                </td>
+                <td>
+                    @Html.ActionLink("Editar","Edit" ,"Curso", new { id = item.Id }, null)
                 </td>
             </tr>
         }

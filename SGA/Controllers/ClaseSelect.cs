@@ -75,9 +75,12 @@ namespace SGA.Controllers
                 if (ruta.Equals("~/Imagenes/Documento/"))
                     return "nodocumento.png";
                 else
+                if (ruta.Equals("~/Imagenes/Comprobante/"))
+                    return "noComprobante.png";
+                else
                     return "noPortada.jpg";
             }
-            if (archivo.FileName.Equals("noperfil.jpg") || archivo.FileName.Equals("nodocumento.png") || archivo.FileName.Equals("noPortada.jpg"))
+            if (archivo.FileName.Equals("noperfil.jpg") || archivo.FileName.Equals("nodocumento.png") || archivo.FileName.Equals("noPortada.jpg") || archivo.FileName.Equals("noComprobante.png") )
                 return archivo.FileName;
 
             if (!Regex.IsMatch(archivo.FileName, @"(?i).*\.(gif|jpe?g|png|bmp)$") && archivo.ContentLength <= 5000000)

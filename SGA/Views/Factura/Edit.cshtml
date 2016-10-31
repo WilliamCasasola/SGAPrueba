@@ -7,7 +7,7 @@
 <h2>Editar</h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Factura", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     
@@ -33,6 +33,21 @@
             </div>
         </div>
 
+        @Html.Hidden("ComprobanteActual", Model.Comprobante);
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Comprobante, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <img src="~/Imagenes/Comprobante/@Url.Content(Model.Comprobante)" height="50" width="50" alt="No hay imágen" />
+                <input id="Comprobante" title="Seleccionar Imágen"
+                       type="file" name="Comprobante" />
+                @Html.ValidationMessageFor(m => m.Comprobante, "", new { @class = "text-danger" })
+                @Html.Label(" 5MB Máximo", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
         <div class="form-group">
             @Html.LabelFor(model => model.Descripcion, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -44,7 +59,8 @@
         <div class="form-group">
             @Html.LabelFor(model => model.estado, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.estado, htmlAttributes: new { @class = "form-control" })
+                @*@Html.EnumDropDownListFor(model => model.estado, htmlAttributes: new { @class = "form-control" })*@
+                @Html.DropDownListFor(model => model.estado, new[] { new SelectListItem { Text = "Cancelado", Value = "true" }, new SelectListItem { Text = "Sin Cancelar", Value = "false" } }, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.estado, "", new { @class = "text-danger" })
             </div>
         </div>

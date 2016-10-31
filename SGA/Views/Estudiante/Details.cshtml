@@ -7,140 +7,143 @@
 <h2>Detalles</h2>
 
 <div>
-    <h4>Estudiante</h4>
+    <h4>Estudiante <br> Carnet: @Html.DisplayFor(model => model.Id)</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Nombre)
-        </dt>
+    <div class="table-responsive">
+        <table>
+            <tr>
+                <td><img src="~/Imagenes/Perfil/@Url.Content(Model.Fotografia)" height="115" witdh="115" alt="No hay foto" /></td>
+                <td>
+                    <table class="table-bordered">
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Nombre): </td>
+                            <td>@Html.DisplayFor(model => model.Nombre)</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Apellidos): </td>
+                            <td>@Html.DisplayFor(model => model.Apellidos)</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Identificacion): </td>
+                            <td><img src="~/Imagenes/Documento/@Url.Content(Model.Identificacion)" height="67" witdh="67" alt="No hay foto" /></td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table class="table-bordered">
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Pais): </td>
+                            <td>@Html.DisplayFor(model => model.Pais)</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Direccion): </td>
+                            <td>@Html.DisplayFor(model => model.Direccion)</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Sexo):</td>
+                            <td>@ViewBag.sexo</td>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Profesion): </td>
+                            <td>@Html.DisplayFor(model => model.Profesion) </td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Institucion): </td>
+                            <td>@Html.DisplayFor(model => model.Institucion)</td>
+                        </tr>
+                    </table>
+                </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.Nombre)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Apellidos)
-        </dt>
+                <td>
+                    <table class="table-bordered">
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Telefono): </td>
+                            <td>@Html.DisplayFor(model => model.Telefono)</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Correo): </td>
+                            <td>@Html.DisplayFor(model => model.Correo)</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.CorreoAlternativo): </td>
+                            <td>@Html.DisplayFor(model => model.CorreoAlternativo)</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.FechaRegistro): </td>
+                            <td>@Html.DisplayFor(model => model.FechaRegistro)</td>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.Estado): </td>
+                            <td>@ViewBag.activo</td>
+                        </tr>
+                    </table>
+                </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.Apellidos)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Identificacion)
-        </dt>
-
-        <dd>
-            <img src="~/Imagenes/Documento/@Url.Content(Model.Identificacion)" height="50" width="50" alt="No hay foto" />
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Clave)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Clave)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Pais)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Pais)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Telefono)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Telefono)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Correo)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Correo)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.CorreoAlternativo)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.CorreoAlternativo)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Direccion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Direccion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.FechaRegistro)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.FechaRegistro)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Sexo)
-        </dt>
-
-        <dd>
-            @ViewBag.sexo
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Profesion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Profesion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Institucion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Institucion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Fotografia)
-        </dt>
-
-        <dd>
-            <img src="~/Imagenes/Perfil/@Url.Content(Model.Fotografia)"  height="50" width="50" alt="No hay foto" />
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Generacion.Foto)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Generacion.Foto)
-        </dd>
-
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-
-        <dd>
-            @ViewBag.activo
-        </dd>
-
-    </dl>
+                <td>
+                    <table class="table-bordered">
+                        <tr>
+                            <td>Generación: </td>
+                            </tr>
+                        <tr>
+                            <td><img src="~/Imagenes/Portada/@Url.Content(Model.Generacion.Foto)" height="90" witdh="90" alt="No hay foto" /></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
 </div>
 <p>
     @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Volver Atrás", null, null, null, new { href = Request.UrlReferrer })
 </p>
+
+
+<h3>Matriculas Realizadas</h3>
+<table class="table">
+    <tr>
+        <th>
+            Código
+        </th>
+        <th>
+            Curso
+        </th>
+        <th>
+            Fecha Matricula
+        </th>
+        <th>
+            Nota
+
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.matriculas)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Curso.TituloId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Curso.Titulo.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiaMatricula)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NotaFinal)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", "Matricula", new { id = item.ID },null) |
+                @Html.ActionLink("Detalles", "Details", "Matricula", new { id = item.ID },null) |
+                @Html.ActionLink("Deshabilitar", "Delete", "Matricula", new { id = item.ID },null)
+            </td>
+        </tr>
+    }
+    
+
+</table>
+
+<h3>Puede Graduarse:</h3>
+<div>@ViewBag.PuedeGraduarse</div>
+
+<h3>Puede hacer Proyecto Final</h3>
+<div>@ViewBag.PuedeProyecto</div>

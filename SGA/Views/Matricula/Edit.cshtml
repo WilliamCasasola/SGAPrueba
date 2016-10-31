@@ -50,8 +50,10 @@
                     {
                         <th>
                             @Html.TextBox("tipos", item.Tipo, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(modelItem => item.Tipo, "", new { @class = "text-danger" })                        </th>
+                            @Html.ValidationMessageFor(modelItem => item.Tipo, "", new { @class = "text-danger" })                        
+                        </th>
                     }
+                    <th>@Html.Label("Nota Final", htmlAttributes: new { @class = "control-label col-md-2" })</th>
                 </tr>
                <tr>
                     @foreach (var item in Model.Calificaciones)
@@ -64,6 +66,10 @@
                       
                         </td>
                     }
+                   <td>
+                       @Html.EditorFor(model => model.NotaFinal, new { htmlAttributes = new { @class = "form-control" } })
+                       @Html.ValidationMessageFor(model => model.NotaFinal, "", new { @class = "text-danger" })
+                   </td>
                 </tr>
             </table>
             

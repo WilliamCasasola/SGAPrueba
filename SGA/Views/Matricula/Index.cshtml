@@ -30,28 +30,28 @@
         <th></th>
     </tr>
    
-    @foreach (var item in Model.Matriculas.Zip(Model.Notas, (a,b) => new {matricula = a, nota = b}))
+    @foreach (var item in Model.Matriculas)//.Zip(Model.Notas, (a,b) => new {matricula = a, nota = b}))
     {
         <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.matricula.Curso.TituloId)
+            @Html.DisplayFor(modelItem => item.Curso.TituloId)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.matricula.Curso.Titulo.Nombre)
+            @Html.DisplayFor(modelItem => item.Curso.Titulo.Nombre)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.matricula.Estudiante.Nombre)
+            @Html.DisplayFor(modelItem => item.Estudiante.Nombre)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.matricula.DiaMatricula)
+            @Html.DisplayFor(modelItem => item.DiaMatricula)
         </td>
         <td>
-           @Html.DisplayFor(modelItem => item.nota)
+           @Html.DisplayFor(modelItem => item.NotaFinal)
         </td>
         <td>
-            @Html.ActionLink("Editar", "Edit", new { id = item.matricula.ID }) |
-            @Html.ActionLink("Detalles", "Details", new { id = item.matricula.ID }) |
-            @Html.ActionLink("Deshabilitar", "Delete", new { id = item.matricula.ID })
+            @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
+            @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+            @Html.ActionLink("Deshabilitar", "Delete", new { id = item.ID })
         </td>
     </tr>
     }

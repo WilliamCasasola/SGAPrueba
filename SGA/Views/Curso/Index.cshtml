@@ -30,12 +30,13 @@
            Generación
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Estado)
+           Estado
         </th>
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model)
+{
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Titulo.Id)
@@ -56,7 +57,11 @@
             @Html.DisplayFor(modelItem => item.Generacion.Id)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Estado)
+            @{
+
+            var Estado = DateTime.Now < item.FechaInicio ? "Por Iniciar" : item.FechaFinal < DateTime.Now ? "Concluido" : "En progreso";
+            }
+           @Estado
         </td>
         <td>
             @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |

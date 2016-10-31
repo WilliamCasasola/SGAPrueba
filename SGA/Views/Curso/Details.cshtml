@@ -51,11 +51,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Estado)
+           Estado: 
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Estado)
+           @ViewBag.Estado
         </dd>
 
     </dl>
@@ -64,3 +64,53 @@
     @Html.ActionLink("Editar", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Volver Atrás", null, null, null, new { href = Request.UrlReferrer })
 </p>
+<h3>Matriculas Realizadas</h3>
+<table class="table">
+    <tr>
+        <th>
+            Código
+        </th>
+        <th>
+            Curso
+        </th>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Fecha Matricula
+        </th>
+        <th>
+            Nota
+
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model.Matriculas)//.Zip(Model.Notas, (a, b) => new { matricula = a, nota = b }))
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Curso.TituloId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Curso.Titulo.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Estudiante.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiaMatricula)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NotaFinal)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", "Matricula", new { id = item.ID },null) |
+                @Html.ActionLink("Detalles", "Details", "Matricula", new { id = item.ID },null ) |
+                @Html.ActionLink("Deshabilitar", "Delete","Matricula", new { id = item.ID },null)
+            </td>
+        </tr>
+    }
+
+
+</table>

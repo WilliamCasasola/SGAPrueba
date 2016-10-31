@@ -18,6 +18,7 @@ namespace SGA.Models
     {
         public int ID { set; get; }
         public int CursoID { set; get; }
+        public double NotaFinal { set; get; }
         public String EstudianteID { set; get; }
 
 //[DisplayFormat(NullDisplayText="Sin calificar")]

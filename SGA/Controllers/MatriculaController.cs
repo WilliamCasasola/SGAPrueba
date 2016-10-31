@@ -28,7 +28,7 @@ namespace SGA.Controllers
             curosNota.Matriculas=  db.Matriculas
                 .Include(m => m.Curso.Titulo)
                 .Include(m => m.Estudiante).ToList();
-            curosNota.Notas=db.Matriculas.Select(m => m.Calificaciones.Select(c => c.Valor).Sum() / m.Curso.CantidadEvaluaciones).ToList();
+            //curosNota.Notas=db.Matriculas.Select(m => m.Calificaciones.Select(c => c.Valor).Sum() / m.Curso.CantidadEvaluaciones).ToList();
             return View(curosNota);
         }
 
@@ -39,7 +39,7 @@ namespace SGA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Matricula matricula = db.Matriculas.Find(id);
+            Matricula matricula = db.Matriculas.Include(m=>m.Estudiante).Include(m=>m.Curso).Single(m=>m.ID==id);
             if (matricula == null)
             {
                 return HttpNotFound();
@@ -66,15 +66,15 @@ namespace SGA.Controllers
                 curosNota.Matriculas = db.Matriculas
                     .Include(m => m.Curso.Titulo)
                     .Include(m => m.Estudiante).Where(m => m.EstudianteID == Estudianteid).ToList();
-                curosNota.Notas = db.Matriculas.Where(m => m.EstudianteID == Estudianteid).Select(m => m.Calificaciones.Select(c => c.Valor).Sum() / m.Curso.CantidadEvaluaciones).ToList();
+                //curosNota.Notas = db.Matriculas.Where(m => m.EstudianteID == Estudianteid).Select(m => m.Calificaciones.Select(c => c.Valor).Sum() / m.Curso.CantidadEvaluaciones).ToList();
                 var generacionEstudiante = db.Estudiantes.Where(e => e.Id == Estudianteid).Select(e => e.GeneracionId).Single();
                 var requisitos = db.Database.SqlQuery<string>("SELECT Titulo_Id FROM titulogeneracion WHERE Generacion_Id = @gen ", new MySqlParameter("@gen", generacionEstudiante));
                 int contador = 0;
-                foreach(var item in curosNota.Matriculas.Zip(curosNota.Notas, (a, b) => new { matricula = a, nota = b }))
+                foreach(var item in curosNota.Matriculas)//.Zip(curosNota.Notas, (a, b) => new { matricula = a, nota = b }))
                 {
 
-                    if (requisitos.Contains(item.matricula.Curso.TituloId)) {
-                        if (item.nota >= 70)
+                    if (requisitos.Contains(item.Curso.TituloId)) {
+                        if (item.NotaFinal >= 70)
                             contador++;
                     }
                 }

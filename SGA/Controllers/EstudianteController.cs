@@ -15,6 +15,7 @@ using System.Data.Entity.Validation;
 using System.Diagnostics;
 using System.Data.Entity.Infrastructure;
 using System.Text.RegularExpressions;
+using MySql.Data.MySqlClient;
 
 namespace SGA.Controllers
 {
@@ -36,11 +37,36 @@ namespace SGA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Estudiante estudiante = db.Estudiantes.Find(id);
+            Estudiante estudiante = db.Estudiantes.Include(e=>e.Generacion).Single(e=>e.Id==id);
+            estudiante.matriculas = db.Matriculas.Include(m=>m.Curso.Titulo).Include(m=>m.Calificaciones).Where(m => m.EstudianteID == id).ToList();
+
             if (estudiante == null)
             {
                 return HttpNotFound();
             }
+
+            var requisitos = db.Database.SqlQuery<string>("SELECT Titulo_Id FROM titulogeneracion WHERE Generacion_Id = @gen ", new MySqlParameter("@gen", estudiante.GeneracionId));
+            int contador = 0;
+            foreach (var item in estudiante.matriculas)//.Zip(curosNota.Notas, (a, b) => new { matricula = a, nota = b }))
+            {
+
+                if (requisitos.Contains(item.Curso.TituloId))
+                {
+                    if (item.NotaFinal >= 70)
+                        contador++;
+                }
+            }
+            int cantidadRequisitos = requisitos.Count();
+            if (contador == cantidadRequisitos)
+                ViewBag.PuedeGraduarse = "Si";
+            else
+                ViewBag.PuedeGraduarse = "No puede, necesita pasar " + (cantidadRequisitos - contador) + " curso(s) más";
+
+            if (contador >= (cantidadRequisitos - 2))
+                ViewBag.PuedeProyecto = "Si";
+            else
+                ViewBag.PuedeProyecto = "No puede, necesita pasar " + (cantidadRequisitos - contador - 2) + " curso(s) más";
+
             ViewBag.sexo = estudiante.Sexo ? "Masculino" : "Femenino";
             ViewBag.activo = estudiante.Estado ? "Si" : "No";
             return View(estudiante);
@@ -196,8 +222,9 @@ namespace SGA.Controllers
             base.Dispose(disposing);
         }
 
-
-        public void insertarEstudiantescsv(HttpPostedFileBase upload)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult insertarEstudiantescsv(HttpPostedFileBase upload)
         {
 
             if (upload != null && upload.ContentLength > 0)
@@ -207,28 +234,73 @@ namespace SGA.Controllers
                 {
                     using (StreamReader CsvReader = new StreamReader(upload.InputStream))
                     {
-
-                        Regex patrontarea = new Regex(@"\d+$");
-                        Regex patronCorreo = new Regex(@"correo$");
+                        Regex [] patrones = new Regex[18];
+                        patrones[0] = new Regex(@"^Id$");
+                        patrones[1] = new Regex(@"Nombre");
+                        patrones[2] = new Regex(@"Pais");
+                        patrones[3] = new Regex(@"Telefono");
+                        patrones[4] = new Regex(@"^Correo$");
+                        patrones[5] = new Regex(@"CorreoAlternativo");
+                        patrones[6] = new Regex(@"Direccion");
+                        patrones[7] = new Regex(@"FechaRegistro");
+                        patrones[8] = new Regex(@"Apellidos");
+                        patrones[9] = new Regex(@"Clave");
+                        patrones[10] = new Regex(@"Sexo");
+                        patrones[11] = new Regex(@"Identificacion");
+                        patrones[12] = new Regex(@"Profesion");
+                        patrones[13] = new Regex(@"Institucion");
+                        patrones[14] = new Regex(@"Fotografia");
+                        patrones[15] = new Regex(@"Estado");
+                        patrones[16] = new Regex(@"GeneracionId");
+                        patrones[17] = new Regex(@"Discriminator");
+                        var numeroHeader = new Dictionary<int, int>(); ;
                         string inputLine = "";
                         string[] persona;
-                        int correo = -1;
                         inputLine = CsvReader.ReadLine();
-                        string[] headers = inputLine.Split(new char[] { ';' });
+                        string[] headers = inputLine.Split(new char[] { ',' });
                         foreach (var header in headers.Select((valor, i) => new { i, valor }))
                         {
-                            if (patronCorreo.IsMatch(header.valor))
-                                correo = header.i;
+                            for (int i = 0; i < patrones.Length; i++)
+                            {
 
-
+                                if (patrones[i].IsMatch(header.valor))
+                                {
+                                    numeroHeader.Add(i, header.i);
+                                    break;
+                                }
+                            }
+                        }
+                            var indicesOrdenados = numeroHeader.OrderBy(n => n.Key).Select(n => n.Value).ToList();
+                        int p = 0;
                             while ((inputLine = CsvReader.ReadLine()) != null)
                             {
-                                persona = inputLine.Split(new char[] { ';' });
-                                string codigoestudiante = db.Estudiantes.Where(e => e.Correo == persona[correo]).Select(e => e.Id).Single();
+                                persona = inputLine.Split(new char[] { ',' });
+                            
+                            db.Estudiantes.Add(new Estudiante
+                            {
+                                Id = p.ToString(),//Cambiar
+                                Nombre = persona[1],
+                                Pais = persona[2],
+                                Telefono = persona[3],
+                                Correo = persona[4],
+                                CorreoAlternativo = persona[4],//Cambiar
+                                Direccion = persona[6],
+                                FechaRegistro  = persona[7].Equals("nadanada")  ? DateTime.Now : DateTime.Parse(persona[7]),
+                                Apellidos = persona[8],
+                                Clave = persona[9],
+                                Sexo = Boolean.Parse(persona[10]),
+                                Identificacion = persona[11],
+                                Profesion = persona[12],
+                                Institucion = persona[13],
+                                Fotografia = persona[14],
+                                Estado = Boolean.Parse(persona[15]),
+                                GeneracionId = persona[16]
                             }
-                            CsvReader.Close();
-
+                           );
+                            p++;            
                         }
+                        db.SaveChanges();
+                        CsvReader.Close();   
                     }
                 }
                 else
@@ -240,12 +312,10 @@ namespace SGA.Controllers
                 {
                     ModelState.AddModelError("File", "Please Upload Your file");
                 }
-
-            }
-
+            return RedirectToAction("Index");
         }
-
-
+    
+ 
 
 
 

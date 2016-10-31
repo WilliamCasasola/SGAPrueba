@@ -10,7 +10,7 @@ using SGA.DAL;
 using SGA.Models;
 using System.Data.Entity.Infrastructure;
 using System.IO;
-using LumenWorks.Framework.IO.Csv;
+//using LumenWorks.Framework.IO.Csv;
 using System.Text.RegularExpressions;
 
 namespace SGA.Controllers
@@ -35,10 +35,13 @@ namespace SGA.Controllers
             }
             Curso curso = db.Cursos.Include(c => c.Generacion)
                  .Include(c => c.Titulo).Single(c => id == c.Id);
+           
             if (curso == null)
             {
                 return HttpNotFound();
             }
+            ViewBag.Estado = DateTime.Now < curso.FechaInicio ? "Por Iniciar" : curso.FechaFinal < DateTime.Now ? "Concluido" : "En progreso";
+                 curso.Matriculas = db.Matriculas.Include(m => m.Estudiante).Include(m => m.Curso).Where(m => m.CursoID == id).ToList();
             return View(curso);
         }
 
@@ -55,7 +58,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "FechaInicio,FechaFinal,CantidadEvaluaciones,Estado,TituloId,GeneracionId")] Curso curso)
+        public ActionResult Create([Bind(Include = "FechaInicio,FechaFinal,CantidadEvaluaciones,TituloId,GeneracionId")] Curso curso)
         {
             if (ModelState.IsValid)
             {
@@ -98,7 +101,7 @@ namespace SGA.Controllers
             }
             var ActualizarCurso = db.Cursos.Find(id);
             if (TryUpdateModel(ActualizarCurso, "", new String[] {
-                "FechaInicio,FechaFinal,CantidadEvaluaciones,Estado,TituloId,GeneracionId"}))
+                "FechaInicio,FechaFinal,CantidadEvaluaciones,TituloId,GeneracionId"}))
             {
                 try
                 {
@@ -116,36 +119,45 @@ namespace SGA.Controllers
                                 var numeroTarea = new Dictionary<int, int>(); ;
                                 Regex patrontarea = new Regex(@"\d+$");
                                 Regex patronCorreo = new Regex(@"correo$");
+                                Regex patronNotaFinal = new Regex(@"^Total del curso$");                                
                                 string inputLine = "";
                                 string[] persona;
-                                int correo = -1;
+                                int correo= -1;
+                                int NotaFinalPosicion = -1;
                                 inputLine = CsvReader.ReadLine();
                                     string[] headers = inputLine.Split(new char[] { ';' });
                                 foreach (var header in headers.Select((valor, i) => new { i, valor })) {
                                     if (patronCorreo.IsMatch(header.valor))
                                         correo = header.i;
+                                    if (patronNotaFinal.IsMatch(header.valor))
+                                        NotaFinalPosicion = header.i;
                                     if (patrontarea.IsMatch(header.valor))
                                     {
                                         numeroTarea.Add(int.Parse(patrontarea.Match(header.valor).Value),header.i);
                                     }
                                 }
 
-                                var indicesOrdenados= numeroTarea.OrderBy(n => n.Key).Select(n=>n.Value);
+                                var indicesOrdenados= numeroTarea.OrderBy(n => n.Key).Select(n=>n.Value).ToList();
 
                                 while ((inputLine = CsvReader.ReadLine()) != null)
                                 {
                                     persona = inputLine.Split(new char[] { ';' });
-                                    string codigoestudiante = db.Estudiantes.Where(e => e.Correo == persona[correo]).Select(e => e.Id).Single();
+                                    string temp = persona[correo];
+                                    string codigoestudiante = db.Estudiantes.Where(e => e.Correo.Equals(temp)).Select(e => e.Id).Single();
                                     Matricula matricula = new Matricula {
                                         Calificaciones = new List<Nota>(),
+                                        NotaFinal =Double.Parse(persona[NotaFinalPosicion]),
                                         EstudianteID = codigoestudiante,
-                                        CursoID=id.Value  //id.Value por que lo que le llega a la función es un int?                             
+                                        CursoID=id.Value  //id.Value por que lo que le llega a la función es un int? !!                            
                                     };
                                     foreach (var i in indicesOrdenados)
                                     {
-                                        matricula.Calificaciones.Add(new Nota { Tipo = headers[i],Valor=Double.Parse(persona[i]) });
+                                        double nota = (persona[i].Equals("-")) ? 0 :  Double.Parse(persona[i]);//Preguntar 100/4=33,6?
+                                        matricula.Calificaciones.Add(new Nota { Tipo = new Regex(@"Tarea No\.\d+$").Match(headers[i]).Value,Valor=nota });
                                     }
+                                    db.Matriculas.Add(matricula);
                                 }
+                                db.SaveChanges();
                                 CsvReader.Close();
                                 
                             }
