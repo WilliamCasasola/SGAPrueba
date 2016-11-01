@@ -11,6 +11,8 @@ using SGA.ViewModels;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 using System.Web;
+using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 
 namespace SGA.Controllers
 {
@@ -133,13 +135,29 @@ namespace SGA.Controllers
             factura.Comprobante= ClaseSelect.GetInstancia().guardarArchivo(factura.Id.ToString(), Comprobante, "~/Imagenes/Comprobante/");
             if (ModelState.IsValid)
             {
-                db.Facturas.Add(factura);
-                db.SaveChanges();
-               db.Entry(factura).GetDatabaseValues();//Le asigna al objeto que insertó su id creada dinámicamente
-               estudiantesFactura.All(e => { e.FacturaID=factura.Id; e.Estudiante = null; return true; }); ;
-                db.Dispose();
-                crearEstudiantesFactura();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Facturas.Add(factura);
+                    db.SaveChanges();
+                    db.Entry(factura).GetDatabaseValues();//Le asigna al objeto que insertó su id creada dinámicamente
+                    estudiantesFactura.All(e => { e.FacturaID = factura.Id; e.Estudiante = null; return true; }); ;
+                    db.Dispose();
+                    crearEstudiantesFactura();
+                    TempData["mensaje"] = "Se registró la factura satisfactoriamente";
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe una factura registrada con el mismo número o que escogió o que todos los datos existan, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
             }
             ViewBag.Detalles = "Si";
             factura.Detalles = estudiantesFactura;
@@ -200,8 +218,24 @@ namespace SGA.Controllers
                 else
                     factura.Comprobante = ClaseSelect.GetInstancia().guardarArchivo(factura.Id.ToString(), Comprobante, "~/Imagenes/Comprobante/");
                 db.Entry(factura).State = EntityState.Modified;
+                try { 
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                    TempData["mensaje"] = "Se registraron los cambios de la factura satisfactoriamente";
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe una factura registrada con el mismo número o que escogió o que todos los datos existan, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+              
             }
             ViewBag.ClienteId = new SelectList(db.Clientes, "Id", "Nombre", factura.ClienteId);
             return View(factura);

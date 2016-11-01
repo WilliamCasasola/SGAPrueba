@@ -44,6 +44,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DataTables.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\datatables.mvc5.0.1.0\lib\net45\DataTables.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="LumenWorks.Framework.IO, Version=3.9.1.0, Culture=neutral, PublicKeyToken=5ad3ea2f85776344, processorArchitecture=MSIL">
       <HintPath>..\packages\LumenWorksCsvReader.3.9.1\lib\net20\LumenWorks.Framework.IO.dll</HintPath>
       <Private>True</Private>
@@ -191,6 +195,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MatriculaController.cs" />
+    <Compile Include="Controllers\SweetController.cs" />
     <Compile Include="Controllers\TituloController.cs" />
     <Compile Include="Controllers\TutorController.cs" />
     <Compile Include="DAL\Inicializador.cs" />
@@ -226,12 +231,21 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\sweetalert\bootstrap-sweetalert.png" />
+    <Content Include="Content\sweetalert\docs.css" />
+    <Content Include="Content\sweetalert\sweet-alert.css" />
+    <Content Include="Content\sweetalert\thumbs-up.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\sweetalert\sweet-alert.less" />
+    <Content Include="Content\sweetalert\sweet-alert-combine.less" />
+    <Content Include="Content\sweetalert\sweet-alert-animations.less" />
+    <Content Include="Content\bootstrap\variables.less" />
+    <Content Include="Content\bootstrap\mixins.less" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -329,6 +343,7 @@
     <Content Include="Views\Estudiante\Details.cshtml" />
     <Content Include="Views\Estudiante\Edit.cshtml" />
     <Content Include="Views\Estudiante\Index.cshtml" />
+    <Content Include="Views\Sweet\Alert.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

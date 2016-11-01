@@ -47,3 +47,7 @@ $("#link2").click(function () {
         return y;
     });
 });
+
+$(document).ready(function () {
+    $('.table').DataTable();
+});

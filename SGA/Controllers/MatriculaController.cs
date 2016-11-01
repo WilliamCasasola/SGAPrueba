@@ -11,6 +11,8 @@ using SGA.Models;
 using SGA.ViewModels;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
+using System.Data.Entity.Validation;
+using System.Data.Entity.Infrastructure;
 
 namespace SGA.Controllers
 {
@@ -109,9 +111,25 @@ namespace SGA.Controllers
         {//No dejar que se matricule en el mismo curso 2 veces
             if (ModelState.IsValid)
             {
-                db.Matriculas.Add(inicializar(matricula));
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Matriculas.Add(inicializar(matricula));
+                    db.SaveChanges();
+                    TempData["mensaje"] = "Se registró la matricula satisfactoriamente";
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe que el estudiante se encuentre registrado o si ya estaba matriculado en el curso, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
             }
 
             crearSelect(matricula);
@@ -164,9 +182,25 @@ namespace SGA.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(matricula).State = EntityState.Modified;
-                db.SaveChanges();
-                Dispose(true);
+                try
+                {
+                    db.Entry(matricula).State = EntityState.Modified;
+                    db.SaveChanges();
+                    TempData["mensaje"] = "Se registraron los cambios en la matricula satisfactoriamente";
+                    Dispose(true);
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe que el estudiante se encuentre registrado o si ya estaba matriculado en el curso, si el problema persiste contacte al administrador del sistema."; 
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
                 db = new SGAContext();
                 foreach (var item in notas.Select((nota,i)=>new {Indice=i, Nota=nota })) {
                     item.Nota.Tipo = tipos[item.Indice];
@@ -174,10 +208,31 @@ namespace SGA.Controllers
                     db.Entry(item.Nota).State = EntityState.Modified;
                     
                 }
-                db.SaveChanges();
-                if (new Regex("/Tutor/Index/.+$").IsMatch(antiguauri.AbsolutePath))
-                    return Redirect(antiguauri.AbsoluteUri);
-                return RedirectToAction("Index");
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        db.Entry(matricula).State = EntityState.Modified;
+                        db.SaveChanges();
+                        TempData["mensaje"] = "Se registraron los cambios en las notas satisfactoriamente";
+                        if (new Regex("/Tutor/Index/.+$").IsMatch(antiguauri.AbsolutePath))
+                            return Redirect(antiguauri.AbsoluteUri);
+                        return RedirectToAction("Index");
+                    }
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe que las notas están bien digitadas o su respectiva identificación, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+               
             }
             crearSelect(matricula);
             return View(matricula);

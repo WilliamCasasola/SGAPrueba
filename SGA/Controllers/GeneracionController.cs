@@ -10,6 +10,7 @@ using SGA.DAL;
 using SGA.Models;
 using System.Data.Entity.Infrastructure;
 using SGA.ViewModels;
+using System.Data.Entity.Validation;
 
 namespace SGA.Controllers
 {
@@ -62,8 +63,24 @@ namespace SGA.Controllers
                     var incluirtitulo = db.Titulos.Find(titulo);
                     generacion.TitulosRequisito.Add(incluirtitulo);
                 }
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.SaveChanges();
+                    TempData["mensaje"] = "Se registró la generación satisfactoriamente";
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe una generación registrada con el mismo nombre o que escogió al menos un requisito para graduarse, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
             }
 
             return View(generacion);
@@ -139,35 +156,42 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string[] titulosSeleccionados,string id, HttpPostedFileBase Foto, string FotoActual)
+        public ActionResult Edit([Bind(Include = "Id,Fecha,Foto")] Generacion generacionActualizar, string[] titulosSeleccionados,string id, HttpPostedFileBase Foto, string FotoActual)
         {
-            if (id == null)
+            if (generacionActualizar.Id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            var generacionActualizar = db.Generacions.Include(g=>g.TitulosRequisito).Where(g=>g.Id==id).Single();
+            }            
 
             if (!FotoActual.Equals("noPortada.jpg.png") && Foto == null)
                 generacionActualizar.Foto = FotoActual;
             else
             generacionActualizar.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacionActualizar.Id, Foto, "~/Imagenes/Portada/");
-
-            if (TryUpdateModel(generacionActualizar,"",
-                new string[] { "Id,Fecha,Foto" }))
-            {
+                        
                 try
                 {
                     ActualizarRequisitosGeneracion(titulosSeleccionados, generacionActualizar);
+                if (ModelState.IsValid)
+                {
+                    db.Entry(generacionActualizar).State = EntityState.Modified;
                     db.SaveChanges();
+                    TempData["mensaje"] = "Se registraron los cambios de la generación satisfactoriamente";
                     return RedirectToAction("Index");
                 }
-                catch (RetryLimitExceededException dex)
-                {
-                    //Log the error (uncomment dex variable name and add a line here to write a log.
-                    ModelState.AddModelError("", "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.");
                 }
+            catch (DbEntityValidationException mex)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
             }
+            catch (DbUpdateException e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe una generación registrada con el mismo nombre o que escogió al menos un requisito para graduarse, si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (Exception e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+
             return View(generacionActualizar);
         }
 

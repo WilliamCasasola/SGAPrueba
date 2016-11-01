@@ -10,6 +10,7 @@ using SGA.DAL;
 using SGA.Models;
 using SGA.ViewModels;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 
 namespace SGA.Controllers
 {
@@ -88,10 +89,26 @@ namespace SGA.Controllers
             }
             if (ModelState.IsValid)
             {
-                tutor.FechaRegistro = DateTime.Now;
-                db.Tutores.Add(tutor);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    tutor.FechaRegistro = DateTime.Now;
+                    db.Tutores.Add(tutor);
+                    db.SaveChanges();
+                    TempData["mensaje"] = "Se registró el tutor satisfactoriamente";                    
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un tutor registrado con el mismo carnet , si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
             }
             populateCursoAsignadoTutor(tutor);
             return View(tutor);
@@ -141,17 +158,14 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id,int[] cursosSeleccionados, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
+        public ActionResult Edit([Bind(Include = "Id,Apellidos, Clave, Sexo, Identificacion, Profesion, Institucion, Fotografia, Estado, Nombre, Pais, Telefono, Correo, CorreoAlternativo, Direccion")] Tutor tutorActualizar, int[] cursosSeleccionados, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
         {
             
-            if (id == null)
+            if (tutorActualizar.Id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var tutorActualizar = db.Tutores
-               .Include(i => i.Cursos)
-               .Where(i => i.Id == id)
-               .Single();
+           
 
             if (!FotoActual.Equals("noperfil.jpg") && Fotografia == null)
                 tutorActualizar.Fotografia = FotoActual;
@@ -163,23 +177,32 @@ namespace SGA.Controllers
                 tutorActualizar.Identificacion = IdentificacionActual;
             else
                 tutorActualizar.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(tutorActualizar.Id, Identificacion, "~/Imagenes/Documento/");
-            if (TryUpdateModel(tutorActualizar, "",
-               new string[] { "Apellidos, Clave, Sexo, Identificacion, Profesion, Institucion, Fotografia, Estado, Nombre, Pais, Telefono, Correo, CorreoAlternativo, Direccion" }))
-            {
+            
                 try
+            {
+                if (ModelState.IsValid)
                 {
+                    db.Entry(tutorActualizar).State = EntityState.Modified;
                     ActualizarCursosInstructor(cursosSeleccionados, tutorActualizar);
 
                     db.SaveChanges();
-
+                    TempData["mensaje"] = "Se registraron los cambios del tutor satisfactoriamente";
                     return RedirectToAction("Index");
                 }
-                catch (RetryLimitExceededException dex)
-                {
-                    //Log the error (uncomment dex variable name and add a line here to write a log.
-                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
-              }
+                }
+            catch (DbEntityValidationException mex)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
             }
+            catch (DbUpdateException e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un tutor registrado con el mismo carnet , si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (Exception e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+
             populateCursoAsignadoTutor(tutorActualizar);
             return View(tutorActualizar);
         }

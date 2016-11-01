@@ -3,7 +3,37 @@
 @{
     ViewBag.Title = "Deshabilitar";
 }
-
+<script src="http://tristanedwards.me/u/SweetAlert//lib/sweet-alert.js"></script>
+<link rel="stylesheet" type="text/css" href="http://tristanedwards.me/u/SweetAlert//lib/sweet-alert.css">
+@if (null != TempData["mensajeError"])
+{
+    <script type="text/javascript">
+    swal({
+        title:'PROMiDAT',
+        text: '@TempData["mensajeError"]',
+        type: "warning",
+        confirmButtonText: "Ok!",
+        html: true
+    })
+    </script>
+    TempData["mensajeError"] = null;
+}
+else
+{
+    if (null != TempData["mensaje"])
+    {
+        <script type="text/javascript">
+    swal({
+        title:'PROMiDAT',
+        text: '@TempData["mensaje"]',
+        type: "success",
+        confirmButtonText: "Ok!",
+        html: true
+    })
+        </script>
+        TempData["mensaje"] = null;
+    }
+}
 <h2>Deshabilitar</h2>
 
 <h3>¿Está seguro de deshabilitarlo?</h3>

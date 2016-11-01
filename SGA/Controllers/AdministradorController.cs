@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 
 namespace SGA.Controllers
 {
@@ -57,12 +58,28 @@ namespace SGA.Controllers
             administrador.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(administrador.Id, Identificacion, "~/Imagenes/Documento/");
             if (ModelState.IsValid)
             {
-                administrador.FechaRegistro = DateTime.Now;
-                db.Administradors.Add(administrador);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    administrador.FechaRegistro = DateTime.Now;
+                    db.Administradors.Add(administrador);
+                    db.SaveChanges();
+                    TempData["mensaje"] = "Se registró el administrador satisfactoriamente";
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {             
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un administrador registrado con el mismo carnet , si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
             }
-
+            ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
             return View(administrador);
         }
 
@@ -88,13 +105,13 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual) {
+        public ActionResult Edit([Bind(Include="Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Administrador administradorActualizar, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual) {
 
-                if (id == null)
+                if (administradorActualizar.Id == null)
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
-                var administradorActualizar = db.Administradors.Single(a => a.Id == id);
+
                 if (!FotoActual.Equals("noperfil.jpg") && Fotografia == null)
                     administradorActualizar.Fotografia = FotoActual;
                 else
@@ -105,21 +122,28 @@ namespace SGA.Controllers
                     administradorActualizar.Identificacion = IdentificacionActual;
                 else
                     administradorActualizar.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(administradorActualizar.Id, Identificacion, "~/Imagenes/Documento/");
-
-                if (TryUpdateModel(administradorActualizar, "",
-                    new string[] { "Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion" }))
+            try
+            {
+                if (ModelState.IsValid)
                 {
-                    try
-                    {
-                        db.SaveChanges();
-                        return RedirectToAction("Index");
-                    }
-                    catch (RetryLimitExceededException dex)
-                    {
-                        //Log the error (uncomment dex variable name and add a line here to write a log.
-                        ModelState.AddModelError("", "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.");
-                    }
+                    db.Entry(administradorActualizar).State = EntityState.Modified;
+                    db.SaveChanges();
+                    TempData["mensaje"] = "Se registraron los cambios en el administrador satisfactoriamente";
+                    return RedirectToAction("Index");
                 }
+            }
+            catch (DbEntityValidationException mex)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (DbUpdateException e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un administrador registrado con el mismo carnet , si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (Exception e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
             ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
             return View(administradorActualizar);
             }

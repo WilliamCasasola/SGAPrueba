@@ -3,43 +3,86 @@
 @{
     ViewBag.Title = "Generaciones";
 }
+<script src="http://tristanedwards.me/u/SweetAlert//lib/sweet-alert.js"></script>
+<link rel="stylesheet" type="text/css" href="http://tristanedwards.me/u/SweetAlert//lib/sweet-alert.css">
+@if (null != TempData["mensajeError"])
+{
+    <script type="text/javascript">
+    swal({
+        title:'PROMiDAT',
+        text: '@TempData["mensajeError"]',
+        type: "warning",
+        confirmButtonText: "Ok!",
+        html: true
+    })
+    </script>
+    TempData["mensajeError"] = null;
 
+}
+else
+{
+    if (null != TempData["mensaje"])
+    {
+        <script type="text/javascript">
+    swal({
+        title:'PROMiDAT',
+        text: '@TempData["mensaje"]',
+        type: "success",
+        confirmButtonText: "Ok!",
+        html: true
+    })
+        </script>
+        TempData["mensaje"] = null;
+
+    }
+}
 <h2>Generaciones</h2>
 
 <p>
     @Html.ActionLink("Crear Nueva", "Create")
 </p>
 <table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Id)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Fecha)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Foto)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Id)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Fecha)
-        </td>
-        <td>
-            <img src="~/Imagenes/Portada/@Url.Content(item.Foto)" height="50" width="50" alt="No hay foto" />
-        </td>
-        <td>
-            @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
-            @Html.ActionLink("Deshabilitar", "Delete", new { id = item.Id })
-        </td>
-    </tr>
-}
-
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Foto)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    <img src="~/Imagenes/Portada/@Url.Content(item.Foto)" height="50" width="50" alt="No hay foto" />
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Deshabilitar", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+@*-Para usar el datatable se debe poner aquí el link y el script, hace uso de jquery
+    -La tabla debe dener theader y tbody para servir el datatable *@
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
+    @Scripts.Render("~/Scripts/jqueryFunciones.js")
+}

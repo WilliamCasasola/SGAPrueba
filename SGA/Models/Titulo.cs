@@ -13,7 +13,7 @@ namespace SGA.Models
 
         [Required(ErrorMessage = "Nombre requerido")]
         [Display(Name = "Nombre")]
-        [RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$", ErrorMessage = "Los nombres solo pueden tener letras y la primera en mayúsucula.")]
+        //[RegularExpression(@"^[A-Z]+[a-zA-Z''-'\s]*$", ErrorMessage = "Los nombres solo pueden tener letras y la primera en mayúsucula.")]
         [StringLength(50, ErrorMessage = "Los nombres no pueden tener más de 50 carácteres..")]
         public string Nombre { set; get; }
 

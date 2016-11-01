@@ -17,6 +17,7 @@ using System.Data.Entity.Infrastructure;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
 
+
 namespace SGA.Controllers
 {
     public class EstudianteController : Controller
@@ -98,10 +99,25 @@ namespace SGA.Controllers
 
             if (ModelState.IsValid)
             {
+                try { 
                 db.Estudiantes.Add(estudiante);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                TempData["mensaje"] = "Se registraró el estudiante satisfactoriamente";
+                    return RedirectToAction("Index");
             }
+              catch (DbEntityValidationException mex)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (DbUpdateException e)
+            {                
+                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un estudiante con el mismo carnet registrado o si la generación existen, si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (Exception e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+        }
 
             ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", estudiante.GeneracionId);
             return View(estudiante);
@@ -149,14 +165,13 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
+        public ActionResult Edit([Bind(Include ="Id,Nombre,Pais,Identificacion,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Fotografia,Clave,Sexo,Profesion,Institucion,Estado,GeneracionId")] Estudiante estudianteActualizar, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
         {
-            if (id == null)
+            if (estudianteActualizar.Id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var estudianteActualizar = db.Estudiantes.Single(a => a.Id == id);
-
+            
             if (!FotoActual.Equals("noperfil.jpg") && Fotografia == null)
                 estudianteActualizar.Fotografia = FotoActual;
             else
@@ -166,23 +181,30 @@ namespace SGA.Controllers
             if (!IdentificacionActual.Equals("nodocumento.png") && Identificacion == null)
                 estudianteActualizar.Identificacion = IdentificacionActual;
             else
-                estudianteActualizar.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(estudianteActualizar.Id, Identificacion, "~/Imagenes/Documento/");
-
-            if (TryUpdateModel(estudianteActualizar, "",
-                new string[] { "Nombre,Pais,Identificacion,Telefono,Correo,CorreoAlternativo,Direccion,Apellidos,Fotografia,Clave,Sexo,Profesion,Institucion,Estado,GeneracionId" })){
+                estudianteActualizar.Identificacion = ClaseSelect.GetInstancia().guardarArchivo(estudianteActualizar.Id, Identificacion, "~/Imagenes/Documento/");          
                         try
                     {
+                if (ModelState.IsValid)
+                {
+                    db.Entry(estudianteActualizar).State = EntityState.Modified;
                     db.SaveChanges();
+                    TempData["mensaje"] = "Se registraron los cambios del estudiante satisfactoriamente";
                     return RedirectToAction("Index");
-
-                    }
-                    catch (RetryLimitExceededException dex)
-                    {
-                        //Log the error (uncomment dex variable name and add a line here to write a log.
-                        ModelState.AddModelError("", "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.");
-                    }
                 }
-                ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
+                    }
+            catch (DbEntityValidationException mex)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (DbUpdateException e)
+            {                
+                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un estudiante con el mismo carnet registrado o si la generación existen, si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (Exception e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+            ViewBag.Paises = ClaseSelect.GetInstancia().GetCountries();
             ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", estudianteActualizar.GeneracionId);
             return View(estudianteActualizar);
         }
@@ -299,19 +321,37 @@ namespace SGA.Controllers
                            );
                             p++;            
                         }
-                        db.SaveChanges();
+                        try
+                        {
+                            db.SaveChanges();
+                        }
+                        catch (DbEntityValidationException mex)
+                        {
+                            TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                        }
+                        catch (DbUpdateException e) {                            
+                            TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si algún estudiante ya está registrado o si las generaciones existen, si el problema persiste contacte al administrador del sistema.";
+                        }
+                        catch (Exception e)
+                        {
+                            TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                        }
                         CsvReader.Close();   
                     }
                 }
                 else
                 {
-                    ModelState.AddModelError("File", "This file format is not supported");
+                    TempData["mensajeError"] = "El archivo no tiene el formato requerido";
                 }
                 }
                 else
                 {
-                    ModelState.AddModelError("File", "Please Upload Your file");
+                TempData["mensajeError"] = "Por favor suba un archivo csv";
                 }
+
+            if(TempData["mensajeError"]==null)
+                TempData["mensaje"] = "Se registraron los estudiantes satisfactoriamente";
+
             return RedirectToAction("Index");
         }
     

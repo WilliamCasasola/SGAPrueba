@@ -12,6 +12,7 @@ using System.Data.Entity.Infrastructure;
 using System.IO;
 //using LumenWorks.Framework.IO.Csv;
 using System.Text.RegularExpressions;
+using System.Data.Entity.Validation;
 
 namespace SGA.Controllers
 {
@@ -62,9 +63,25 @@ namespace SGA.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Cursos.Add(curso);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Cursos.Add(curso);
+                    db.SaveChanges();
+                    TempData["mensaje"] = "Se registró el curso satisfactoriamente";
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un curso registrado con el mismo código o si existe la generación o título específicado , si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
             }
 
             ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", curso.GeneracionId);
@@ -94,27 +111,17 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public ActionResult EditPost(int? id, HttpPostedFileBase upload)
-        {
-            if (id == null) {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var ActualizarCurso = db.Cursos.Find(id);
-            if (TryUpdateModel(ActualizarCurso, "", new String[] {
-                "FechaInicio,FechaFinal,CantidadEvaluaciones,TituloId,GeneracionId"}))
-            {
-                try
-                {
-
-                 
-
-
+        public ActionResult EditPost([Bind(Include = "Id,FechaInicio,FechaFinal,CantidadEvaluaciones,TituloId,GeneracionId")] Curso ActualizarCurso, HttpPostedFileBase upload)
+        {                      
+                               
                     if (upload != null && upload.ContentLength > 0)
                     {
                         
                         if (upload.FileName.EndsWith(".csv"))
-                        {
+                        {                         
                             using (StreamReader CsvReader = new StreamReader(upload.InputStream))
+                            {
+                            try
                             {
                                 var numeroTarea = new Dictionary<int, int>(); ;
                                 Regex patrontarea = new Regex(@"\d+$");
@@ -148,7 +155,7 @@ namespace SGA.Controllers
                                         Calificaciones = new List<Nota>(),
                                         NotaFinal =Double.Parse(persona[NotaFinalPosicion]),
                                         EstudianteID = codigoestudiante,
-                                        CursoID=id.Value  //id.Value por que lo que le llega a la función es un int? !!                            
+                                        CursoID=ActualizarCurso.Id  //id.Value por que lo que le llega a la función es un int? !!                            
                                     };
                                     foreach (var i in indicesOrdenados)
                                     {
@@ -157,29 +164,55 @@ namespace SGA.Controllers
                                     }
                                     db.Matriculas.Add(matricula);
                                 }
+                            
                                 db.SaveChanges();
-                                CsvReader.Close();
+                                TempData["mensaje"] = "Se registraron las matriculas satisfactoriamente";
+                            }
+                            catch (DbEntityValidationException mex)
+                            {
+                                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                            }
+                            catch (DbUpdateException e)
+                            {
+                                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe que todos los estudiantes se encuentren registrados o si ya estaba matriculado en el curso , si el problema persiste contacte al administrador del sistema.";
+                            }
+                            catch (Exception e)
+                            {
+                                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                            }
+                            CsvReader.Close();
                                 
                             }
                         }
                         else
                         {
-                            ModelState.AddModelError("File", "This file format is not supported");
-                        }
+                        TempData["mensajeError"] = "El archivo no tiene el formato requerido";
                     }
-                    else
-                    {
-                        ModelState.AddModelError("File", "Please Upload Your file");
-                    }
-
+                }
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    db.Entry(ActualizarCurso).State = EntityState.Modified;
                     db.SaveChanges();
+                    TempData["mensaje"] = "Se registraron los cambios en el curso satisfactoriamente";
                     return RedirectToAction("Index");
                 }
-                catch (RetryLimitExceededException /*/dex*/)
-                {
-                    ModelState.AddModelError("", "No se pudo realizar la acción. Vulva a intentarlo, si el problema persiste contante al administrador del sistema");
-                }
             }
+            catch (DbEntityValidationException mex)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (DbUpdateException e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un curso registrado con el mismo código o si existe la generación o título específicado , si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (Exception e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+          
+            
             generarSelect(ActualizarCurso);
             return View(ActualizarCurso);
         }

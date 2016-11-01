@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
+using System.Data.Entity.Validation;
+using System.Data.Entity.Infrastructure;
 
 namespace SGA.Controllers
 {
@@ -53,10 +55,26 @@ namespace SGA.Controllers
         {
             if (ModelState.IsValid)
             {
-                cliente.FechaRegistro = DateTime.Now;
-                db.Clientes.Add(cliente);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    cliente.FechaRegistro = DateTime.Now;
+                    db.Clientes.Add(cliente);
+                    db.SaveChanges();
+                    TempData["mensaje"] = "Se registró el cliente satisfactoriamente";
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un cliente registrado con el mismo carnet , si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
             }
 
             return View(cliente);
@@ -88,9 +106,25 @@ namespace SGA.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(cliente).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Entry(cliente).State = EntityState.Modified;
+                    db.SaveChanges();
+                    TempData["mensaje"] = "Se registraron los cambios en el cliente satisfactoriamente";
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un cliente registrado con el mismo carnet , si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
             }
             return View(cliente);
         }

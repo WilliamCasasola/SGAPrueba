@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using SGA.DAL;
 using SGA.Models;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 
 namespace SGA.Controllers
 {
@@ -54,9 +55,25 @@ namespace SGA.Controllers
 
             if (ModelState.IsValid)
             {
-                db.Titulos.Add(titulo);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    db.Titulos.Add(titulo);
+                    db.SaveChanges();
+                    TempData["mensaje"] = "Se registró el título satisfactoriamente";
+                    return RedirectToAction("Index");
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un titulo registrado con el mismo código , si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
             }
 
             return View(titulo);
@@ -82,34 +99,42 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string id, HttpPostedFileBase Foto, string FotoActual)
+        public ActionResult Edit([Bind(Include ="Id,Nombre,Precio,Foto")] Titulo tituloActualizar, HttpPostedFileBase Foto, string FotoActual)
         {
-            if (id == null)
+            if (tituloActualizar.Id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-
-            var tituloActualizar = db.Titulos.Single(t => t.Id == id);
+          
 
             if (!FotoActual.Equals("noPortada.jpg") && Foto == null)
                 tituloActualizar.Foto = FotoActual;
             else
                 tituloActualizar.Foto = ClaseSelect.GetInstancia().guardarArchivo(tituloActualizar.Id, Foto, "~/Imagenes/Portada/");
 
-            if (TryUpdateModel(tituloActualizar, "",
-                new string[] { "Nombre,Precio,Foto" }))
+            try
             {
-                try
+                if (ModelState.IsValid)
                 {
+                    db.Entry(tituloActualizar).State = EntityState.Modified;
                     db.SaveChanges();
+                    TempData["mensaje"] = "Se registraron los cambios del título satisfactoriamente";
                     return RedirectToAction("Index");
                 }
-                catch (RetryLimitExceededException dex)
-                {
-                    //Log the error (uncomment dex variable name and add a line here to write a log.
-                    ModelState.AddModelError("", "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.");
-                }
             }
+            catch (DbEntityValidationException mex)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (DbUpdateException e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un administrador registrado con el mismo código , si el problema persiste contacte al administrador del sistema.";
+            }
+            catch (Exception e)
+            {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            }
+
             return View(tituloActualizar);
         }
 
