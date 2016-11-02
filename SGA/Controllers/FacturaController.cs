@@ -206,7 +206,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "FacturaId,Fecha,ClienteId,Descripcion,estado,TotalCancelado")] Factura factura, HttpPostedFileBase Comprobante, string ComprobanteActual)
+        public ActionResult Edit([Bind(Include = "Id,Fecha,ClienteId,Descripcion,estado,TotalCancelado")] Factura factura, HttpPostedFileBase Comprobante, string ComprobanteActual)
         {
             if (ModelState.IsValid)
             {

@@ -38,6 +38,21 @@
 
 <h2>Estudiantes</h2>
 
+@using (Html.BeginForm("insertarEstudiantescsv", "Estudiante", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <input class="file" type="file" id="dataFile" name="upload" />
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Importar csv" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+
+
 <p>
     @Html.ActionLink("Crear  Nuevo", "Create")
 </p>
@@ -114,18 +129,7 @@
     </tbody>
 </table>
 
-@using (Html.BeginForm("insertarEstudiantescsv", "Estudiante", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
-<div class="form-group">
-    <input type="file" id="dataFile" name="upload" />
-</div>
-<div class="form-group">
-    <div class="col-md-offset-2 col-md-10">
-        <input type="submit" value="Importar csv" class="btn btn-default" />
-    </div>
-</div>
-}
+
 @*-Para usar el datatable se debe poner aquí el link y el script, hace uso de jquery
   -La tabla debe dener theader y tbody para servir el datatable *@
 @section Scripts {
