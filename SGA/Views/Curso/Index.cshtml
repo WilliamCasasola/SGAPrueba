@@ -77,11 +77,13 @@ else
                     @Html.DisplayFor(modelItem => item.Titulo.Nombre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FechaInicio)
+                    @Html.TextBoxFor(modelItem => item.FechaInicio, "{0:dd-MM-yyyy}", new {
+                   style = "outline: none; border: none; ", @readonly = true})
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FechaFinal)
-                </td>
+                    @Html.TextBoxFor(modelItem => item.FechaFinal, "{0:dd-MM-yyyy}", new{
+                    style = "outline: none; border: none; ",@readonly = true})
+                /td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CantidadEvaluaciones)
                 </td>
@@ -91,16 +93,20 @@ else
                 <td>
                     @{
 
-                        var Estado = DateTime.Now < item.FechaInicio ? "Por Iniciar" : item.FechaFinal < DateTime.Now ? "Concluido" : "En progreso";
-                    }
-                    @Estado
-                </td>
-                <td>
-                    @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Deshabilitar", "Delete", new { id = item.Id })
-                </td>
-            </tr>
+                            var Estado = DateTime.Now < item.FechaInicio ? "Por Iniciar" : item.FechaFinal < DateTime.Now ? "Concluido" : "En progreso";
+                        }
+                        @Estado
+                    </td>
+
+
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Detalles", "Details", new { id = item.Id }) |
+                        @Html.ActionLink("Deshabilitar", "Delete", new { id = item.Id })
+                    </td>
+
+
+                </tr>
                         }
     </tbody>
 </table>

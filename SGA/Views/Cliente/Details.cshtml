@@ -46,8 +46,11 @@
                         </tr>
                         <tr>
                             <td>@Html.DisplayNameFor(model => model.FechaRegistro): </td>
-                            <td>@Html.DisplayFor(model => model.FechaRegistro)</td>
-                        </tr>                       
+                            <td>
+                                @Html.TextBoxFor(model => model.FechaRegistro, "{0:dd-MM-yyyy}", new{
+                                style = "outline: none; border: none; ",@readonly = true})
+                            </td>
+                       </tr>                       
                     </table>
                 </td>                
             </tr>

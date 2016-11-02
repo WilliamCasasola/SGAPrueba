@@ -68,8 +68,9 @@ else
                     @Html.DisplayFor(modelItem => item.Cliente.Nombre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Fecha)
-                </td>
+                    @Html.TextBoxFor(modelItem => item.Fecha, "{0:dd-MM-yyyy}", new{
+                        style = "outline: none; border: none; ", @readonly = true})
+                                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Descripcion)
                 </td>

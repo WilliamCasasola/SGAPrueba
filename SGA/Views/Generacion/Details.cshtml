@@ -23,7 +23,8 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Fecha)
+            @Html.TextBoxFor(model => model.Fecha, "{0:dd-MM-yyyy}", new {
+                style = "outline: none; border: none; ",@readonly = true})
         </dd>
 
         <dt>

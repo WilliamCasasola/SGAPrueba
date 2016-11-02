@@ -152,7 +152,8 @@ else
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.FechaRegistro)
+        @Html.TextBoxFor(model => model.FechaRegistro, "{0:dd-MM-yyyy}", new{
+            style = "outline: none; border: none; ",@readonly = true})
         </dd>
 
         <dt>

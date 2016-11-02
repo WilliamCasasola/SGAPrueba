@@ -56,15 +56,16 @@ namespace SGA.Controllers
             generacion.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacion.Id, Foto, "~/Imagenes/Portada/");
             if (ModelState.IsValid)
             {
-                db.Generacions.Add(generacion);
+                try
+                {
+                    db.Generacions.Add(generacion);
                 generacion.TitulosRequisito = new List<Titulo>();//Para no inicializar aquí se puede inicializar en el modelo en el get y el set
                 foreach (var titulo in titulosSeleccionados)
                 {
                     var incluirtitulo = db.Titulos.Find(titulo);
                     generacion.TitulosRequisito.Add(incluirtitulo);
                 }
-                try
-                {
+
                     db.SaveChanges();
                     TempData["mensaje"] = "Se registró la generación satisfactoriamente";
                     return RedirectToAction("Index");

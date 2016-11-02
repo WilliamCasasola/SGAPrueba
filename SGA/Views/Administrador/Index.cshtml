@@ -86,7 +86,8 @@ else
                     @Html.DisplayFor(modelItem => item.Correo)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FechaRegistro)
+                    @Html.TextBoxFor(modelItem => item.FechaRegistro, "{0:dd-MM-yyyy}", new{
+                        style = "outline: none; border: none; ",@readonly = true})
                 </td>
                 <td>
                     @if (item.Estado)

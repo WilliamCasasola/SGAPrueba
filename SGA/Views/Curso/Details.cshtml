@@ -31,7 +31,8 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.FechaInicio)
+            @Html.TextBoxFor(model => model.FechaInicio, "{0:dd-MM-yyyy}", new{
+                style = "outline: none; border: none; ",@readonly = true})
         </dd>
 
         <dt>
@@ -39,8 +40,9 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.FechaFinal)
-        </dd>
+        @Html.TextBoxFor(model => model.FechaFinal, "{0:dd-MM-yyyy}", new{
+                  style = "outline: none; border: none; ",@readonly = true})
+                </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.CantidadEvaluaciones)

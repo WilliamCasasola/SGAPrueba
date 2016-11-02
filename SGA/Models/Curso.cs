@@ -16,13 +16,13 @@ namespace SGA.Models
         [Required(ErrorMessage = "Fecha requerida")]
         [Display(Name = "Fecha de Inicio")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime FechaInicio { set; get; }
 
         [Required(ErrorMessage = "Fecha requerida")]
         [Display(Name = "Fecha de Finalización")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime FechaFinal { set; get; }
 
         [Required(ErrorMessage = "Cantidad requerida")]

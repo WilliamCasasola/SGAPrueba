@@ -63,7 +63,8 @@ else
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.DiaMatricula)
+            @Html.TextBoxFor(model => model.DiaMatricula, "{0:dd-MM-yyyy}", new{
+                    style = "outline: none; border: none; ",@readonly = true})
         </dd>
 
     </dl>

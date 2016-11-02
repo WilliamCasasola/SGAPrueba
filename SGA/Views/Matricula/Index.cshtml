@@ -76,7 +76,8 @@ else
                     @Html.DisplayFor(modelItem => item.Estudiante.Nombre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DiaMatricula)
+                    @Html.TextBoxFor(modelItem => item.DiaMatricula, "{0:dd-MM-yyyy}", new{
+                        style = "outline: none; border: none; ",@readonly = true})                
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.NotaFinal)

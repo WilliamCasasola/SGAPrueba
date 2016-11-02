@@ -13,6 +13,7 @@ using System.IO;
 //using LumenWorks.Framework.IO.Csv;
 using System.Text.RegularExpressions;
 using System.Data.Entity.Validation;
+using System.Globalization;
 
 namespace SGA.Controllers
 {
@@ -61,29 +62,34 @@ namespace SGA.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "FechaInicio,FechaFinal,CantidadEvaluaciones,TituloId,GeneracionId")] Curso curso)
         {
-            if (ModelState.IsValid)
+            if (curso.FechaInicio < curso.FechaFinal)
             {
-                try
+                if (ModelState.IsValid)
                 {
-                    db.Cursos.Add(curso);
-                    db.SaveChanges();
-                    TempData["mensaje"] = "Se registró el curso satisfactoriamente";
-                    return RedirectToAction("Index");
-                }
-                catch (DbEntityValidationException mex)
-                {
-                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
-                }
-                catch (DbUpdateException e)
-                {
-                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un curso registrado con el mismo código o si existe la generación o título específicado , si el problema persiste contacte al administrador del sistema.";
-                }
-                catch (Exception e)
-                {
-                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                    try
+                    {
+                        db.Cursos.Add(curso);
+                        db.SaveChanges();
+                        TempData["mensaje"] = "Se registró el curso satisfactoriamente";
+                        return RedirectToAction("Index");
+                    }
+                    catch (DbEntityValidationException mex)
+                    {
+                        TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                    }
+                    catch (DbUpdateException e)
+                    {
+                        TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un curso registrado con el mismo código o si existe la generación o título específicado , si el problema persiste contacte al administrador del sistema.";
+                    }
+                    catch (Exception e)
+                    {
+                        TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                    }
                 }
             }
-
+            else {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe que la fecha inicial no sea mayor a la fecha Final";
+            }
             ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", curso.GeneracionId);
             ViewBag.TituloId = new SelectList(db.Titulos, "Id", "Nombre", curso.TituloId);
             return View(curso);
@@ -101,7 +107,7 @@ namespace SGA.Controllers
             {
                 return HttpNotFound();
             }
-            generarSelect(curso);
+            generarSelect(curso);            
             return View(curso);
         }
 
@@ -189,29 +195,34 @@ namespace SGA.Controllers
                         TempData["mensajeError"] = "El archivo no tiene el formato requerido";
                     }
                 }
-            try
+            if (ActualizarCurso.FechaInicio < ActualizarCurso.FechaFinal)
             {
-                if (ModelState.IsValid)
+                try
                 {
-                    db.Entry(ActualizarCurso).State = EntityState.Modified;
-                    db.SaveChanges();
-                    TempData["mensaje"] = "Se registraron los cambios en el curso satisfactoriamente";
-                    return RedirectToAction("Index");
+                    if (ModelState.IsValid)
+                    {
+                        db.Entry(ActualizarCurso).State = EntityState.Modified;
+                        db.SaveChanges();
+                        TempData["mensaje"] = "Se registraron los cambios en el curso satisfactoriamente";
+                        return RedirectToAction("Index");
+                    }
+                }
+                catch (DbEntityValidationException mex)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (DbUpdateException e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un curso registrado con el mismo código o si existe la generación o título específicado , si el problema persiste contacte al administrador del sistema.";
+                }
+                catch (Exception e)
+                {
+                    TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
                 }
             }
-            catch (DbEntityValidationException mex)
-            {
-                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
+            else {
+                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe que la fecha inicial no sea mayor a la fecha Final";
             }
-            catch (DbUpdateException e)
-            {
-                TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe si ya existe un curso registrado con el mismo código o si existe la generación o título específicado , si el problema persiste contacte al administrador del sistema.";
-            }
-            catch (Exception e)
-            {
-                TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
-            }
-          
             
             generarSelect(ActualizarCurso);
             return View(ActualizarCurso);

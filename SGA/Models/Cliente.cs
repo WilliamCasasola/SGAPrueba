@@ -43,7 +43,7 @@ namespace SGA.Models
         public string Direccion { set; get; }
 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "Fecha Registro")]
         public DateTime FechaRegistro { get; set; }
 
