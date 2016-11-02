@@ -75,7 +75,10 @@ else
                     @Html.DisplayFor(modelItem => item.Descripcion)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.estado)
+                    @{
+                        var estado = item.estado ? "Cancelado" : "Sin Cancelar";
+                    }
+                    @estado
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.TotalCancelado)

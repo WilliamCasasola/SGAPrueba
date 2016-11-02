@@ -23,8 +23,8 @@
         </dt>
 
         <dd>
-        @Html.TextBoxFor(model => model.Fecha, "{0:dd-MM-yyyy}", new{
-            style = "outline: none; border: none; ",@readonly = true})
+        @Html.TextBoxFor(model => model.Fecha, "{0:dd-MM-yyyy}", new {
+       style = "outline: none; border: none; ", @readonly = true })
         </dd>
 
         <dt>
@@ -45,7 +45,10 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.estado)
+            @{
+                var estado = Model.estado ? "Cancelado" : "Sin Cancelar";
+            }
+            @estado
         </dt>
 
         <dd>

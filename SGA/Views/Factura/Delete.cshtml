@@ -71,8 +71,11 @@ else
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.estado)
-        </dd>
+            @{
+                var estado = Model.estado ? "Cancelado" : "Sin Cancelar";
+            }
+            @estado 
+               </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.TotalCancelado)

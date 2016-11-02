@@ -158,7 +158,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Apellidos, Clave, Sexo, Identificacion, Profesion, Institucion, Fotografia, Estado, Nombre, Pais, Telefono, Correo, CorreoAlternativo, Direccion")] Tutor tutorActualizar, int[] cursosSeleccionados, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
+        public ActionResult Edit([Bind(Include = "Id,Apellidos, Clave, Sexo, Profesion, Institucion, Estado, Nombre, Pais, Telefono, Correo, CorreoAlternativo, Direccion")] Tutor tutorActualizar, int[] cursosSeleccionados, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual)
         {
             
             if (tutorActualizar.Id == null)
@@ -183,7 +183,8 @@ namespace SGA.Controllers
                 if (ModelState.IsValid)
                 {
                     db.Entry(tutorActualizar).State = EntityState.Modified;
-                    ActualizarCursosInstructor(cursosSeleccionados, tutorActualizar);
+                    Tutor tutorActualizarAux = db.Tutores.Include(t => t.Cursos).Single(t => t.Id == tutorActualizar.Id);
+                    ActualizarCursosInstructor(cursosSeleccionados, tutorActualizarAux);
 
                     db.SaveChanges();
                     TempData["mensaje"] = "Se registraron los cambios del tutor satisfactoriamente";

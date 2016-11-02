@@ -41,7 +41,7 @@ namespace SGA.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Matricula matricula = db.Matriculas.Include(m=>m.Estudiante).Include(m=>m.Curso).Single(m=>m.ID==id);
+            Matricula matricula = db.Matriculas.Include(m => m.Calificaciones).Include(m=>m.Estudiante).Include(m=>m.Curso.Titulo).Single(m=>m.ID==id);
             if (matricula == null)
             {
                 return HttpNotFound();

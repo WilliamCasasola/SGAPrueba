@@ -18,21 +18,21 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("PROMiDAT", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("PROMiDAT", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", style = "color:#C8B02D" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
-                    <li>@Html.ActionLink("Administradores", "Index", "Administrador")</li>
-                    <li>@Html.ActionLink("Estudiantes", "Index", "Estudiante")</li>
-                    <li>@Html.ActionLink("Tutores", "Index", "Tutor")</li>
-                    <li>@Html.ActionLink("Titulos", "Index", "Titulo")</li>
-                    <li>@Html.ActionLink("Cursos", "Index", "Curso")</li>
-                    <li>@Html.ActionLink("Generaciones", "Index", "Generacion")</li>
-                    <li>@Html.ActionLink("Matriculas", "Index", "Matricula")</li>
-                    <li>@Html.ActionLink("Clientes", "Index", "Cliente")</li>
-                    <li>@Html.ActionLink("Facturas", "Index", "Factura")</li>
+                    <li>@Html.ActionLink("Inicio", "Index", "Home",null,new { style = "color:#C8B02D" })</li>
+                    <li>@Html.ActionLink("Acerca de", "About", "Home", null, new { style = "color:#C8B02D" })</li>
+                    <li>@Html.ActionLink("Administradores", "Index", "Administrador", null, new { style = "color:#C8B02D" })</li>
+                    <li>@Html.ActionLink("Estudiantes", "Index", "Estudiante", null, new { style = "color:#C8B02D" })</li>
+                    <li>@Html.ActionLink("Tutores", "Index", "Tutor", null, new { style = "color:#C8B02D" })</li>
+                    <li>@Html.ActionLink("Titulos", "Index", "Titulo", null, new { style = "color:#C8B02D" })</li>
+                    <li>@Html.ActionLink("Cursos", "Index", "Curso", null, new { style = "color:#C8B02D" })</li>
+                    <li>@Html.ActionLink("Generaciones", "Index", "Generacion", null, new { style = "color:#C8B02D" })</li>
+                    <li>@Html.ActionLink("Matriculas", "Index", "Matricula", null, new { style = "color:#C8B02D" })</li>
+                    <li>@Html.ActionLink("Clientes", "Index", "Cliente", null, new { style = "color:#C8B02D" })</li>
+                    <li>@Html.ActionLink("Facturas", "Index", "Factura", null, new { style = "color:#C8B02D" })</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

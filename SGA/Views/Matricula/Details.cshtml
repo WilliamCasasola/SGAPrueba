@@ -11,11 +11,19 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Curso.TituloId)
+            @Html.Label("Curso: ")
+        </dt>
+     
+        <dd>
+            @Html.Label("#"+Model.Curso.Id + " "+ Model.Curso.Titulo.Id+" "+ Model.Curso.Titulo.Nombre)
+        </dd>
+
+        <dt>
+            @Html.Label("Carnet: ")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Curso.TituloId)
+            @Html.Label(Model.Estudiante.Id)
         </dd>
 
         <dt>
@@ -23,7 +31,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Estudiante.Nombre)
+            @Html.Label(Model.Estudiante.Nombre + " "+ Model.Estudiante.Apellidos)
         </dd>
 
         <dt>
@@ -43,3 +51,29 @@
 
 
 </p>
+<div class="table-responsive">
+    <h4>Calificaciones:</h4>
+    <table class="table, table-bordered">
+        <tr>
+            @foreach (var item in Model.Calificaciones)
+            {
+                <th>
+                    @Html.DisplayFor(modelItem=>item.Tipo)
+                </th>
+            }
+            <th>@Html.Label("Nota Final", htmlAttributes: new { @class = "control-label col-md-2" })</th>
+        </tr>
+        <tr>
+            @foreach (var item in Model.Calificaciones)
+            {
+
+                <td>
+                    @Html.Label(item.Valor.ToString(), new { htmlAttributes = new { @class = "form-control" } })
+                </td>
+            }
+            <td>
+                @Html.Label(Model.NotaFinal.ToString(), new { htmlAttributes = new { @class = "form-control" } })
+            </td>
+        </tr>
+    </table>
+</div>
