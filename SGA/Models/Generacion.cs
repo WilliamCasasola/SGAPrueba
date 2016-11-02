@@ -9,11 +9,13 @@ namespace SGA.Models
 {
     public class Generacion
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        
+        public int Id { set; get; }
+
+        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
         [Required(ErrorMessage = "Nombre Requerido")]
-        [Display(Name = "Nombre")]
-        [StringLength(50,ErrorMessage = "Los nombres no pueden tener más de 50 caracteres..")]
-        public string Id { set; get; }
+        [StringLength(50, ErrorMessage = "Los nombres no pueden tener más de 50 caracteres..")]
+        public string Nombre { set; get; }
 
         [Required(ErrorMessage = "Fecha requerida")]
         [Display(Name = "Fecha")]

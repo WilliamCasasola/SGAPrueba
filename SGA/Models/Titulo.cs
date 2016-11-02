@@ -18,7 +18,7 @@ namespace SGA.Models
         public string Nombre { set; get; }
 
         [Display(Name = "Imágen")]
-        [RegularExpression(@"(?i).*\.(jpe?g|png)$", ErrorMessage = "Seleccione un archivo (png,jpg,jpeg).")]
+        [RegularExpression(@"(?i).*\.(jpe?g|png|pdf)$", ErrorMessage = "Seleccione un archivo (png,jpg,jpeg).")]
         [StringLength(250, ErrorMessage = "El tamaño de la imágen es muy grande")]
         public string Foto { set; get; }
 

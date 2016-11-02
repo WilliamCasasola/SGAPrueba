@@ -12,7 +12,7 @@ namespace SGA.DAL
     {
         public SGAContext() : base("SGAContext")
         {
-         //  Database.SetInitializer<SGAContext>(new DropCreateDatabaseAlways<SGAContext>());
+          // Database.SetInitializer<SGAContext>(new DropCreateDatabaseAlways<SGAContext>());
          Database.SetInitializer<SGAContext>(new DropCreateDatabaseIfModelChanges<SGAContext>());
             this.Configuration.LazyLoadingEnabled = false;
         }

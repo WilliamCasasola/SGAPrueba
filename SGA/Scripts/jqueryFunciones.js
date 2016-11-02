@@ -48,6 +48,7 @@ $("#link2").click(function () {
     });
 });
 
+
 $(document).ready(function () {
     $('.table').DataTable();
 });

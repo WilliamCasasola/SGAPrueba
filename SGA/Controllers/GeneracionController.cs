@@ -25,7 +25,7 @@ namespace SGA.Controllers
         }
 
         // GET: Generacion/Details/5
-        public ActionResult Details(string id)
+        public ActionResult Details(int? id)
         {
             if (id == null)
             {
@@ -51,9 +51,9 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string[] titulosSeleccionados, [Bind(Include = "Id,Fecha")] Generacion generacion,HttpPostedFileBase Foto)
+        public ActionResult Create(string[] titulosSeleccionados, [Bind(Include = "Id,Nombre,Fecha")] Generacion generacion,HttpPostedFileBase Foto)
         {
-            generacion.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacion.Id, Foto, "~/Imagenes/Portada/");
+            generacion.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacion.Id.ToString(), Foto, "~/Imagenes/Portada/");
             if (ModelState.IsValid)
             {
                 try
@@ -83,7 +83,7 @@ namespace SGA.Controllers
                     TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
                 }
             }
-
+            ViewBag.Titulos = db.Titulos.ToList();
             return View(generacion);
         }
 
@@ -93,6 +93,7 @@ namespace SGA.Controllers
             {
                 generacionActualizar.TitulosRequisito = new List<Titulo>();
                 return;
+
             }
 
             var titulosSeleccionadosHS = new HashSet<string>(titulosSeleccionados);
@@ -115,6 +116,7 @@ namespace SGA.Controllers
                     }
                 }
             }
+            
         }
 
         private void populateTituloRequeridoGeneracion(Generacion generacion)
@@ -137,7 +139,7 @@ namespace SGA.Controllers
         }
 
         // GET: Generacion/Edit/5
-        public ActionResult Edit(string id)
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
@@ -157,24 +159,27 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Fecha,Foto")] Generacion generacionActualizar, string[] titulosSeleccionados,string id, HttpPostedFileBase Foto, string FotoActual)
+        public ActionResult Edit([Bind(Include = "Id,Nombre,Fecha")] Generacion generacionActualizar, string[] titulosSeleccionados,string id, HttpPostedFileBase Foto, string FotoActual)
         {
-            if (generacionActualizar.Id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }            
 
+            Generacion generacionActualizarAuxiliar = db.Generacions.Include(g => g.TitulosRequisito).Single(g => g.Id == generacionActualizar.Id);
             if (!FotoActual.Equals("noPortada.jpg.png") && Foto == null)
-                generacionActualizar.Foto = FotoActual;
+                generacionActualizarAuxiliar.Foto = FotoActual;
             else
-            generacionActualizar.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacionActualizar.Id, Foto, "~/Imagenes/Portada/");
+                generacionActualizarAuxiliar.Foto = ClaseSelect.GetInstancia().guardarArchivo(generacionActualizarAuxiliar.Id.ToString(), Foto, "~/Imagenes/Portada/");
                         
                 try
                 {
-                    ActualizarRequisitosGeneracion(titulosSeleccionados, generacionActualizar);
+
+                ActualizarRequisitosGeneracion(titulosSeleccionados, generacionActualizarAuxiliar);
+                generacionActualizarAuxiliar.Nombre = generacionActualizar.Nombre;
+                generacionActualizarAuxiliar.Fecha = generacionActualizar.Fecha;
                 if (ModelState.IsValid)
                 {
-                    db.Entry(generacionActualizar).State = EntityState.Modified;
+                    
+                       
+                    
+                  //  db.Entry(generacionActualizar).State = EntityState.Modified;
                     db.SaveChanges();
                     TempData["mensaje"] = "Se registraron los cambios de la generación satisfactoriamente";
                     return RedirectToAction("Index");
@@ -192,7 +197,7 @@ namespace SGA.Controllers
             {
                 TempData["mensajeError"] = "No se pudo realizar la acción. Trate nuevamente, si el problema persiste contacte al administrador del sistema.";
             }
-
+            populateTituloRequeridoGeneracion(generacionActualizar);
             return View(generacionActualizar);
         }
 

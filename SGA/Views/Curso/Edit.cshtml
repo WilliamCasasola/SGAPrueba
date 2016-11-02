@@ -52,7 +52,7 @@ else
         <div class="form-group">
             @Html.LabelFor(model => model.FechaInicio, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.FechaInicio, new { htmlAttributes = new { @class = "datepicker" } })
+                @Html.EditorFor(model => model.FechaInicio, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.FechaInicio, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -114,4 +114,10 @@ else
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+@Styles.Render("~/Content/themes/base/css")
+@Scripts.Render("~/bundles/modernizr")
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/Scripts/jquery-formato-fechas.js")
 }

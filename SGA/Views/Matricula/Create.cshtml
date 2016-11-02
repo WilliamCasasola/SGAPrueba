@@ -127,10 +127,11 @@ else
 <h3>Puede hacer Proyecto Final</h3>
 <div>@ViewBag.PuedeProyecto</div>
 
-
+<div>
     @Html.ActionLink("Volver Atrás", null, null, null, new { href = Request.UrlReferrer })
 </div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+

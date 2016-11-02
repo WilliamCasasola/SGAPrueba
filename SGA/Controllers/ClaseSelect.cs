@@ -83,7 +83,7 @@ namespace SGA.Controllers
             if (archivo.FileName.Equals("noperfil.jpg") || archivo.FileName.Equals("nodocumento.png") || archivo.FileName.Equals("noPortada.jpg") || archivo.FileName.Equals("noComprobante.png") )
                 return archivo.FileName;
 
-            if (!Regex.IsMatch(archivo.FileName, @"(?i).*\.(gif|jpe?g|png|bmp)$") && archivo.ContentLength <= 5000000)
+            if (!Regex.IsMatch(archivo.FileName, @"(?i).*\.(jpe?g|png|pdf)$") && archivo.ContentLength <= 5000000)
                 return "algo.doc";
             if (archivo.ContentLength > 5000000)
                 return new string(Enumerable.Repeat("o", 300).Select(s => s[new Random().Next(s.Length)]).ToArray());//Para que genere el error predefinido en la clase por tamaño de string aunque el tamaño que excede es el del archivo

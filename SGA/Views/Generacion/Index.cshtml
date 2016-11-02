@@ -45,7 +45,7 @@ else
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                @Html.DisplayNameFor(model => model.Nombre)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Fecha)
@@ -61,7 +61,7 @@ else
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Id)
+                    @Html.DisplayFor(modelItem => item.Nombre)
                 </td>
                 <td>
                     @Html.TextBoxFor(modelItem => item.Fecha, "{0:dd-MM-yyyy}", new{
