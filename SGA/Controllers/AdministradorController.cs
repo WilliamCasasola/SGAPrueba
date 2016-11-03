@@ -105,7 +105,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="Id,Apellidos,Clave,Sexo,Identificacion,Profesion,Institucion,Fotografia,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Administrador administradorActualizar, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual) {
+        public ActionResult Edit([Bind(Include="Id,Apellidos,Clave,Sexo,Profesion,Institucion,Estado,Nombre,Pais,Telefono,Correo,CorreoAlternativo,Direccion")] Administrador administradorActualizar, HttpPostedFileBase Fotografia, HttpPostedFileBase Identificacion, string FotoActual, string IdentificacionActual) {
 
                 if (administradorActualizar.Id == null)
                 {

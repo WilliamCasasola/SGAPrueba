@@ -50,7 +50,7 @@ namespace SGA.Controllers
         // GET: Curso/Create
         public ActionResult Create()
         {
-            ViewBag.GeneracionId = new SelectList(db.Generacions.OrderBy(g => g.Id), "Id", "Id");
+            ViewBag.GeneracionId = new SelectList(db.Generacions.OrderBy(g => g.Id), "Id", "Nombre");
             ViewBag.TituloId = new SelectList(db.Titulos.OrderBy(t => t.Nombre), "Id", "Nombre");
             return View();
         }
@@ -90,7 +90,7 @@ namespace SGA.Controllers
             else {
                 TempData["mensajeError"] = "No se pudo realizar la acción. Compruebe que la fecha inicial no sea mayor a la fecha Final";
             }
-            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Id", curso.GeneracionId);
+            ViewBag.GeneracionId = new SelectList(db.Generacions, "Id", "Nombre", curso.GeneracionId);
             ViewBag.TituloId = new SelectList(db.Titulos, "Id", "Nombre", curso.TituloId);
             return View(curso);
         }
@@ -229,7 +229,7 @@ namespace SGA.Controllers
         }
 
         private void generarSelect(Curso curso =null) {
-            ViewBag.GeneracionId = new SelectList(db.Generacions.OrderBy(g=>g.Id), "Id", "Id", curso.GeneracionId);
+            ViewBag.GeneracionId = new SelectList(db.Generacions.OrderBy(g=>g.Id), "Id", "Nombre", curso.GeneracionId);
             ViewBag.TituloId = new SelectList(db.Titulos.OrderBy(t=>t.Nombre), "Id", "Nombre", curso.TituloId);
         }
         // GET: Curso/Delete/5

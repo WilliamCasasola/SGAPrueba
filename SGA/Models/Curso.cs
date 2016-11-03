@@ -40,7 +40,7 @@ namespace SGA.Models
         public virtual ICollection<Tutor> Tutores { set; get; }
 
         [Required(ErrorMessage = "Generación requerida")]
-        public string GeneracionId { set; get; }
+        public int GeneracionId { set; get; }
         public virtual Generacion Generacion { set; get; }
     }
 }

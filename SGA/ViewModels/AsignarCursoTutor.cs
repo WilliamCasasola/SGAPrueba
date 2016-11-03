@@ -8,7 +8,7 @@ namespace SGA.ViewModels
     public class AsignarCursoTutor
     {
         public int CursoID { set; get; }
-        public string GeneracionId { set; get; }
+        public int GeneracionId { set; get; }
         public string Titulo { set; get; }
         public bool Asignado { set; get; }
     }
