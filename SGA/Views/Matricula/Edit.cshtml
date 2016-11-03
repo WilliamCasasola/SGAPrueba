@@ -71,6 +71,9 @@ else
                     @foreach (var item in Model.Calificaciones)
                     {
                         <th>
+                            <script type="text/javascript">
+                                alert('@item.Tipo');
+                            </script>
                             @Html.TextBox("tipos", item.Tipo, new { htmlAttributes = new { @class = "form-control" } })
                             @Html.ValidationMessageFor(modelItem => item.Tipo, "", new { @class = "text-danger" })                        
                         </th>
@@ -80,9 +83,9 @@ else
                <tr>
                     @foreach (var item in Model.Calificaciones)
                     {
-                        @Html.HiddenFor(model => item.Id)
-
                        <td>
+                           @Html.HiddenFor(model => item.Id)
+
                            @Html.TextBox("valores",item.Valor, new { htmlAttributes = new { @class = "form-control" } })
                            @Html.ValidationMessageFor(modelItem => item.Valor, "", new { @class = "text-danger" })
                       

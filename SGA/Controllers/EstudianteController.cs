@@ -316,7 +316,7 @@ namespace SGA.Controllers
                                 Institucion = persona[13],
                                 Fotografia = persona[14],
                                 Estado = Boolean.Parse(persona[15]),
-                                GeneracionId = persona[16]
+                                GeneracionId = int.Parse(persona[16])
                             }
                            );
                             p++;            

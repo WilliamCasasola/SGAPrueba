@@ -178,7 +178,7 @@ namespace SGA.Controllers
         // más información vea http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,CursoID,EstudianteID,DiaMatricula")] Matricula matricula,  string[] valores, string[] tipos)
+        public ActionResult Edit([Bind(Include = "ID,CursoID,EstudianteID,DiaMatricula,NotaFinal")] Matricula matricula,  string[] valores, string[] tipos)
         {
             if (ModelState.IsValid)
             {
@@ -204,21 +204,28 @@ namespace SGA.Controllers
                 db = new SGAContext();
                 foreach (var item in notas.Select((nota,i)=>new {Indice=i, Nota=nota })) {
                     item.Nota.Tipo = tipos[item.Indice];
-                    item.Nota.Valor = Convert.ToDouble(valores[item.Indice]);
-                    db.Entry(item.Nota).State = EntityState.Modified;
-                    
-                }
-                try
-                {
+                    double i = 0;
+                    if (Double.TryParse(valores[item.Indice], out i))
+                        item.Nota.Valor = Convert.ToDouble(valores[item.Indice]);
+                    else {
+                        TempData["mensajeError"] = "No se pudo realizar la acción. Ingrese otro valor en vez de este: \""+ valores[item.Indice]+"\"";
+                        matricula.Calificaciones = notas;
+                        crearSelect(matricula);
+                        return View(matricula);
+                        }
                     if (ModelState.IsValid)
                     {
-                        db.Entry(matricula).State = EntityState.Modified;
+                        db.Entry(item.Nota).State = EntityState.Modified;
+                    }
+                }
+                try
+                {                    
                         db.SaveChanges();
                         TempData["mensaje"] = "Se registraron los cambios en las notas satisfactoriamente";
                         if (new Regex("/Tutor/Index/.+$").IsMatch(antiguauri.AbsolutePath))
                             return Redirect(antiguauri.AbsoluteUri);
                         return RedirectToAction("Index");
-                    }
+                    
                 }
                 catch (DbEntityValidationException mex)
                 {
@@ -234,6 +241,7 @@ namespace SGA.Controllers
                 }
                
             }
+            matricula.Calificaciones = notas;
             crearSelect(matricula);
             return View(matricula);
         }

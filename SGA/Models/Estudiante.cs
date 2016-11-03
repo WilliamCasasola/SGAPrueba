@@ -10,7 +10,7 @@ namespace SGA.Models
     {
         [Display(Name ="Generación")]
         [Required(ErrorMessage ="Necesita escoger una generación")]
-        public string GeneracionId { set; get; }
+        public int GeneracionId { set; get; }
         public virtual Generacion Generacion {set; get;}
         public virtual  ICollection<Matricula> matriculas { set; get; }
 
